@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
-import com.gracecode.gpsrecorder.Util.LocationListener;
+import com.gracecode.gpsrecorder.util.LocationListener;
 
 public class RecordServer extends Service {
 
@@ -18,23 +18,29 @@ public class RecordServer extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
         bindLocationListener();
     }
 
+
+    /**
+     * 绑定 GPS，获得地理位置等信息
+     */
     public void bindLocationListener() {
 
-        locManager =
-            (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locListener = new LocationListener(this.getApplicationContext());
 
-        Log.i(TAG, "Start location listener");
+        Log.e(TAG, "Start location listener");
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
     }
+
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
 
+        Log.e(TAG, "Start the server");
     }
 
     @Override
@@ -46,6 +52,6 @@ public class RecordServer extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

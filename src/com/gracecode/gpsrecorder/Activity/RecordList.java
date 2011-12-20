@@ -1,4 +1,4 @@
-package com.gracecode.gpsrecorder.Activity;
+package com.gracecode.gpsrecorder.activity;
 
 /**
  * Created by IntelliJ IDEA.

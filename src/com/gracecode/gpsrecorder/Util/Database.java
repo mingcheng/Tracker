@@ -1,4 +1,4 @@
-package com.gracecode.gpsrecorder.Util;
+package com.gracecode.gpsrecorder.util;
 
 
 import android.content.Context;
@@ -6,13 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "/mnt/sdcard/location.db";
-    private static final String TAG = Database.class.getName();
-    private static final int DATABASE_VERSION = 1;
 
-    Database(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
+    private final String TAG = Database.class.getName();
+
+    private final static int DATABASE_VERSION = 1;
+    private Context context;
+
 
     private static final String DATABASE_CREATE = "create table location "
         + "(id integer primary key autoincrement, "
@@ -22,8 +21,14 @@ public class Database extends SQLiteOpenHelper {
         + "bearing float not null,"
         + "altitude double not null,"
         + "accuracy float not null,"
-        + "time long not null"
+        + "time long not null,"
+        + "del boolean default false"
         + ");";
+
+    public Database(Context context, String name) {
+        super(context, name, null, DATABASE_VERSION);
+        this.context = context.getApplicationContext();
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {

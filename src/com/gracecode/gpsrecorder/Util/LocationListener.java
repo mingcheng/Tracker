@@ -1,4 +1,4 @@
-package com.gracecode.gpsrecorder.Util;
+package com.gracecode.gpsrecorder.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import com.gracecode.gpsrecorder.R;
 
 public class LocationListener implements android.location.LocationListener {
 
@@ -14,12 +15,11 @@ public class LocationListener implements android.location.LocationListener {
 
     private static Location lastLocationRecord;
     private static Database db;
-    private SQLiteDatabase sql;
-    Context context;
+    private Context context;
 
     public LocationListener(Context context) {
         this.context = context;
-        db = new Database(this.context);
+        db = new Database(context, context.getString(R.string.app_database_name));
     }
 
     public Location getLastLocationRecord() {
@@ -36,10 +36,11 @@ public class LocationListener implements android.location.LocationListener {
         values.put("altitude", loc.getAltitude());
         values.put("accuracy", loc.getAccuracy());
         values.put("time", loc.getTime());
-
         Log.v(TAG, values.toString());
+
+        // Save to database
         try {
-            sql = db.getWritableDatabase();
+            SQLiteDatabase sql = db.getWritableDatabase();
             sql.insert("location", null, values);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
@@ -56,8 +57,8 @@ public class LocationListener implements android.location.LocationListener {
 
     @Override
     public void onProviderEnabled(String s) {
-        Log.i(TAG, "GPS is enabled, reopen this database.");
-        db = new Database(context);
+        Log.i(TAG, "GPS is enabled, reopen database.");
+        db = new Database(context, context.getString(R.string.app_database_name));
     }
 
     @Override
