@@ -7,28 +7,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import com.gracecode.gpsrecorder.R;
 
 public class LocationListener implements android.location.LocationListener {
 
     private final String TAG = LocationListener.class.getName();
 
     private static Location lastLocationRecord;
-    private static Database db;
+    private static SQLiteDatabase db;
     private Context context;
 
     public LocationListener(Context context) {
         this.context = context;
-        db = new Database(context, context.getString(R.string.app_database_name));
+        db = new Database(context).getWritableDatabase();
     }
 
     public Location getLastLocationRecord() {
         return lastLocationRecord;
     }
 
+    private static Double latitude = 0.0, longitude = 0.0;
+
     @Override
     public void onLocationChanged(Location loc) {
         ContentValues values = new ContentValues();
+
+        if (latitude == loc.getLatitude() && longitude == loc.getLongitude()) {
+            return;
+        }
+
         values.put("latitude", loc.getLatitude());
         values.put("longitude", loc.getLongitude());
         values.put("speed", loc.getSpeed());
@@ -38,10 +44,12 @@ public class LocationListener implements android.location.LocationListener {
         values.put("time", loc.getTime());
         Log.v(TAG, values.toString());
 
+        latitude = loc.getLatitude();
+        longitude = loc.getLongitude();
+
         // Save to database
         try {
-            SQLiteDatabase sql = db.getWritableDatabase();
-            sql.insert("location", null, values);
+            db.insert("location", null, values);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -58,7 +66,7 @@ public class LocationListener implements android.location.LocationListener {
     @Override
     public void onProviderEnabled(String s) {
         Log.i(TAG, "GPS is enabled, reopen database.");
-        db = new Database(context, context.getString(R.string.app_database_name));
+        db = new Database(context).getWritableDatabase();
     }
 
     @Override
