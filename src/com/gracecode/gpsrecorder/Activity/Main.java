@@ -60,7 +60,6 @@ public class Main extends Activity implements View.OnClickListener {
 
     private void bindElements() {
 
-
     }
 
     @Override
@@ -91,8 +90,9 @@ public class Main extends Activity implements View.OnClickListener {
     }
 
 
-    private void updateView() {
+    private static double maxSpeed = 0.0;
 
+    private void updateView() {
         Cursor result = null;
         try {
             result = db.getReadableDatabase().rawQuery(
@@ -111,6 +111,9 @@ public class Main extends Activity implements View.OnClickListener {
         latitude = result.getDouble(result.getColumnIndex("latitude"));
         longitude = result.getDouble(result.getColumnIndex("longitude"));
         speed = result.getDouble(result.getColumnIndex("speed"));
+        if (maxSpeed < speed) {
+            maxSpeed = speed;
+        }
         bearing = result.getDouble(result.getColumnIndex("bearing"));
 
         altitude = result.getDouble(result.getColumnIndex("altitude"));
@@ -124,12 +127,12 @@ public class Main extends Activity implements View.OnClickListener {
             "count %d, \n"
                 + "latitude %.3f, \n"
                 + "longitude %.3f, \n"
-                + "speed %.2f, \n"
+                + "speed %.2f / %.2f, \n"
                 + "bearing %.2f,\n"
                 + "altitude %.2f,\n"
                 + "accuracy %.2f,\n"
                 + "time %s\n",
-            db.getValvedCount(), latitude, longitude, speed, bearing, altitude, accuracy, timeStamp);
+            db.getValvedCount(), latitude, longitude, speed, maxSpeed, bearing, altitude, accuracy, timeStamp);
 
         resultString += String.format("update %s",
             new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));

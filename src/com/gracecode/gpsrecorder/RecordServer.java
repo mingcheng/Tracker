@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
-import com.gracecode.gpsrecorder.util.LocationListener;
+import com.gracecode.gpsrecorder.util.Location;
 
 public class RecordServer extends Service {
 
     private final String TAG = RecordServer.class.getName();
 
     LocationManager locManager;
-    LocationListener locListener;
+    Location loc;
 
     @Override
     public void onCreate() {
@@ -27,10 +27,10 @@ public class RecordServer extends Service {
      */
     public void bindLocationListener() {
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locListener = new LocationListener(this.getApplicationContext());
+        loc = new Location(this.getApplicationContext());
 
         Log.e(TAG, "Start location listener");
-        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loc);
     }
 
 
@@ -43,7 +43,7 @@ public class RecordServer extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        locManager.removeUpdates(locListener);
+        locManager.removeUpdates(loc);
     }
 
     @Override

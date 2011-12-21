@@ -26,7 +26,7 @@ public class Location implements android.location.LocationListener {
         return lastLocationRecord;
     }
 
-    private static String latitude, longitude;
+    private String latitude, longitude;
 
     @Override
     public void onLocationChanged(android.location.Location loc) {
@@ -37,7 +37,7 @@ public class Location implements android.location.LocationListener {
         String tmpLatitude = formatter.format(loc.getLatitude());
 
         if (tmpLatitude.equals(latitude) && tmpLongitude.equals(longitude)) {
-            Log.i(TAG, String.format("The same latitude %f and longitude %f, ignore this.",
+            Log.v(TAG, String.format("The same latitude %f and longitude %f, ignore this.",
                 loc.getLatitude(), loc.getLongitude()));
             return;
         }
