@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">GPS Recorder</string>
     <string name="service_name">GPSRecorder Server</string>
-    <string name="app_database_name">/mnt/sdcard/location.db</string>
+    <string name="app_database_store_path">/mnt/sdcard/gpsrecorder/</string>
     <string name="menu_label_stop">Exit</string>
 </resources>
