@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/date" android:title="Date"
+          android:alphabeticShortcut="d" />
+
+    <item android:id="@+id/export" android:title="Export"
+          android:alphabeticShortcut="e" />
+
+    <item android:id="@+id/clean" android:title="Clean"
+          android:alphabeticShortcut="l" />
+</menu>

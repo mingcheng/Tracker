@@ -18,7 +18,6 @@ public class RecordServer extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         bindLocationListener();
     }
 
@@ -27,7 +26,6 @@ public class RecordServer extends Service {
      * 绑定 GPS，获得地理位置等信息
      */
     public void bindLocationListener() {
-
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locListener = new LocationListener(this.getApplicationContext());
 
@@ -39,14 +37,12 @@ public class RecordServer extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-
         Log.e(TAG, "Start the server");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         locManager.removeUpdates(locListener);
     }
 

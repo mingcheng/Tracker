@@ -67,7 +67,7 @@ public class Main extends Activity implements View.OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.main, menu);
         return true;
     }
 
@@ -77,6 +77,14 @@ public class Main extends Activity implements View.OnClickListener {
             case R.id.stop:
                 stopService(recordServerIntent);
                 finish();
+                return true;
+
+            case R.id.records:
+
+                Intent t = new Intent(Main.this, RecordList.class);
+                startActivity(t);
+                return true;
+
             default:
                 return false;
         }
