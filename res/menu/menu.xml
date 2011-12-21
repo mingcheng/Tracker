@@ -8,6 +8,15 @@
     <item android:id="@+id/export" android:title="Export"
           android:alphabeticShortcut="e" />
 
+    <item android:id="@+id/clean" android:title="Clean"
+          android:alphabeticShortcut="l" />
+
+    <item android:id="@+id/configure" android:title="Configure"
+          android:alphabeticShortcut="c" />
+
+    <item android:id="@+id/about" android:title="About"
+          android:alphabeticShortcut="a" />
+
     <item android:id="@+id/stop" android:title="@string/menu_label_stop"
           android:alphabeticShortcut="s" />
 </menu>
