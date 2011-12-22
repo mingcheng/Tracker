@@ -34,6 +34,7 @@ public class Main extends BaseActivity {
             updateView();
         }
     };
+    private boolean isServerStoped = false;
 
 
     @Override
@@ -72,6 +73,7 @@ public class Main extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.stop:
+                isServerStoped = true;
                 stopService(recordServerIntent);
                 finish();
                 return true;
@@ -175,7 +177,9 @@ public class Main extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(context, getString(R.string.still_running), Toast.LENGTH_LONG).show();
+        if (isServerStoped == false) {
+            Toast.makeText(context, getString(R.string.still_running), Toast.LENGTH_LONG).show();
+        }
         if (db != null) {
             db.close();
         }

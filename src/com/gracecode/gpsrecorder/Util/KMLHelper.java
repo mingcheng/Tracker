@@ -78,7 +78,6 @@ public class KMLHelper {
 
             multiGeometryCoordinatesString += String.format("%f,%f,%f \n", longitude, latitude, altitude);
         }
-        data.close();
     }
 
     private void makeCoordinatesString() {

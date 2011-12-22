@@ -124,7 +124,7 @@ public class Database {
         try {
             result = db.rawQuery(
                 "SELECT DISTINCT latitude, longitude, speed, bearing, altitude, accuracy, time " +
-                    " from location WHERE del = 0", null);
+                    " from location WHERE del = 0 ORDER BY time DESC", null);
 
             result.moveToFirst();
         } catch (SQLiteException e) {

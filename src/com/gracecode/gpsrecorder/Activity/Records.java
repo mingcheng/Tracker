@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
@@ -130,23 +131,25 @@ public class Records extends BaseActivity {
             case R.id.export:
                 progressDialog.show();
                 saveKMLFileThread = new Thread() {
-
-
                     @Override
                     public void run() {
                         try {
                             String name = map.get("database");
                             String description = "";
-                            final KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
+
+                            // @todo convert cursor into list
+                            Cursor data = db.getValvedData();
+                            final KMLHelper kml = new KMLHelper(name, description, data);
 
                             String basePath = getString(R.string.app_database_store_path);
-                            final File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
-                            Log.e(TAG, kmlFile.getAbsolutePath());
+                            File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
                             kml.saveKMLFile(kmlFile.getAbsoluteFile());
 
                             Message message = new Message();
                             message.what = HIDE_PROGRESS_DIALOG;
                             handle.sendMessage(message);
+
+                            data.close();
                         } catch (IOException e) {
                             Log.e(TAG, e.getMessage());
                         }
@@ -184,6 +187,7 @@ public class Records extends BaseActivity {
 
                 return true;
         }
+        db.close();
         return false;
     }
 
