@@ -1,9 +1,10 @@
 package com.gracecode.gpsrecorder.activity;
 
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,8 +12,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
 import com.gracecode.gpsrecorder.RecordServer;
 import com.gracecode.gpsrecorder.util.Database;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Main extends Activity implements View.OnClickListener {
+public class Main extends BaseActivity {
     private static final String TAG = Main.class.getName();
     private Intent recordServerIntent;
     private Database db;
@@ -34,6 +35,7 @@ public class Main extends Activity implements View.OnClickListener {
         }
     };
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +44,11 @@ public class Main extends Activity implements View.OnClickListener {
         this.context = this.getApplicationContext();
         db = new Database(context);
 
+        initialViewUpdater();
+
         recordServerIntent = new Intent(Main.this, RecordServer.class);
         startService(recordServerIntent);
-        bindElements();
-        initialViewUpdater();
     }
-
 
     private void initialViewUpdater() {
         timer = new Timer();
@@ -57,11 +58,6 @@ public class Main extends Activity implements View.OnClickListener {
                 handle.sendMessage(new Message());
             }
         }, 0, 1000);
-    }
-
-
-    private void bindElements() {
-
     }
 
     @Override
@@ -85,6 +81,13 @@ public class Main extends Activity implements View.OnClickListener {
                 startActivity(t);
                 return true;
 
+            case R.id.about:
+                Dialog dialog = new Dialog(this);
+                dialog.setTitle(R.string.app_name);
+                dialog.setContentView(R.layout.about);
+                dialog.show();
+                return true;
+
             default:
                 return false;
         }
@@ -98,7 +101,8 @@ public class Main extends Activity implements View.OnClickListener {
 
         try {
             Cursor result = null;
-            result = db.getReadableDatabase().rawQuery(
+            SQLiteDatabase tmpDb = db.getReadableDatabase();
+            result = tmpDb.rawQuery(
                 "SELECT * FROM location WHERE del = 0 ORDER BY time DESC LIMIT 1", null);
 
             if (result.getCount() <= 0) {
@@ -142,6 +146,7 @@ public class Main extends Activity implements View.OnClickListener {
             }
 
             result.close();
+            tmpDb.close();
         } catch (SQLiteException e) {
             resultString = e.getMessage();
         }
@@ -150,26 +155,31 @@ public class Main extends Activity implements View.OnClickListener {
         t.setText(resultString);
     }
 
+//    @Override
+//    public void onClick(View view) {
+//        //To change body of implemented methods use File | Settings | File Templates.
+//    }
+//
+//    public void onResume() {
+//        super.onResume();
+//        if (timer != null) {
+//            timer.cancel();
+//        }
+//        initialViewUpdater();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//    }
+
     @Override
-    public void onClick(View view) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void onResume() {
-        super.onResume();
-        if (timer != null) {
-            timer.cancel();
-        }
-        initialViewUpdater();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
+    public void onDestroy() {
+        Toast.makeText(context, getString(R.string.still_running), Toast.LENGTH_LONG).show();
         if (db != null) {
             db.close();
         }
         timer.cancel();
+        super.onDestroy();
     }
 }

@@ -1,6 +1,5 @@
 package com.gracecode.gpsrecorder.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Records extends Activity {
+public class Records extends BaseActivity {
     public static final int HIDE_PROGRESS_DIALOG = 0x1;
     private final String TAG = Records.class.getName();
     private Database db;
@@ -40,6 +39,7 @@ public class Records extends Activity {
     protected ArrayList<HashMap<String, String>> storageFileHashList = new ArrayList<HashMap<String, String>>();
     private SimpleAdapter listViewAdapter;
     private ProgressDialog progressDialog;
+    private Thread saveKMLFileThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,13 +84,15 @@ public class Records extends Activity {
         for (File dbFile : storageFileList) {
             try {
                 Database d = new Database(context, dbFile);
-                HashMap<String, String> map = new HashMap<String, String>();
+                if (d.getValvedCount() > 0) {
+                    HashMap<String, String> map = new HashMap<String, String>();
 
-                map.put("database", dbFile.getName());
-                map.put("count", String.format("%d records", d.getValvedCount()));
-                map.put("absolute", dbFile.getAbsolutePath());
+                    map.put("database", dbFile.getName());
+                    map.put("count", String.format("%d records", d.getValvedCount()));
+                    map.put("absolute", dbFile.getAbsolutePath());
 
-                storageFileHashList.add(map);
+                    storageFileHashList.add(map);
+                }
                 d.close();
             } catch (SQLiteException e) {
                 Log.e(TAG, e.getMessage());
@@ -120,41 +122,38 @@ public class Records extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        HashMap<String, String> map = storageFileHashList.get(info.position);
+        final HashMap<String, String> map = storageFileHashList.get(info.position);
         String absolutePath = map.get("absolute");
 
         db = new Database(context, new File(absolutePath));
         switch (item.getItemId()) {
             case R.id.export:
-                String name = map.get("database");
-                String description = "";
-                final KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
-
-                String basePath = getString(R.string.app_database_store_path);
-                final File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
                 progressDialog.show();
+                saveKMLFileThread = new Thread() {
 
-                new Thread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                kml.saveKMLFile(kmlFile.getAbsoluteFile());
 
-                                Message message = new Message();
-                                message.what = HIDE_PROGRESS_DIALOG;
-                                handle.sendMessage(message);
+                    @Override
+                    public void run() {
+                        try {
+                            String name = map.get("database");
+                            String description = "";
+                            final KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
 
-                                Toast.makeText(context,
-                                    String.format(getString(R.string.save_kml_finished), kmlFile.getAbsolutePath()
-                                    ), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                Log.e(TAG, e.getMessage());
-                            }
+                            String basePath = getString(R.string.app_database_store_path);
+                            final File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
+                            Log.e(TAG, kmlFile.getAbsolutePath());
+                            kml.saveKMLFile(kmlFile.getAbsoluteFile());
+
+                            Message message = new Message();
+                            message.what = HIDE_PROGRESS_DIALOG;
+                            handle.sendMessage(message);
+                        } catch (IOException e) {
+                            Log.e(TAG, e.getMessage());
                         }
                     }
-                ).run();
 
+                };
+                saveKMLFileThread.start();
                 return true;
             /**
              * Mark as deleted not really delete the data.
@@ -189,9 +188,12 @@ public class Records extends Activity {
     }
 
     private Handler handle = new Handler() {
+        @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case HIDE_PROGRESS_DIALOG:
+                    Toast.makeText(context,
+                        getString(R.string.save_kml_finished), Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                     break;
             }

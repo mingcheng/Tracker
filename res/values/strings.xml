@@ -14,6 +14,8 @@
     <string name="sure_to_del">Are you sure to mark this item as deleted?</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
-    <string name="save_kml_finished">Saved KML file at %s.</string>
+    <string name="save_kml_finished">KML file is ready.</string>
     <string name="saving">Saving. Please wait...</string>
+    <string name="still_running">GPS Recorder is still running.\n If you wanna to stop recording, open the Menu and select the "Stop" item.</string>
+    <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder\n\nAuthor: @feelinglucky</string>
 </resources>
