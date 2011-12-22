@@ -17,10 +17,11 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
 import com.gracecode.gpsrecorder.util.Database;
-import com.gracecode.gpsrecorder.util.KMLHepler;
+import com.gracecode.gpsrecorder.util.KMLHelper;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -116,10 +117,22 @@ public class Records extends Activity {
         db = new Database(context, new File(absolutePath));
         switch (item.getItemId()) {
             case R.id.export:
-                KMLHepler kml = new KMLHepler(db.getValvedData());
-                String kmlXMLString = kml.getXMLString();
-                Log.e(TAG, kmlXMLString);
-                // Toast.makeText(context, absolutePath, Toast.LENGTH_LONG).show();
+                String name = map.get("database");
+                String description = "";
+                KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
+
+                String basePath = getString(R.string.app_database_store_path);
+                File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
+
+                try {
+                    kml.saveKMLFile(kmlFile.getAbsoluteFile());
+                    Toast.makeText(context,
+                        String.format(getString(R.string.save_kml_finished), kmlFile.getAbsolutePath()
+                        ), Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                //
                 return true;
             /**
              * Mark as deleted not really delete the data.

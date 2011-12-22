@@ -105,6 +105,7 @@ public class Database {
             result.moveToFirst();
 
             count = result.getLong(result.getColumnIndex("count"));
+            result.close();
         } catch (SQLiteException e) {
 
         }
@@ -130,7 +131,6 @@ public class Database {
 
         }
 
-        result.close();
         return result;
     }
 
