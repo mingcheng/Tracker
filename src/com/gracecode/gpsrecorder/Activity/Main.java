@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,7 +50,7 @@ public class Main extends Activity implements View.OnClickListener {
             public void run() {
                 handle.sendMessage(new Message());
             }
-        }, 0, 1000);
+        }, 500, 1000);
 
         recordServerIntent = new Intent(Main.this, RecordServer.class);
         startService(recordServerIntent);
@@ -93,49 +92,55 @@ public class Main extends Activity implements View.OnClickListener {
     private static double maxSpeed = 0.0;
 
     private void updateView() {
-        Cursor result = null;
+        String resultString = "";
+
         try {
+            Cursor result = null;
             result = db.getReadableDatabase().rawQuery(
                 "SELECT * FROM location WHERE del = 0 ORDER BY time DESC LIMIT 1", null);
+
+            if (result.getCount() <= 0) {
+                resultString = getResources().getString(R.string.is_empty);
+            } else {
+
+                double latitude, longitude, speed, bearing, altitude, accuracy;
+                String timeStamp;
+                result.moveToFirst();
+
+                latitude = result.getDouble(result.getColumnIndex("latitude"));
+                longitude = result.getDouble(result.getColumnIndex("longitude"));
+
+                speed = result.getDouble(result.getColumnIndex("speed"));
+                if (maxSpeed < speed) {
+                    maxSpeed = speed;
+                }
+
+                bearing = result.getDouble(result.getColumnIndex("bearing"));
+                altitude = result.getDouble(result.getColumnIndex("altitude"));
+                accuracy = result.getDouble(result.getColumnIndex("accuracy"));
+
+                timeStamp = result.getString(result.getColumnIndex("time"));
+                timeStamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+                    .format(new java.util.Date(Long.parseLong(timeStamp)));
+
+                resultString = String.format(
+                    "count %d, \n"
+                        + "latitude %.3f, \n"
+                        + "longitude %.3f, \n"
+                        + "speed %.2f / %.2f, \n"
+                        + "bearing %.2f,\n"
+                        + "altitude %.2f,\n"
+                        + "accuracy %.2f,\n"
+                        + "time %s\n",
+                    db.getValvedCount(), latitude, longitude, speed, maxSpeed, bearing, altitude, accuracy, timeStamp);
+
+                resultString += String.format("update %s",
+                    new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+
+            }
         } catch (SQLiteException e) {
-            Log.e(TAG, e.getMessage());
+            resultString = e.getMessage();
         }
-
-        if (result.getCount() <= 0) {
-            return;
-        }
-
-        double latitude, longitude, speed, bearing, altitude, accuracy;
-        String timeStamp;
-        result.moveToFirst();
-        latitude = result.getDouble(result.getColumnIndex("latitude"));
-        longitude = result.getDouble(result.getColumnIndex("longitude"));
-        speed = result.getDouble(result.getColumnIndex("speed"));
-        if (maxSpeed < speed) {
-            maxSpeed = speed;
-        }
-        bearing = result.getDouble(result.getColumnIndex("bearing"));
-
-        altitude = result.getDouble(result.getColumnIndex("altitude"));
-        accuracy = result.getDouble(result.getColumnIndex("accuracy"));
-
-        timeStamp = result.getString(result.getColumnIndex("time"));
-        timeStamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-            .format(new java.util.Date(Long.parseLong(timeStamp)));
-
-        String resultString = String.format(
-            "count %d, \n"
-                + "latitude %.3f, \n"
-                + "longitude %.3f, \n"
-                + "speed %.2f / %.2f, \n"
-                + "bearing %.2f,\n"
-                + "altitude %.2f,\n"
-                + "accuracy %.2f,\n"
-                + "time %s\n",
-            db.getValvedCount(), latitude, longitude, speed, maxSpeed, bearing, altitude, accuracy, timeStamp);
-
-        resultString += String.format("update %s",
-            new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
 
         TextView t = (TextView) findViewById(R.id.status);
         t.setText(resultString);

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="#0f0"
         android:id="@+id/status"
+        android:text="@string/pls_wait"
         />
 
 </LinearLayout>
