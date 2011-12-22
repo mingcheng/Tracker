@@ -2,10 +2,13 @@ package com.gracecode.gpsrecorder.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -27,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Records extends Activity {
+    public static final int HIDE_PROGRESS_DIALOG = 0x1;
     private final String TAG = Records.class.getName();
     private Database db;
     private Context context;
@@ -35,6 +39,7 @@ public class Records extends Activity {
     protected File[] storageFileList;
     protected ArrayList<HashMap<String, String>> storageFileHashList = new ArrayList<HashMap<String, String>>();
     private SimpleAdapter listViewAdapter;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,10 @@ public class Records extends Activity {
         this.db = new Database(context);
 
         listView = (ListView) findViewById(R.id.records_list);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage(getString(R.string.saving));
+        progressDialog.setCancelable(false);
 
         updateStorageFileList();
         updateListView();
@@ -119,20 +128,33 @@ public class Records extends Activity {
             case R.id.export:
                 String name = map.get("database");
                 String description = "";
-                KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
+                final KMLHelper kml = new KMLHelper(name, description, db.getValvedData());
 
                 String basePath = getString(R.string.app_database_store_path);
-                File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
+                final File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
+                progressDialog.show();
 
-                try {
-                    kml.saveKMLFile(kmlFile.getAbsoluteFile());
-                    Toast.makeText(context,
-                        String.format(getString(R.string.save_kml_finished), kmlFile.getAbsolutePath()
-                        ), Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-                //
+                new Thread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                kml.saveKMLFile(kmlFile.getAbsoluteFile());
+
+                                Message message = new Message();
+                                message.what = HIDE_PROGRESS_DIALOG;
+                                handle.sendMessage(message);
+
+                                Toast.makeText(context,
+                                    String.format(getString(R.string.save_kml_finished), kmlFile.getAbsolutePath()
+                                    ), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                Log.e(TAG, e.getMessage());
+                            }
+                        }
+                    }
+                ).run();
+
                 return true;
             /**
              * Mark as deleted not really delete the data.
@@ -165,6 +187,16 @@ public class Records extends Activity {
         }
         return false;
     }
+
+    private Handler handle = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case HIDE_PROGRESS_DIALOG:
+                    progressDialog.dismiss();
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onStop() {
