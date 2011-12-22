@@ -1,6 +1,7 @@
 package com.gracecode.gpsrecorder.util;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,7 +16,8 @@ import java.util.Date;
 public class Database {
     private final String TAG = Database.class.getName();
 
-    protected static class OpenHelper extends SQLiteOpenHelper {
+
+    protected class OpenHelper extends SQLiteOpenHelper {
         private final static int DATABASE_VERSION = 1;
         private Context context;
 
@@ -77,6 +79,11 @@ public class Database {
         this.helper = new OpenHelper(context, getDatabasePath());
     }
 
+    public Database(Context context, File f) {
+        this.context = context;
+        this.helper = new OpenHelper(context, f.getAbsolutePath());
+    }
+
 
     public SQLiteDatabase getReadableDatabase() {
         return helper.getReadableDatabase();
@@ -123,12 +130,25 @@ public class Database {
 
         }
 
+        result.close();
         return result;
     }
 
 
     public Cursor getValvedData() {
         return getValvedData(getReadableDatabase());
+    }
+
+
+    public int markAllAsDelete() {
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("del", 1);
+            return getWritableDatabase().update("location", contentValues, "", null);
+        } catch (SQLiteException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return 0;
     }
 
 

@@ -5,9 +5,8 @@
     <item android:id="@+id/records" android:title="Records"
           android:alphabeticShortcut="r" />
 
-
-    <item android:id="@+id/configure" android:title="Configure"
-          android:alphabeticShortcut="c" />
+    <!--<item android:id="@+id/configure" android:title="Configure"-->
+          <!--android:alphabeticShortcut="c" />-->
 
     <item android:id="@+id/about" android:title="About"
           android:alphabeticShortcut="a" />

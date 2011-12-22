@@ -42,18 +42,21 @@ public class Main extends Activity implements View.OnClickListener {
         this.context = this.getApplicationContext();
         db = new Database(context);
 
+        recordServerIntent = new Intent(Main.this, RecordServer.class);
+        startService(recordServerIntent);
         bindElements();
+        initialViewUpdater();
+    }
 
+
+    private void initialViewUpdater() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 handle.sendMessage(new Message());
             }
-        }, 500, 1000);
-
-        recordServerIntent = new Intent(Main.this, RecordServer.class);
-        startService(recordServerIntent);
+        }, 0, 1000);
     }
 
 
@@ -78,8 +81,7 @@ public class Main extends Activity implements View.OnClickListener {
                 return true;
 
             case R.id.records:
-
-                Intent t = new Intent(Main.this, RecordList.class);
+                Intent t = new Intent(Main.this, Records.class);
                 startActivity(t);
                 return true;
 
@@ -138,6 +140,8 @@ public class Main extends Activity implements View.OnClickListener {
                     new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
 
             }
+
+            result.close();
         } catch (SQLiteException e) {
             resultString = e.getMessage();
         }
@@ -151,9 +155,18 @@ public class Main extends Activity implements View.OnClickListener {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void onResume() {
+        super.onResume();
+        if (timer != null) {
+            timer.cancel();
+        }
+        initialViewUpdater();
+    }
+
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
+
         if (db != null) {
             db.close();
         }

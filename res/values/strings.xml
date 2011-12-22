@@ -6,4 +6,12 @@
     <string name="menu_label_stop">Exit</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="is_empty">Today\'s record is empty right now, please wait for a while.</string>
+    <string name="export_kml">Export KML</string>
+    <string name="delete">Delete</string>
+    <string name="has_deleted">%s rows marked as deleted</string>
+    <string name="info">Info</string>
+    <string name="notice">Notice</string>
+    <string name="sure_to_del">Are you sure to mark this item as deleted?</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

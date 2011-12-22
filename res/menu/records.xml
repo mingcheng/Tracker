@@ -2,12 +2,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/date" android:title="Date"
-          android:alphabeticShortcut="d" />
-
-    <item android:id="@+id/export" android:title="Export"
+    <item android:id="@+id/export" android:title="@string/export_kml"
           android:alphabeticShortcut="e" />
 
-    <item android:id="@+id/clean" android:title="Clean"
-          android:alphabeticShortcut="l" />
+
+    <item android:id="@+id/info" android:title="@string/info"
+          android:alphabeticShortcut="i" />
+
+    <item android:id="@+id/delete" android:title="@string/delete"
+          android:alphabeticShortcut="d" />
 </menu>

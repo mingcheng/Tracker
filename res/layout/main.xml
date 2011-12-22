@@ -6,7 +6,7 @@
     >
     <TextView
         android:textSize="18dp"
-        android:padding="10dp"
+        android:padding="5dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#0f0"
@@ -15,4 +15,3 @@
         />
 
 </LinearLayout>
-
