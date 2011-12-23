@@ -29,7 +29,7 @@ public class Location implements android.location.LocationListener {
     public void onLocationChanged(android.location.Location loc) {
         ContentValues values = new ContentValues();
 
-        DecimalFormat formatter = new DecimalFormat("####.###");
+        DecimalFormat formatter = new DecimalFormat("####.####");
         String tmpLongitude = formatter.format(loc.getLongitude());
         String tmpLatitude = formatter.format(loc.getLatitude());
 
