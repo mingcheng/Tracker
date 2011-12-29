@@ -4,6 +4,7 @@
 /bin/
 /gen/
 /out/
+/proguard_logs/
 /nbandroid/
 /proguard.cfg
 /build.xml

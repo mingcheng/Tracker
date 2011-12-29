@@ -15,13 +15,15 @@
         <TextView
             style="@style/Status.Status"
             android:id="@+id/status"
-            android:text="recording" />
+            android:text="@string/initialing" />
         <TextView
             style="@style/Status.Records"
-            android:text="342 RECORDS" />
+            android:id="@+id/records"
+            />
         <TextView
             style="@style/Status.Time"
-            android:text="12/24 17:34:23" />
+            android:id="@+id/time"
+            android:text="" />
     </LinearLayout>
 
     <TableLayout
@@ -47,11 +49,13 @@
             <TextView
                 style="@style/Item.Content"
                 android:layout_column="1"
-                android:text="32423.2"
+                android:id="@+id/latitude"
+                android:text=""
                 />
             <TextView
                 style="@style/Item.Content"
-                android:text="2342777"
+                android:id="@+id/longitude"
+                android:text=""
                 android:gravity="right"
                 />
         </TableRow>
@@ -72,11 +76,13 @@
             <TextView
                 style="@style/Item.Content"
                 android:layout_column="1"
-                android:text="32423.2"
+                android:id="@+id/bearing"
+                android:text=""
                 />
             <TextView
                 style="@style/Item.Content"
-                android:text="2342777"
+                android:text=""
+                android:id="@+id/speed"
                 android:gravity="right"
                 />
         </TableRow>
@@ -97,11 +103,13 @@
             <TextView
                 style="@style/Item.Content"
                 android:layout_column="1"
-                android:text="32423.2"
+                android:id="@+id/altitude"
+                android:text=""
                 />
             <TextView
                 style="@style/Item.Content"
-                android:text="2342777"
+                android:text=""
+                android:id="@+id/accuracy"
                 android:gravity="right"
                 />
         </TableRow>
