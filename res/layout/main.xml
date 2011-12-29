@@ -1,17 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="10dp"
+                android:id="@+id/root"
     >
-    <TextView
-        android:textSize="18dp"
-        android:padding="5dp"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="#0f0"
-        android:id="@+id/status"
-        android:text="@string/pls_wait"
-        />
+        >
+        <TextView
+            style="@style/Status.Status"
+            android:id="@+id/status"
+            android:text="recording" />
+        <TextView
+            style="@style/Status.Records"
+            android:text="342 RECORDS" />
+        <TextView
+            style="@style/Status.Time"
+            android:text="12/24 17:34:23" />
+    </LinearLayout>
 
-</LinearLayout>
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TableRow>
+            <TextView
+                style="@style/Item.Title"
+                android:layout_column="1"
+                android:text="Latitude"
+                />
+            <TextView
+                style="@style/Item.Title"
+                android:text="Longitude"
+                android:gravity="right"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView
+                style="@style/Item.Content"
+                android:layout_column="1"
+                android:text="32423.2"
+                />
+            <TextView
+                style="@style/Item.Content"
+                android:text="2342777"
+                android:gravity="right"
+                />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                style="@style/Item.Title"
+                android:layout_column="1"
+                android:text="Bearing"
+                />
+            <TextView
+                style="@style/Item.Title"
+                android:text="Speed(high)"
+                android:gravity="right"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView
+                style="@style/Item.Content"
+                android:layout_column="1"
+                android:text="32423.2"
+                />
+            <TextView
+                style="@style/Item.Content"
+                android:text="2342777"
+                android:gravity="right"
+                />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                style="@style/Item.Title"
+                android:layout_column="1"
+                android:text="Altitude"
+                />
+            <TextView
+                style="@style/Item.Title"
+                android:text="Accuracy"
+                android:gravity="right"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView
+                style="@style/Item.Content"
+                android:layout_column="1"
+                android:text="32423.2"
+                />
+            <TextView
+                style="@style/Item.Content"
+                android:text="2342777"
+                android:gravity="right"
+                />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

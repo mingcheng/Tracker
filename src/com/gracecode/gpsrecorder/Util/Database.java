@@ -21,7 +21,7 @@ public class Database {
         private final static int DATABASE_VERSION = 1;
         private Context context;
 
-        private static final String DATABASE_CREATE =
+        private static final String SQL_CREATE_LOCATION_TABLE =
             "create table location ("
                 + "id integer primary key autoincrement, "
                 + "latitude double not null, "
@@ -34,14 +34,22 @@ public class Database {
                 + "del int default 0"
                 + ");";
 
+        private static final String SQL_CREATE_META_TABLE =
+            "create table meta("
+                + "id integer primary key autoincrement, "
+                + "name string default null,"
+                + "value string default null"
+                + ");";
+
         public OpenHelper(Context context, String name) {
             super(context, name, null, DATABASE_VERSION);
-            this.context = context.getApplicationContext();
+            this.context = context;
         }
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            sqLiteDatabase.execSQL(DATABASE_CREATE);
+            sqLiteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);
+            sqLiteDatabase.execSQL(SQL_CREATE_META_TABLE);
         }
 
         @Override
@@ -49,7 +57,7 @@ public class Database {
         }
     }
 
-    protected static OpenHelper helper = null;
+    protected OpenHelper helper = null;
     private Context context;
 
 

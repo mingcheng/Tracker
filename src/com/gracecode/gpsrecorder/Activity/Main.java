@@ -6,18 +6,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.RecordServer;
 import com.gracecode.gpsrecorder.util.Database;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,19 +40,46 @@ public class Main extends BaseActivity {
     };
     private boolean isServerStoped = false;
 
+    private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
+
+    public void findAllTextView(ViewGroup v) {
+        for (int i = 0; i < v.getChildCount(); i++) {
+            if (v.getChildAt(i) instanceof TextView) {
+                textViewsGroup.add((TextView) v.getChildAt(i));
+            } else {
+                findAllTextView((ViewGroup) v.getChildAt(i));
+            }
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        this.context = this.getApplicationContext();
-        db = new Database(context);
 
-        initialViewUpdater();
+        RelativeLayout g = ((RelativeLayout) findViewById(R.id.root));
 
-        recordServerIntent = new Intent(Main.this, RecordServer.class);
-        startService(recordServerIntent);
+        findAllTextView(g);
+
+        Log.e(TAG, "" + textViewsGroup.size());
+
+
+        Typeface face;
+        face = Typeface.createFromAsset(getAssets(), "digital_dream_fat_skew.ttf");
+        for (int i = 0; i < textViewsGroup.size(); i++) {
+            TextView t = textViewsGroup.get(i);
+            t.setTypeface(face);
+        }
+
+
+//        this.context = this.getApplicationContext();
+//        db = new Database(context);
+//
+//        initialViewUpdater();
+//
+//        recordServerIntent = new Intent(Main.this, RecordServer.class);
+//        startService(recordServerIntent);
     }
 
     private void initialViewUpdater() {
@@ -154,6 +185,8 @@ public class Main extends BaseActivity {
         }
 
         TextView t = (TextView) findViewById(R.id.status);
+
+
         t.setText(resultString);
     }
 

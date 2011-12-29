@@ -9,18 +9,17 @@ import android.util.Log;
 
 import java.text.DecimalFormat;
 
-//import java.text.DecimalFormat;
 
 public class Location implements android.location.LocationListener {
 
     private final String TAG = Location.class.getName();
 
-    private static SQLiteDatabase db;
+    private static Database db;
     private Context context;
 
     public Location(Context context) {
         this.context = context;
-        db = new Database(context).getWritableDatabase();
+        db = new Database(context);
     }
 
     private String latitude, longitude;
@@ -51,9 +50,11 @@ public class Location implements android.location.LocationListener {
         values.put("time", loc.getTime());
 
         try {
-            db.insert("location", null, values);
+            SQLiteDatabase sqliteDatabase = db.getWritableDatabase();
+            sqliteDatabase.insert("location", null, values);
             Log.v(TAG, String.format("gps record which latitude is %.3f and is longitude %.3f has saved.",
                 loc.getLatitude(), loc.getLongitude()));
+            sqliteDatabase.close();
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -67,13 +68,18 @@ public class Location implements android.location.LocationListener {
     @Override
     public void onProviderEnabled(String s) {
         Log.i(TAG, "GPS is enabled, reopen database.");
-        db = new Database(context).getWritableDatabase();
+        if (db != null) {
+            db.close();
+            db = new Database(context);
+        }
     }
 
     @Override
     public void onProviderDisabled(String s) {
         Log.w(TAG, "GPS is disabled");
-        db.close();
+        if (db != null) {
+            db.close();
+        }
     }
 }
 
