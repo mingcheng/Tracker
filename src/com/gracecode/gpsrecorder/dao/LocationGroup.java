@@ -1,4 +1,8 @@
 package com.gracecode.gpsrecorder.dao;
 
-public class LocationGroup {
+import java.util.ArrayList;
+
+public class LocationGroup extends ArrayList<LocationItem> {
+
+
 }

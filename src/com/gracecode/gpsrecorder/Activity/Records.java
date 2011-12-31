@@ -4,12 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,11 +17,10 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
-import com.gracecode.gpsrecorder.util.KMLHelper;
+import com.gracecode.gpsrecorder.dao.LocationGroup;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +28,6 @@ import java.util.HashMap;
 public class Records extends BaseActivity {
     public static final int HIDE_PROGRESS_DIALOG = 0x1;
     private final String TAG = Records.class.getName();
-    private GPSDatabase db;
     private Context context;
 
     private ListView listView;
@@ -48,7 +43,7 @@ public class Records extends BaseActivity {
         setContentView(R.layout.records);
 
         this.context = getApplicationContext();
-        this.db = new GPSDatabase(context);
+
 
         listView = (ListView) findViewById(R.id.records_list);
         progressDialog = new ProgressDialog(this);
@@ -69,7 +64,7 @@ public class Records extends BaseActivity {
 //        String definedDate = getIntent().getStringExtra("date");
 
         // get the parent directory handle
-        File currentStorageDir = db.getStorageDirectory(new Date());
+        File currentStorageDir = configure.getStorageDirectory(new Date());
 
         storageFileList = currentStorageDir.listFiles(new FilenameFilter() {
             @Override
@@ -83,21 +78,17 @@ public class Records extends BaseActivity {
 
         storageFileHashList.clear();
         for (File dbFile : storageFileList) {
-            try {
-                GPSDatabase d = new GPSDatabase(context, dbFile);
-                if (d.getValvedCount() > 0) {
-                    HashMap<String, String> map = new HashMap<String, String>();
+            GPSDatabase d = new GPSDatabase(dbFile);
+            if (d.getValvedCount() > 0) {
+                HashMap<String, String> map = new HashMap<String, String>();
 
-                    map.put("database", dbFile.getName());
-                    map.put("count", String.format("%d records", d.getValvedCount()));
-                    map.put("absolute", dbFile.getAbsolutePath());
+                map.put("database", dbFile.getName());
+                map.put("count", String.format("%d records", d.getValvedCount()));
+                map.put("absolute", dbFile.getAbsolutePath());
 
-                    storageFileHashList.add(map);
-                }
-                d.close();
-            } catch (SQLiteException e) {
-                Log.e(TAG, e.getMessage());
+                storageFileHashList.add(map);
             }
+            d.close();
         }
     }
 
@@ -126,33 +117,28 @@ public class Records extends BaseActivity {
         final HashMap<String, String> map = storageFileHashList.get(info.position);
         String absolutePath = map.get("absolute");
 
-        db = new GPSDatabase(context, new File(absolutePath));
+        gpsDatabase = new GPSDatabase(new File(absolutePath));
         switch (item.getItemId()) {
             case R.id.export:
                 progressDialog.show();
                 saveKMLFileThread = new Thread() {
                     @Override
                     public void run() {
-                        try {
-                            String name = map.get("database");
-                            String description = "";
+//                        String name = map.get("database");
+//                        String description = "";
 
-                            // @todo convert cursor into list
-                            Cursor data = db.getValvedData();
-                            final KMLHelper kml = new KMLHelper(name, description, data);
+                        // @todo convert cursor into list
+                        LocationGroup data = gpsDatabase.getValvedData();
+//                            final KMLHelper kml = new KMLHelper(name, description, data);
+//
+//                            String basePath = getString(R.string.app_database_store_path);
+//                            File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
+//                            kml.saveKMLFile(kmlFile.getAbsoluteFile());
+//
+//                            Message message = new Message();
+//                            message.what = HIDE_PROGRESS_DIALOG;
+//                            handle.sendMessage(message);
 
-                            String basePath = getString(R.string.app_database_store_path);
-                            File kmlFile = new File(basePath + "/" + name.replace(".sqlite", ".kml"));
-                            kml.saveKMLFile(kmlFile.getAbsoluteFile());
-
-                            Message message = new Message();
-                            message.what = HIDE_PROGRESS_DIALOG;
-                            handle.sendMessage(message);
-
-                            data.close();
-                        } catch (IOException e) {
-                            Log.e(TAG, e.getMessage());
-                        }
                     }
 
                 };
@@ -169,7 +155,7 @@ public class Records extends BaseActivity {
 
                 dialog.setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        int effectedRows = db.markAllAsDelete();
+                        int effectedRows = gpsDatabase.markAllAsDelete();
                         if (effectedRows > 0) {
                             updateStorageFileList();
                             listViewAdapter.notifyDataSetChanged();
@@ -187,7 +173,7 @@ public class Records extends BaseActivity {
 
                 return true;
         }
-        db.close();
+        gpsDatabase.close();
         return false;
     }
 
@@ -207,8 +193,8 @@ public class Records extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (db != null) {
-            db.close();
+        if (gpsDatabase != null) {
+            gpsDatabase.close();
         }
     }
 }

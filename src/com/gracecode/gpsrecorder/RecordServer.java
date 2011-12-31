@@ -10,7 +10,11 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import com.gracecode.gpsrecorder.dao.GPSDatabase;
+import com.gracecode.gpsrecorder.util.Configure;
 import com.gracecode.gpsrecorder.util.GPSWatcher;
+
+import java.util.Date;
 
 public class RecordServer extends Service {
 
@@ -20,15 +24,21 @@ public class RecordServer extends Service {
     protected static final int AIRPLANE_MODE_ON = 1;
     protected static final int AIRPLANE_MODE_OFF = 0;
     private NotificationManager notificationManager;
-    private LocationManager locManager;
-    private GPSWatcher loc;
+    private LocationManager locationManager;
+    private GPSWatcher gpsWatcher;
     private ContentResolver contentResolver;
+    private GPSDatabase gpsDatabase;
+    private Configure configure;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        bindLocationListener();
+
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        configure = Configure.getInstance(getApplicationContext());
+        gpsDatabase = GPSDatabase.getInstance(configure.getDatabaseFile(new Date()));
+
+        bindLocationListener();
     }
 
 
@@ -50,11 +60,9 @@ public class RecordServer extends Service {
      * 绑定 GPS，获得地理位置等信息
      */
     public void bindLocationListener() {
-        locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        loc = new GPSWatcher(this.getApplicationContext());
-
-        Log.e(TAG, "Start location listener");
-        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loc);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        gpsWatcher = new GPSWatcher(this.getApplicationContext());
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsWatcher);
     }
 
 
@@ -96,11 +104,14 @@ public class RecordServer extends Service {
         super.onDestroy();
         turnOffLED();
 //        setAirPlaneMode(AIRPLANE_MODE_OFF);
-        locManager.removeUpdates(loc);
+        locationManager.removeUpdates(gpsWatcher);
+        gpsDatabase.close();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+
 }

@@ -2,17 +2,16 @@ package com.gracecode.gpsrecorder.dao;
 
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
-import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.util.Environment;
 
 import java.io.File;
 import java.util.Date;
+
+import static android.database.sqlite.SQLiteDatabase.CREATE_IF_NECESSARY;
 
 public class GPSDatabase {
     private final String TAG = GPSDatabase.class.getName();
@@ -36,7 +35,7 @@ public class GPSDatabase {
     protected static final String TABLE_NAME = "location";
 
     private static final String SQL_CREATE_LOCATION_TABLE =
-        "create table location ("
+        "create table " + TABLE_NAME + " ("
             + "id integer primary key autoincrement, "
             + "latitude double not null, "
             + "longitude double not null,"
@@ -55,70 +54,23 @@ public class GPSDatabase {
             + "value string default null"
             + ");";
 
-    private Context context;
-    private static SQLiteDatabase sqliteDatabase;
-
+    private SQLiteDatabase sqliteDatabase;
     private static GPSDatabase instance = null;
 
-    public static GPSDatabase getInstance(Context context) {
-        if (instance == null) {
-            instance = new GPSDatabase(context);
-        }
+    public static GPSDatabase getInstance() {
         return instance;
     }
 
-    public GPSDatabase(Context context) {
-        this.context = context;
-        openDatabase(getDatabaseFile());
-    }
-
-    public GPSDatabase(Context context, File file) throws SQLiteException {
-        this.context = context;
-        openDatabase(file);
-    }
-
-    public File getDatabaseFile() {
-        return getDatabaseFile(new Date());
-    }
-
-    protected SQLiteDatabase getSqliteDatabase() {
-        return sqliteDatabase;
-    }
-
-
-    /**
-     * @param now
-     * @return
-     */
-    public File getStorageDirectory(Date now) {
-        String storageDirectory = Environment.getExternalStoragePath() + File.separator
-            + getString(R.string.app_database_store_path);
-        storageDirectory += File.separator + new java.text.SimpleDateFormat("yyyyMM").format(now);
-
-        return new File(storageDirectory);
-    }
-
-
-    /**
-     * @param now
-     * @return
-     */
-    protected File getDatabaseFile(Date now) {
-
-        String DatabaseFileName = new java.text.SimpleDateFormat("yyyyMMdd").format(now) + ".sqlite";
-
-        File storageDirectory = getStorageDirectory(now);
-        if (!storageDirectory.exists()) {
-            Log.w(TAG, String.format("The database file: %s is not exists, build parent directory first.",
-                storageDirectory.getAbsolutePath()));
-            storageDirectory.mkdirs();
+    public static GPSDatabase getInstance(File file) {
+        if (instance == null) {
+            instance = new GPSDatabase(file);
         }
 
-        return new File(storageDirectory.getAbsolutePath() + File.separator + DatabaseFileName);
+        return instance;
     }
 
-    private String getString(int resId) {
-        return context.getString(resId);
+    public GPSDatabase(File file) throws SQLiteException {
+        openDatabase(file);
     }
 
     /**
@@ -130,7 +82,7 @@ public class GPSDatabase {
             isNeedCreateTable = true;
         }
 
-        sqliteDatabase = sqliteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, SQLiteDatabase.CREATE_IF_NECESSARY);
+        sqliteDatabase = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, CREATE_IF_NECESSARY);
 
         if (isNeedCreateTable) {
             sqliteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);
@@ -144,14 +96,15 @@ public class GPSDatabase {
      */
     public long getValvedCount() {
         long count = 0;
-        Cursor result = null;
+        Cursor cursor;
 
         try {
-            result = sqliteDatabase.rawQuery("SELECT count(id) AS count FROM location WHERE del = 0 LIMIT 1", null);
-            result.moveToFirst();
+            cursor = sqliteDatabase.rawQuery("SELECT count(id) AS count FROM " + TABLE_NAME + " WHERE del = " + STATUS_NORMAL
+                + " LIMIT 1", null);
+            cursor.moveToFirst();
 
-            count = result.getLong(result.getColumnIndex(COLUMN.COUNT));
-            result.close();
+            count = cursor.getLong(cursor.getColumnIndex(COLUMN.COUNT));
+            cursor.close();
         } catch (SQLiteException e) {
 
         }
@@ -179,27 +132,33 @@ public class GPSDatabase {
         return 0;
     }
 
+    private LocationItem getSingleLocationItemFromCursor(Cursor cursor) {
+        LocationItem locationItem = new LocationItem();
+
+        locationItem.setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LATITUDE)));
+        locationItem.setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LONGITUDE)));
+        locationItem.setBearing(cursor.getFloat(cursor.getColumnIndex(COLUMN.BEARING)));
+        locationItem.setAltitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.ALTITUDE)));
+        locationItem.setAccuracy(cursor.getFloat(cursor.getColumnIndex(COLUMN.ACCURACY)));
+        locationItem.setSpeed(cursor.getFloat(cursor.getColumnIndex(COLUMN.SPEED)));
+        locationItem.setTime(cursor.getLong(cursor.getColumnIndex(COLUMN.TIME)));
+        locationItem.setCount(cursor.getInt(cursor.getColumnIndex(COLUMN.COUNT)));
+
+        return locationItem;
+    }
 
     public LocationItem getLastRecords() {
         Cursor result;
         LocationItem data = new LocationItem();
-
         data.setTime((new Date()).getTime());
+
         try {
             result = sqliteDatabase.rawQuery("SELECT *, count(*) as count " +
                 "FROM location WHERE del = 0 ORDER BY time DESC LIMIT 1", null);
             result.moveToFirst();
 
             if (result != null && result.getLong(result.getColumnIndexOrThrow(COLUMN.COUNT)) > 0) {
-                data.setLatitude(result.getDouble(result.getColumnIndex(COLUMN.LATITUDE)));
-                data.setLongitude(result.getDouble(result.getColumnIndex(COLUMN.LONGITUDE)));
-                data.setBearing(result.getFloat(result.getColumnIndex(COLUMN.BEARING)));
-                data.setAltitude(result.getDouble(result.getColumnIndex(COLUMN.ALTITUDE)));
-                data.setAccuracy(result.getFloat(result.getColumnIndex(COLUMN.ACCURACY)));
-                data.setSpeed(result.getFloat(result.getColumnIndex(COLUMN.SPEED)));
-
-                data.setTime(result.getLong(result.getColumnIndex(COLUMN.TIME)));
-                data.setCount(result.getInt(result.getColumnIndex(COLUMN.COUNT)));
+                data = getSingleLocationItemFromCursor(result);
             }
 
             result.close();
@@ -211,23 +170,28 @@ public class GPSDatabase {
     }
 
     // @todo reformat this into ArrayList
-    public Cursor getValvedData() {
-        Cursor result = null;
+    public LocationGroup getValvedData() {
+        LocationGroup locationGroup = new LocationGroup();
+        Cursor cursor;
 
         try {
-            result = sqliteDatabase.rawQuery(
+            cursor = sqliteDatabase.rawQuery(
                 "SELECT DISTINCT latitude, longitude, speed, bearing, altitude, accuracy, time " +
-                    " from location WHERE del = 0 ORDER BY time DESC", null);
+                    " from location WHERE del = " + STATUS_NORMAL + " ORDER BY time DESC", null);
 
-            result.moveToFirst();
+            for (cursor.moveToFirst(); cursor.moveToNext(); ) {
+                locationGroup.add(getSingleLocationItemFromCursor(cursor));
+            }
+
+            cursor.close();
         } catch (SQLiteException e) {
 
         }
 
-        return result;
+        return locationGroup;
     }
 
-    // @todo move into Locaiton
+    // @todo move into Location
     public int markAllAsDelete() {
         try {
             ContentValues contentValues = new ContentValues();
@@ -239,14 +203,9 @@ public class GPSDatabase {
         return 0;
     }
 
-    public void reopen() {
+    public void close() {
         if (sqliteDatabase != null) {
             sqliteDatabase.close();
         }
-        openDatabase(getDatabaseFile());
-    }
-
-    public void close() {
-        sqliteDatabase.close();
     }
 }

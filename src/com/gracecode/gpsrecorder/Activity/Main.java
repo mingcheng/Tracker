@@ -3,24 +3,20 @@ package com.gracecode.gpsrecorder.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.util.Database;
+import com.gracecode.gpsrecorder.RecordServer;
+import com.gracecode.gpsrecorder.dao.LocationItem;
+import com.gracecode.gpsrecorder.util.Environment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -29,57 +25,63 @@ import java.util.TimerTask;
 public class Main extends BaseActivity {
     private static final String TAG = Main.class.getName();
     private Intent recordServerIntent;
-    private Database db;
+
     private Context context;
     private Timer timer;
 
+    private static double maxSpeed = 0.0;
+
     private Handler handle = new Handler() {
+        long visible_flag = 0;
+
         public void handleMessage(Message msg) {
             updateView();
+
+            TextView records = (TextView) findViewById(R.id.status);
+            records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
         }
     };
     private boolean isServerStoped = false;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
+    private LocationItem lastLocationItem;
 
+
+    /**
+     * 找到所有的 TextView 元素
+     *
+     * @param v
+     */
     public void findAllTextView(ViewGroup v) {
         for (int i = 0; i < v.getChildCount(); i++) {
-            if (v.getChildAt(i) instanceof TextView) {
-                textViewsGroup.add((TextView) v.getChildAt(i));
-            } else {
-                findAllTextView((ViewGroup) v.getChildAt(i));
+            View item = v.getChildAt(i);
+            if (item instanceof TextView) {
+                textViewsGroup.add((TextView) item);
+            } else if (item instanceof ViewGroup) {
+                findAllTextView((ViewGroup) item);
             }
         }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-
-        RelativeLayout g = ((RelativeLayout) findViewById(R.id.root));
-
-        findAllTextView(g);
-
-        Log.e(TAG, "" + textViewsGroup.size());
+        this.context = this.getApplicationContext();
 
 
-        Typeface face;
-        face = Typeface.createFromAsset(getAssets(), "digital_dream_fat_skew.ttf");
-        for (int i = 0; i < textViewsGroup.size(); i++) {
-            TextView t = textViewsGroup.get(i);
-            t.setTypeface(face);
+        if (!Environment.isExternalStoragePresent()) {
+            Log.e(TAG, "no SD Card");
+            return;
         }
 
+        recordServerIntent = new Intent(Main.this, RecordServer.class);
+        startService(recordServerIntent);
 
-//        this.context = this.getApplicationContext();
-//        db = new Database(context);
-//
-//        initialViewUpdater();
-//
-//        recordServerIntent = new Intent(Main.this, RecordServer.class);
-//        startService(recordServerIntent);
+        findAllTextView((ViewGroup) findViewById(R.id.root));
+        initialViewUpdater();
     }
 
     private void initialViewUpdater() {
@@ -90,6 +92,13 @@ public class Main extends BaseActivity {
                 handle.sendMessage(new Message());
             }
         }, 0, 1000);
+
+        Typeface face = Typeface.createFromAsset(getAssets(),
+            getString(R.string.default_font));
+        for (int i = 0; i < textViewsGroup.size(); i++) {
+            TextView t = textViewsGroup.get(i);
+            t.setTypeface(face);
+        }
     }
 
     @Override
@@ -127,95 +136,81 @@ public class Main extends BaseActivity {
     }
 
 
-    private static double maxSpeed = 0.0;
-
     private void updateView() {
-        String resultString = "";
 
-        try {
-            Cursor result = null;
-            SQLiteDatabase tmpDb = db.getReadableDatabase();
-            result = tmpDb.rawQuery(
-                "SELECT * FROM location WHERE del = 0 ORDER BY time DESC LIMIT 1", null);
+        lastLocationItem = gpsDatabase.getLastRecords();
 
-            if (result.getCount() <= 0) {
-                resultString = getResources().getString(R.string.is_empty);
-            } else {
+        for (int i = 0; i < textViewsGroup.size(); i++) {
+            double numberValue = 0;
+            String stringValue = "";
+            TextView textView = textViewsGroup.get(i);
+            int count = lastLocationItem.getCount();
 
-                double latitude, longitude, speed, bearing, altitude, accuracy;
-                String timeStamp;
-                result.moveToFirst();
+            try {
+                switch (textView.getId()) {
+                    case R.id.status:
+                        if (count > 0) {
+                            stringValue = getString(R.string.recording);
+                        } else {
+                            stringValue = getString(R.string.initialing);
+                        }
+                        break;
+                    case R.id.records:
+                        if (count > 0) {
+                            stringValue = String.format(getString(R.string.records), count);
+                        } else {
+                            stringValue = getString(R.string.norecords);
+                        }
+                        break;
+                    case R.id.time:
+                        stringValue = new SimpleDateFormat(getString(R.string.time_format))
+                            .format(new Date(lastLocationItem.getTime()));
+                        break;
+                    case R.id.speed:
+                        double speed = lastLocationItem.getSpeed();
+                        if (maxSpeed < speed) {
+                            maxSpeed = speed;
+                        }
 
-                latitude = result.getDouble(result.getColumnIndex("latitude"));
-                longitude = result.getDouble(result.getColumnIndex("longitude"));
-
-                speed = result.getDouble(result.getColumnIndex("speed"));
-                if (maxSpeed < speed) {
-                    maxSpeed = speed;
+                        if (maxSpeed != 0.0) {
+                            stringValue = String.format("%.1f(%.1f)", speed, maxSpeed);
+                        }
+                        break;
+                    case R.id.longitude:
+                        numberValue = lastLocationItem.getLongitude();
+                        break;
+                    case R.id.latitude:
+                        numberValue = lastLocationItem.getLatitude();
+                        break;
+                    case R.id.bearing:
+                        numberValue = lastLocationItem.getBearing();
+                        break;
+                    case R.id.altitude:
+                        numberValue = lastLocationItem.getAltitude();
+                        break;
+                    case R.id.accuracy:
+                        numberValue = lastLocationItem.getAccuracy();
+                        break;
                 }
-
-                bearing = result.getDouble(result.getColumnIndex("bearing"));
-                altitude = result.getDouble(result.getColumnIndex("altitude"));
-                accuracy = result.getDouble(result.getColumnIndex("accuracy"));
-
-                timeStamp = result.getString(result.getColumnIndex("time"));
-                timeStamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-                    .format(new java.util.Date(Long.parseLong(timeStamp)));
-
-                resultString = String.format(
-                    "count %d, \n"
-                        + "latitude %.3f, \n"
-                        + "longitude %.3f, \n"
-                        + "speed %.2f / %.2f, \n"
-                        + "bearing %.2f,\n"
-                        + "altitude %.2f,\n"
-                        + "accuracy %.2f,\n"
-                        + "time %s\n",
-                    db.getValvedCount(), latitude, longitude, speed, maxSpeed, bearing, altitude, accuracy, timeStamp);
-
-                resultString += String.format("update %s",
-                    new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
-
+            } catch (NullPointerException e) {
+                stringValue = getString(R.string.norecords);
             }
 
-            result.close();
-            tmpDb.close();
-        } catch (SQLiteException e) {
-            resultString = e.getMessage();
+            if (stringValue.length() > 0) {
+                textView.setText(stringValue);
+            } else if (numberValue != 0) {
+                textView.setText(String.format("%.2f", numberValue));
+            }
         }
-
-        TextView t = (TextView) findViewById(R.id.status);
-
-
-        t.setText(resultString);
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        //To change body of implemented methods use File | Settings | File Templates.
-//    }
-//
-//    public void onResume() {
-//        super.onResume();
-//        if (timer != null) {
-//            timer.cancel();
-//        }
-//        initialViewUpdater();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//    }
 
     @Override
     public void onDestroy() {
         if (isServerStoped == false) {
             Toast.makeText(context, getString(R.string.still_running), Toast.LENGTH_LONG).show();
         }
-        if (db != null) {
-            db.close();
-        }
+
         timer.cancel();
         super.onDestroy();
     }

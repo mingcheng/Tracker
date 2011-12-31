@@ -27,4 +27,7 @@
     <string name="recording">Recording</string>
     <string name="norecords">--</string>
     <string name="records">%d Points</string>
+    <string name="menu_about">About</string>
+    <string name="menu_configure">Configure</string>
+    <string name="menu_records">Records</string>
 </resources>
