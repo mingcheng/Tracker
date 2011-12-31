@@ -10,12 +10,12 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application android:label="@string/app_name" android:icon="@drawable/icon">
         <activity android:name=".activity.Main"
-                  android:theme="@android:style/Theme.NoTitleBar"
+                  android:theme="@style/Window"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

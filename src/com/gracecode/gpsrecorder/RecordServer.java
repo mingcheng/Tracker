@@ -10,7 +10,7 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import com.gracecode.gpsrecorder.util.Location;
+import com.gracecode.gpsrecorder.util.GPSWatcher;
 
 public class RecordServer extends Service {
 
@@ -21,7 +21,7 @@ public class RecordServer extends Service {
     protected static final int AIRPLANE_MODE_OFF = 0;
     private NotificationManager notificationManager;
     private LocationManager locManager;
-    private Location loc;
+    private GPSWatcher loc;
     private ContentResolver contentResolver;
 
     @Override
@@ -51,7 +51,7 @@ public class RecordServer extends Service {
      */
     public void bindLocationListener() {
         locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        loc = new Location(this.getApplicationContext());
+        loc = new GPSWatcher(this.getApplicationContext());
 
         Log.e(TAG, "Start location listener");
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loc);
@@ -87,14 +87,14 @@ public class RecordServer extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-//        turnOnLED();
+        turnOnLED();
 //        setAirPlaneMode(AIRPLANE_MODE_ON);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        turnOffLED();
+        turnOffLED();
 //        setAirPlaneMode(AIRPLANE_MODE_OFF);
         locManager.removeUpdates(loc);
     }

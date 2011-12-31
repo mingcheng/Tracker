@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.util.Database;
+import com.gracecode.gpsrecorder.dao.GPSDatabase;
 import com.gracecode.gpsrecorder.util.KMLHelper;
 
 import java.io.File;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 public class Records extends BaseActivity {
     public static final int HIDE_PROGRESS_DIALOG = 0x1;
     private final String TAG = Records.class.getName();
-    private Database db;
+    private GPSDatabase db;
     private Context context;
 
     private ListView listView;
@@ -48,7 +48,7 @@ public class Records extends BaseActivity {
         setContentView(R.layout.records);
 
         this.context = getApplicationContext();
-        this.db = new Database(context);
+        this.db = new GPSDatabase(context);
 
         listView = (ListView) findViewById(R.id.records_list);
         progressDialog = new ProgressDialog(this);
@@ -69,7 +69,7 @@ public class Records extends BaseActivity {
 //        String definedDate = getIntent().getStringExtra("date");
 
         // get the parent directory handle
-        File currentStorageDir = new File(db.getDatabasePath(selectedDate)).getParentFile();
+        File currentStorageDir = db.getStorageDirectory(new Date());
 
         storageFileList = currentStorageDir.listFiles(new FilenameFilter() {
             @Override
@@ -84,7 +84,7 @@ public class Records extends BaseActivity {
         storageFileHashList.clear();
         for (File dbFile : storageFileList) {
             try {
-                Database d = new Database(context, dbFile);
+                GPSDatabase d = new GPSDatabase(context, dbFile);
                 if (d.getValvedCount() > 0) {
                     HashMap<String, String> map = new HashMap<String, String>();
 
@@ -126,7 +126,7 @@ public class Records extends BaseActivity {
         final HashMap<String, String> map = storageFileHashList.get(info.position);
         String absolutePath = map.get("absolute");
 
-        db = new Database(context, new File(absolutePath));
+        db = new GPSDatabase(context, new File(absolutePath));
         switch (item.getItemId()) {
             case R.id.export:
                 progressDialog.show();

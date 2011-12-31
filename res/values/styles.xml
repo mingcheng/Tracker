@@ -2,6 +2,10 @@
     <color name="title">#a2d900</color>
     <color name="highlight">#f9615a</color>
 
+    <style name="Window" parent="@android:style/Theme.NoTitleBar">
+
+    </style>
+
     <style name="Item.Content" parent="@android:style/TextAppearance.Large">
         <item name="android:textColor">@color/highlight</item>
         <item name="android:layout_marginBottom">20dip</item>
