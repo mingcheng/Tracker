@@ -11,8 +11,6 @@ import android.util.Log;
 import java.io.File;
 import java.util.Date;
 
-import static android.database.sqlite.SQLiteDatabase.CREATE_IF_NECESSARY;
-
 public class GPSDatabase {
     private final String TAG = GPSDatabase.class.getName();
 
@@ -55,19 +53,6 @@ public class GPSDatabase {
             + ");";
 
     private SQLiteDatabase sqliteDatabase;
-    private static GPSDatabase instance = null;
-
-    public static GPSDatabase getInstance() {
-        return instance;
-    }
-
-    public static GPSDatabase getInstance(File file) {
-        if (instance == null) {
-            instance = new GPSDatabase(file);
-        }
-
-        return instance;
-    }
 
     public GPSDatabase(File file) throws SQLiteException {
         openDatabase(file);
@@ -76,13 +61,13 @@ public class GPSDatabase {
     /**
      * @param databaseFile
      */
-    protected void openDatabase(File databaseFile) {
+    protected void openDatabase(File databaseFile) throws SQLException {
         boolean isNeedCreateTable = false;
         if (!databaseFile.exists()) {
             isNeedCreateTable = true;
         }
 
-        sqliteDatabase = SQLiteDatabase.openDatabase(databaseFile.getAbsolutePath(), null, CREATE_IF_NECESSARY);
+        sqliteDatabase = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
 
         if (isNeedCreateTable) {
             sqliteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);
@@ -147,7 +132,7 @@ public class GPSDatabase {
         return locationItem;
     }
 
-    public LocationItem getLastRecords() {
+    public LocationItem getLastRecord() {
         Cursor result;
         LocationItem data = new LocationItem();
         data.setTime((new Date()).getTime());
@@ -163,7 +148,7 @@ public class GPSDatabase {
 
             result.close();
         } catch (SQLiteException e) {
-
+            Log.e(TAG, "Read SQLite Database Error, Maybe The Database NOT Ready?");
         }
 
         return data;

@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="recordByItem">
+        <item>Day</item>
+        <item>Times</item>
+    </string-array>
+    <string-array name="recordByValues">
+        <item>RECORD_BY_DAY</item>
+        <item>RECORD_BY_TIMES</item>
+    </string-array>
+</resources>

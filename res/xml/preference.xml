@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference android:key="autoStart"
+                        android:title="Auto Start Record"
+                        android:defaultValue="true"
+                        android:summaryOn="Start record on application launched"
+                        android:summaryOff="Manual start record by user"
+        />
+
+    <ListPreference android:key="recordBy"
+                    android:title="Save Record By"
+                    android:summary="How to save points into each database"
+                    android:entries="@array/recordByItem"
+                    android:entryValues="@array/recordByValues"
+                    android:defaultValue="RECORD_BY_TIMES"
+        />
+
+</PreferenceScreen>

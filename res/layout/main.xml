@@ -16,7 +16,7 @@
         <TextView
             style="@style/Status.Status"
             android:id="@+id/status"
-            android:text="@string/initialing" />
+            />
         <TextView
             style="@style/Status.Records"
             android:id="@+id/records"
@@ -24,7 +24,7 @@
         <TextView
             style="@style/Status.Time"
             android:id="@+id/time"
-            android:text="" />
+            />
     </LinearLayout>
 
     <TableLayout

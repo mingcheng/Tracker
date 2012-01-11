@@ -64,7 +64,7 @@ public class Records extends BaseActivity {
 //        String definedDate = getIntent().getStringExtra("date");
 
         // get the parent directory handle
-        File currentStorageDir = configure.getStorageDirectory(new Date());
+        File currentStorageDir = null;
 
         storageFileList = currentStorageDir.listFiles(new FilenameFilter() {
             @Override

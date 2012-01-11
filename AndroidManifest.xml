@@ -28,10 +28,15 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.Preference" android:theme="@style/Window">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <service
-            android:name="com.gracecode.gpsrecorder.RecordServer"
-            android:process=":my_process"
+            android:name=".RecordService"
             android:label="@string/service_name"
+            android:enabled="true"
             >
         </service>
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
