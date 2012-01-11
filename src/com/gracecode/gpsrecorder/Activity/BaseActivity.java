@@ -1,28 +1,50 @@
 package com.gracecode.gpsrecorder.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import com.gracecode.gpsrecorder.RecordService;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
-import com.gracecode.gpsrecorder.util.Configure;
 import com.mobclick.android.MobclickAgent;
-
-import java.util.Date;
-
 
 public class BaseActivity extends Activity {
     protected GPSDatabase gpsDatabase;
-    protected Configure configure;
+    protected SharedPreferences sharedPreferences;
+
+    protected RecordService.ServiceBinder serviceBinder;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            serviceBinder = (RecordService.ServiceBinder) iBinder;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
+    private Intent recordServerIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        recordServerIntent = new Intent(this, RecordService.class);
 
-        configure = Configure.getInstance(getApplication());
+        startService(recordServerIntent);
+        bindService(recordServerIntent, serviceConnection, BIND_AUTO_CREATE);
 
-        if (gpsDatabase == null) {
-            gpsDatabase = GPSDatabase.getInstance(configure.getDatabaseFile(new Date()));
-        }
         MobclickAgent.onError(this);
+    }
+
+    public void stopService() {
+        stopService(recordServerIntent);
     }
 
     @Override
@@ -35,5 +57,11 @@ public class BaseActivity extends Activity {
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        unbindService(serviceConnection);
+        super.onDestroy();
     }
 }

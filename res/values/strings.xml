@@ -3,7 +3,7 @@
     <string name="app_name">GPS Recorder</string>
     <string name="service_name">GPSRecorder Server</string>
     <string name="menu_label_stop">Exit</string>
-    <string name="default_font">digital_dream_skew.ttf</string>
+    <string name="default_font">r.ttf</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
     <string name="export_kml">Export KML</string>
@@ -16,9 +16,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="save_kml_finished">KML file is ready.</string>
     <string name="saving">Saving. Please wait...</string>
-    <string name="still_running">GPS Recorder is still running.\n
-        If you wanna stop recording, select menu "Stop".
-    </string>
+    <string name="still_running">GPS Recorder is still running, open the menu to stop recording.</string>
     <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder\n
         \nAuthor: @feelinglucky
     </string>

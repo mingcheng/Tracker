@@ -1,7 +1,6 @@
 package com.gracecode.gpsrecorder.activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,7 +11,7 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.RecordServer;
+import com.gracecode.gpsrecorder.RecordService.ServiceBinder;
 import com.gracecode.gpsrecorder.dao.LocationItem;
 import com.gracecode.gpsrecorder.util.Environment;
 
@@ -24,27 +23,47 @@ import java.util.TimerTask;
 
 public class Main extends BaseActivity {
     private static final String TAG = Main.class.getName();
-    private Intent recordServerIntent;
-
-    private Context context;
     private Timer timer;
-
     private static double maxSpeed = 0.0;
 
+    /**
+     * Handle the records for show the last recorded status.
+     */
     private Handler handle = new Handler() {
         long visible_flag = 0;
 
         public void handleMessage(Message msg) {
-            updateView();
+            switch (msg.what) {
+                case MESSAGE_UPDATE_STATE_VIEW:
+                    TextView records = (TextView) findViewById(R.id.status);
+                    String statusLabel = getString(R.string.ready);
 
-            TextView records = (TextView) findViewById(R.id.status);
-            records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
+                    try {
+                        switch (serviceBinder.getStatus()) {
+                            case ServiceBinder.STATUS_RUNNING:
+                                statusLabel = getString(R.string.recording);
+                                break;
+                            case ServiceBinder.STATUS_STOPPED:
+                                statusLabel = getString(R.string.ready);
+                            default:
+                        }
+                        records.setText(statusLabel);
+                        records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
+
+                        // update the ui status
+                        updateView();
+                    } catch (NullPointerException e) {
+                        Log.e(TAG, "ServerBinder is null, maybe service is not ready.");
+                    }
+                    break;
+            }
         }
     };
-    private boolean isServerStoped = false;
+
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
-    private LocationItem lastLocationItem;
+    private LocationItem lastLocationRecord;
+    private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
 
 
     /**
@@ -69,30 +88,28 @@ public class Main extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        this.context = this.getApplicationContext();
-
-
         if (!Environment.isExternalStoragePresent()) {
-            Log.e(TAG, "no SD Card");
+            Log.e(TAG, "External storage not presented.");
             return;
         }
-
-        recordServerIntent = new Intent(Main.this, RecordServer.class);
-        startService(recordServerIntent);
 
         findAllTextView((ViewGroup) findViewById(R.id.root));
         initialViewUpdater();
     }
+
 
     private void initialViewUpdater() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                handle.sendMessage(new Message());
+                Message message = new Message();
+                message.what = MESSAGE_UPDATE_STATE_VIEW;
+                handle.sendMessage(message);
             }
-        }, 0, 1000);
+        }, 1000, 1000);
 
+        // change the font for nice look
         Typeface face = Typeface.createFromAsset(getAssets(),
             getString(R.string.default_font));
         for (int i = 0; i < textViewsGroup.size(); i++) {
@@ -111,15 +128,22 @@ public class Main extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent t;
+
         switch (item.getItemId()) {
             case R.id.stop:
-                isServerStoped = true;
-                stopService(recordServerIntent);
+                serviceBinder.stopRecord();
+                stopService();
                 finish();
                 return true;
 
             case R.id.records:
-                Intent t = new Intent(Main.this, Records.class);
+//                t = new Intent(Main.this, Records.class);
+//                startActivity(t);
+                return true;
+
+            case R.id.configure:
+                t = new Intent(Main.this, Preference.class);
                 startActivity(t);
                 return true;
 
@@ -135,16 +159,15 @@ public class Main extends BaseActivity {
         }
     }
 
-
     private void updateView() {
-
-        lastLocationItem = gpsDatabase.getLastRecords();
+        // get last record by server binder
+        lastLocationRecord = serviceBinder.getLastRecord();
 
         for (int i = 0; i < textViewsGroup.size(); i++) {
             double numberValue = 0;
             String stringValue = "";
             TextView textView = textViewsGroup.get(i);
-            int count = lastLocationItem.getCount();
+            int count = lastLocationRecord.getCount();
 
             try {
                 switch (textView.getId()) {
@@ -164,10 +187,10 @@ public class Main extends BaseActivity {
                         break;
                     case R.id.time:
                         stringValue = new SimpleDateFormat(getString(R.string.time_format))
-                            .format(new Date(lastLocationItem.getTime()));
+                            .format(new Date(lastLocationRecord.getTime()));
                         break;
                     case R.id.speed:
-                        double speed = lastLocationItem.getSpeed();
+                        double speed = lastLocationRecord.getSpeed();
                         if (maxSpeed < speed) {
                             maxSpeed = speed;
                         }
@@ -177,19 +200,19 @@ public class Main extends BaseActivity {
                         }
                         break;
                     case R.id.longitude:
-                        numberValue = lastLocationItem.getLongitude();
+                        numberValue = lastLocationRecord.getLongitude();
                         break;
                     case R.id.latitude:
-                        numberValue = lastLocationItem.getLatitude();
+                        numberValue = lastLocationRecord.getLatitude();
                         break;
                     case R.id.bearing:
-                        numberValue = lastLocationItem.getBearing();
+                        numberValue = lastLocationRecord.getBearing();
                         break;
                     case R.id.altitude:
-                        numberValue = lastLocationItem.getAltitude();
+                        numberValue = lastLocationRecord.getAltitude();
                         break;
                     case R.id.accuracy:
-                        numberValue = lastLocationItem.getAccuracy();
+                        numberValue = lastLocationRecord.getAccuracy();
                         break;
                 }
             } catch (NullPointerException e) {
@@ -204,11 +227,10 @@ public class Main extends BaseActivity {
         }
     }
 
-
     @Override
     public void onDestroy() {
-        if (isServerStoped == false) {
-            Toast.makeText(context, getString(R.string.still_running), Toast.LENGTH_LONG).show();
+        if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+            Toast.makeText(this, getString(R.string.still_running), Toast.LENGTH_SHORT).show();
         }
 
         timer.cancel();

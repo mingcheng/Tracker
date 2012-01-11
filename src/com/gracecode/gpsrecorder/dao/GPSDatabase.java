@@ -28,9 +28,12 @@ public class GPSDatabase {
         static final String TIME = "time";
         static final String COUNT = "count";
         static final String DELETE = "del";
+        static final String META_NAME = "name";
+        static final String META_VALUE = "value";
     }
 
-    protected static final String TABLE_NAME = "location";
+    private static final String TABLE_NAME = "location";
+    private static final String META_TABLE_NAME = "meta";
 
     private static final String SQL_CREATE_LOCATION_TABLE =
         "create table " + TABLE_NAME + " ("
@@ -46,7 +49,7 @@ public class GPSDatabase {
             + ");";
 
     private static final String SQL_CREATE_META_TABLE =
-        "create table meta("
+        "create table " + META_TABLE_NAME + " ("
             + "id integer primary key autoincrement, "
             + "name string default null,"
             + "value string default null"
@@ -110,6 +113,21 @@ public class GPSDatabase {
 
         try {
             return sqliteDatabase.insert(TABLE_NAME, null, values);
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return 0;
+    }
+
+    public long setMeta(String tag, String value) {
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN.META_NAME, tag);
+        values.put(COLUMN.META_VALUE, value);
+
+        try {
+            return sqliteDatabase.insert(META_TABLE_NAME, null, values);
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }

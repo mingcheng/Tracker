@@ -33,9 +33,9 @@ public class GPSWatcher implements LocationListener {
     private static GPSDatabase gpsDatabase;
     private Context context;
 
-    public GPSWatcher(Context context) {
+    public GPSWatcher(Context context, GPSDatabase database) {
         this.context = context;
-        gpsDatabase = GPSDatabase.getInstance();
+        gpsDatabase = database;
     }
 
 

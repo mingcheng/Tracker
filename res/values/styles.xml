@@ -17,7 +17,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title</item>
         <item name="android:layout_column">1</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Status.Time" parent="@android:style/TextAppearance.Medium">
@@ -25,7 +25,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginTop">24dp</item>
     </style>
 
     <style name="Status.Records" parent="@android:style/TextAppearance.Large">

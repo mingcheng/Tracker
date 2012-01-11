@@ -42,20 +42,25 @@ public class RecordService extends Service {
      *
      */
     public class ServiceBinder extends Binder implements RecordServerBinder {
+        private int status = ServiceBinder.STATUS_STOPPED;
+
         @Override
         public void startRecord() {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            gpsWatcher = new GPSWatcher(getApplicationContext(), gpsDatabase);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsWatcher);
+            if (status != ServiceBinder.STATUS_RUNNING) {
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                gpsWatcher = new GPSWatcher(getApplicationContext(), gpsDatabase);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsWatcher);
 
-            status = ServiceBinder.STATUS_RUNNING;
+                status = ServiceBinder.STATUS_RUNNING;
+            }
         }
 
         @Override
         public void stopRecord() {
-
-            locationManager.removeUpdates(gpsWatcher);
-            status = ServiceBinder.STATUS_STOPPED;
+            if (status == ServiceBinder.STATUS_RUNNING) {
+                locationManager.removeUpdates(gpsWatcher);
+                status = ServiceBinder.STATUS_STOPPED;
+            }
         }
 
         @Override
@@ -70,7 +75,6 @@ public class RecordService extends Service {
     }
 
     private ServiceBinder serviceBinder = new ServiceBinder();
-    private int status = ServiceBinder.STATUS_STOPPED;
     private final String TAG = RecordService.class.getName();
 
 //
