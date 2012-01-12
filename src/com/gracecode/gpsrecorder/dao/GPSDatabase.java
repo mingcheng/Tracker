@@ -17,7 +17,6 @@ public class GPSDatabase {
     private final int STATUS_DELETED = 0x1;
     private final int STATUS_NORMAL = 0x0;
 
-
     public final static class COLUMN {
         static final String LATITUDE = "latitude";
         static final String LONGITUDE = "longitude";
@@ -81,6 +80,11 @@ public class GPSDatabase {
 
     }
 
+
+    public SQLiteDatabase getSqlite() {
+        return sqliteDatabase;
+    }
+
     /**
      * @return
      */
@@ -96,7 +100,7 @@ public class GPSDatabase {
             count = cursor.getLong(cursor.getColumnIndex(COLUMN.COUNT));
             cursor.close();
         } catch (SQLiteException e) {
-
+            Log.e(TAG, e.getMessage());
         }
         return count;
     }
@@ -196,17 +200,17 @@ public class GPSDatabase {
         return locationGroup;
     }
 
-    // @todo move into Location
-    public int markAllAsDelete() {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(COLUMN.DELETE, STATUS_DELETED);
-            return sqliteDatabase.update("location", contentValues, "", null);
-        } catch (SQLiteException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return 0;
-    }
+//    // @todo move into Location
+//    public int markAllAsDelete() {
+//        try {
+//            ContentValues contentValues = new ContentValues();
+//            contentValues.put(COLUMN.DELETE, STATUS_DELETED);
+//            return sqliteDatabase.update("location", contentValues, "", null);
+//        } catch (SQLiteException e) {
+//            Log.e(TAG, e.getMessage());
+//        }
+//        return 0;
+//    }
 
     public void close() {
         addMeta("STOP_TIME", String.valueOf(System.currentTimeMillis()));

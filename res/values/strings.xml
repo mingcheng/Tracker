@@ -29,4 +29,6 @@
     <string name="menu_records">Records</string>
     <string name="menu_pause">Pause</string>
     <string name="menu_start">Start</string>
+    <string name="not_record_anything">Not record anything</string>
+    <string name="result_report">Recorded %s points, bye</string>
 </resources>

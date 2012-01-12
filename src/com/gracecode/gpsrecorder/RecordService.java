@@ -9,10 +9,14 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+import com.gracecode.gpsrecorder.activity.Preference;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
 import com.gracecode.gpsrecorder.dao.LocationItem;
 import com.gracecode.gpsrecorder.util.Environment;
 import com.gracecode.gpsrecorder.util.GPSWatcher;
+
+import java.io.File;
 
 /**
  *
@@ -31,13 +35,21 @@ interface RecordServerBinder {
 }
 
 public class RecordService extends Service {
+    private final String TAG = RecordService.class.getName();
     private SharedPreferences sharedPreferences;
     private GPSDatabase gpsDatabase;
     private RecordService.ServiceBinder serviceBinder;
+    private File gpsDatabaseFile;
 
-    /**
-     *
-     */
+
+    private int currentAirPlaneMode;
+    private boolean switchAirplaneMode;
+    private Boolean lightningLed;
+    private Environment environment;
+    private static final String LAST_OPENED_DATABASE_PATH = "lastOpenedDatabasePath";
+    private String lastOpenedDatabasePath;
+
+
     public class ServiceBinder extends Binder implements RecordServerBinder {
         private int status = ServiceBinder.STATUS_STOPPED;
         private GPSWatcher gpsWatcher;
@@ -46,14 +58,28 @@ public class RecordService extends Service {
         ServiceBinder() {
             gpsWatcher = new GPSWatcher(getApplicationContext(), gpsDatabase);
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            lightningLed = sharedPreferences.getBoolean(Preference.LIGHTNING_LED, true);
         }
 
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RUNNING) {
-                long minTime = Long.parseLong(sharedPreferences.getString(Environment.PREF_GPS_MINTIME, Environment.DEFAULT_GPS_MINTIME));
-                float minDistance = Float.parseFloat(sharedPreferences.getString(Environment.PREF_GPS_MINDISTANCE, Environment.DEFAULT_GPS_MINDISTANCE));
+                long minTime = Long.parseLong(sharedPreferences.getString(Preference.GPS_MINTIME,
+                    Preference.DEFAULT_GPS_MINTIME));
+                float minDistance = Float.parseFloat(sharedPreferences.getString(Preference.GPS_MINDISTANCE,
+                    Preference.DEFAULT_GPS_MINDISTANCE));
+
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsWatcher);
+
+                if (lightningLed) {
+                    environment.turnOnLED();
+                }
+                if (switchAirplaneMode) {
+                    currentAirPlaneMode = environment.getCurrentAirPlaneMode();
+                    environment.setAirPlaneMode(Environment.AIRPLANE_MODE_ON);
+                }
+
                 status = ServiceBinder.STATUS_RUNNING;
             }
         }
@@ -62,6 +88,15 @@ public class RecordService extends Service {
         public void stopRecord() {
             if (status == ServiceBinder.STATUS_RUNNING) {
                 locationManager.removeUpdates(gpsWatcher);
+
+                if (lightningLed) {
+                    environment.turnOffLED();
+                }
+                if (switchAirplaneMode) {
+                    environment.setAirPlaneMode(currentAirPlaneMode);
+                }
+
+                clearLastOpenedDatabaseFilePath();
                 status = ServiceBinder.STATUS_STOPPED;
             }
         }
@@ -77,102 +112,79 @@ public class RecordService extends Service {
         }
     }
 
+    private File getLastOpenedDatabaseFile() {
+        File dbfile = null;
+        lastOpenedDatabasePath = sharedPreferences.getString(LAST_OPENED_DATABASE_PATH, "");
+        if (lastOpenedDatabasePath.length() != 0) {
+            dbfile = new File(lastOpenedDatabasePath);
+        }
 
-    private final String TAG = RecordService.class.getName();
+        return dbfile;
+    }
 
-//
-//    private static final int LED_NOTIFICATION_ID = 0x001;
-//    protected static final int AIRPLANE_MODE_ON = 0x010;
-//    protected static final int AIRPLANE_MODE_OFF = 0x000;
-//    private NotificationManager notificationManager;
-//    private LocationManager locationManager;
-//    private GPSWatcher gpsWatcher;
-//    private ContentResolver contentResolver;
-//    private GPSDatabase gpsDatabase;
-//    private SharedPreferences sharedPreferences;
+    private boolean clearLastOpenedDatabaseFilePath() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LAST_OPENED_DATABASE_PATH, "");
+        return editor.commit();
+    }
+
+    private boolean setLastOpenedDatabaseFilePath(File file) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LAST_OPENED_DATABASE_PATH, file.getAbsolutePath());
+        return editor.commit();
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-//        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String recordBy = sharedPreferences.getString(Preference.RECORD_BY, Preference.RECORD_BY_TIMES);
 
-        String recordBy = sharedPreferences.getString(Environment.PREF_RECORD_BY, Environment.RECORD_BY_TIMES);
-        gpsDatabase = new GPSDatabase(Environment.getDatabaseFile(recordBy));
+        // resume the database file which not close by application self.
+        File lastOpenedDatabaseFile = getLastOpenedDatabaseFile();
+        gpsDatabaseFile = (lastOpenedDatabaseFile != null && lastOpenedDatabaseFile.isFile()) ?
+            lastOpenedDatabaseFile : Environment.getDatabaseFile(recordBy);
+        setLastOpenedDatabaseFilePath(gpsDatabaseFile);
 
+        environment = new Environment(getApplicationContext());
+        gpsDatabase = new GPSDatabase(gpsDatabaseFile);
         serviceBinder = new ServiceBinder();
 
-        boolean autoStart = sharedPreferences.getBoolean(Environment.PREF_AUTO_START, false);
+        boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
         if (autoStart) {
             serviceBinder.startRecord();
         }
     }
 
 
-//    private void turnOnLED() {
-//        Notification notif = new Notification();
-//        notif.ledARGB = 0xFFff0000;
-//        notif.flags = Notification.FLAG_SHOW_LIGHTS;
-//        notif.ledOnMS = 1000;
-//        notif.ledOffMS = 1500;
-//        notificationManager.notify(LED_NOTIFICATION_ID, notif);
-//    }
-//
-//    private void turnOffLED() {
-//        notificationManager.cancel(LED_NOTIFICATION_ID);
-//    }
-
-
-    /**
-     * 绑定 GPS，获得地理位置等信息
-     */
-//    public void bindLocationListener() {
-
-//    }
-
-
-//    public void setAirPlaneMode(int mode) {
-//        contentResolver = getContentResolver();
-//
-//        try {
-//            Log.e(TAG, "" + Settings.System.getInt(contentResolver, Settings.System.AIRPLANE_MODE_ON));
-//        } catch (Settings.SettingNotFoundException e) {
-//            Log.e(TAG, e.getMessage());
-//        }
-//
-//        switch (mode) {
-//            case AIRPLANE_MODE_OFF:
-//                Settings.System.putInt(contentResolver, Settings.System.AIRPLANE_MODE_ON, AIRPLANE_MODE_OFF);
-//                break;
-//
-//            case AIRPLANE_MODE_ON:
-//                Settings.System.putInt(contentResolver, Settings.System.AIRPLANE_MODE_ON, AIRPLANE_MODE_ON);
-//                break;
-//
-//            default:
-//                return;
-//        }
-//
-//        Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-//        sendBroadcast(intent);
-//    }
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        Log.e("", "Start Service");
-//        turnOnLED();
-//        setAirPlaneMode(AIRPLANE_MODE_ON);
+
+        currentAirPlaneMode = environment.getCurrentAirPlaneMode();
+        switchAirplaneMode = sharedPreferences.getBoolean(Preference.SWITCH_AIRPLANE_MODE, false);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-//        turnOffLED();
-//        setAirPlaneMode(AIRPLANE_MODE_OFF);
+        long valvedCount = gpsDatabase.getValvedCount();
+        String resultMessage = String.format(getString(R.string.result_report), valvedCount);
 
+        if (switchAirplaneMode) {
+            environment.setAirPlaneMode(currentAirPlaneMode);
+        }
         serviceBinder.stopRecord();
-        gpsDatabase.close(); // Close the database
+        gpsDatabase.close();
+
+        if (valvedCount <= 0) {
+            resultMessage = getString(R.string.not_record_anything);
+            gpsDatabaseFile.delete();
+            Log.w(TAG, "Records is finished, but without any records, clean it");
+        }
+
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+        super.onDestroy();
     }
 
 

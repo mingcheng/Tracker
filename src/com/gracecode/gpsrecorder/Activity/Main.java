@@ -109,11 +109,12 @@ public class Main extends BaseActivity {
             String stringValue = "";
             TextView textView = textViewsGroup.get(i);
             int count = lastLocationRecord.getCount();
+            Boolean isrunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
 
             try {
                 switch (textView.getId()) {
                     case R.id.status:
-                        int stamp = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) ? R.string.recording : R.string.idle;
+                        int stamp = (isrunning) ? R.string.recording : R.string.idle;
                         stringValue = getString(stamp);
                         break;
                     case R.id.records:
@@ -124,8 +125,8 @@ public class Main extends BaseActivity {
                         }
                         break;
                     case R.id.time:
-                        stringValue = new SimpleDateFormat(getString(R.string.time_format))
-                            .format(new Date(lastLocationRecord.getTime()));
+                        stringValue = new SimpleDateFormat(getString(R.string.time_format)).format(
+                            new Date(isrunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
                         break;
                     case R.id.speed:
                         double speed = lastLocationRecord.getSpeed();
@@ -154,8 +155,10 @@ public class Main extends BaseActivity {
                     case R.id.accuracy:
 //                        numberValue = lastLocationRecord.getAccuracy();
                         stringValue = String.format("%sm/%ds",
-                            sharedPreferences.getString(Environment.PREF_GPS_MINDISTANCE, Environment.DEFAULT_GPS_MINDISTANCE),
-                            Integer.parseInt(sharedPreferences.getString(Environment.PREF_GPS_MINTIME, Environment.DEFAULT_GPS_MINTIME)) / 1000);
+                            sharedPreferences.getString(Preference.GPS_MINDISTANCE,
+                                Preference.DEFAULT_GPS_MINDISTANCE),
+                            Integer.parseInt(sharedPreferences.getString(Preference.GPS_MINTIME,
+                                Preference.DEFAULT_GPS_MINTIME)) / 1000);
                         break;
                 }
             } catch (NullPointerException e) {
@@ -226,8 +229,8 @@ public class Main extends BaseActivity {
                 return true;
 
             case R.id.records:
-//                t = new Intent(Main.this, Records.class);
-//                startActivity(t);
+                t = new Intent(Main.this, Records.class);
+                startActivity(t);
                 return true;
 
             case R.id.configure:

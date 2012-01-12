@@ -5,9 +5,16 @@
     <PreferenceCategory android:title="Record Options">
         <CheckBoxPreference android:key="autoStart"
                             android:title="Auto Start Record"
-                            android:defaultValue="true"
+                            android:defaultValue="false"
                             android:summaryOn="Start record on application launched"
                             android:summaryOff="Manual start record by user"
+            />
+
+
+        <CheckBoxPreference android:key="autoClean"
+                            android:title="Auto Clean"
+                            android:defaultValue="true"
+                            android:summary="Note! Uncheck this maybe have many empty record database"
             />
 
         <ListPreference android:key="recordBy"
@@ -18,6 +25,24 @@
                         android:defaultValue="RECORD_BY_TIMES"
             />
     </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Environment">
+
+        <CheckBoxPreference android:key="switchAirplaneMode"
+                            android:title="AirPlane Mode"
+                            android:summary="Switch AirPlane Mode while recording"
+                            android:defaultValue="false"
+            />
+
+        <CheckBoxPreference android:key="lightLed"
+                            android:title="Lightning LED"
+                            android:summary="Turn on Lightning LED(if have) while recording"
+                            android:defaultValue="false"
+            />
+
+    </PreferenceCategory>
+
 
     <PreferenceCategory android:title="GPS Listener">
         <ListPreference android:key="gpsMinTime"

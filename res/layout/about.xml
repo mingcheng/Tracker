@@ -7,6 +7,12 @@
 
               android:background="#ccc"
     >
+    <ImageView
+        android:src="@drawable/icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="20dp"
+        />
     <TextView
         android:autoLink="web"
         android:textColor="#00f"
