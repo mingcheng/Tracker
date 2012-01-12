@@ -51,7 +51,7 @@ public class GPSDatabase {
     private static final String SQL_CREATE_META_TABLE =
         "create table " + META_TABLE_NAME + " ("
             + "id integer primary key autoincrement, "
-            + "name string default null,"
+            + "name string not null unique,"
             + "value string default null"
             + ");";
 
