@@ -3,12 +3,11 @@ package com.gracecode.gpsrecorder.util;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
 import com.gracecode.gpsrecorder.dao.LocationItem;
-
-import java.text.DecimalFormat;
 
 
 public class GPSWatcher implements LocationListener {
@@ -17,7 +16,7 @@ public class GPSWatcher implements LocationListener {
     public final static class FLAG {
         static final String STATUS = "status";
         static final String RECORDS = "records";
-        static final String LATITUDE = "latitude";
+        static final String LATITUDE = "lastLatitude";
         static final String LONGITUDE = "longitude";
         static final String SPEED = "speed";
         static final String BEARING = "bearing";
@@ -30,7 +29,7 @@ public class GPSWatcher implements LocationListener {
 
     private final String TAG = GPSWatcher.class.getName();
 
-    private static GPSDatabase gpsDatabase;
+    protected GPSDatabase gpsDatabase;
     private Context context;
 
     public GPSWatcher(Context context, GPSDatabase database) {
@@ -39,51 +38,61 @@ public class GPSWatcher implements LocationListener {
     }
 
 
-    private String latitude, longitude;
-
-    protected boolean isFlittedLocation(Location location) {
-        DecimalFormat formatter = new DecimalFormat("####.####");
-        String tmpLongitude = formatter.format(location.getLongitude());
-        String tmpLatitude = formatter.format(location.getLatitude());
-
-        if (tmpLatitude.equals(latitude) && tmpLongitude.equals(longitude)) {
-            Log.v(TAG, String.format("The same latitude %f and longitude %f, ignore this.",
-                location.getLatitude(), location.getLongitude()));
-            return false;
-        }
-        latitude = tmpLatitude;
-        longitude = tmpLongitude;
-
-
-        return true;
-    }
+//    private static String lastLatitude;
+//    private static String lastLongitude;
+//
+//    protected boolean isFlittedLocation(Location location) {
+//        final DecimalFormat formatter = new DecimalFormat("####.###");
+//        String tmpLongitude = formatter.format(location.getLongitude());
+//        String tmpLatitude = formatter.format(location.getLatitude());
+//
+//        if (tmpLatitude.equals(lastLatitude) && tmpLongitude.equals(lastLongitude)) {
+//            Log.v(TAG, String.format("The same latitude %s and longitude %s, ignore this.",
+//                tmpLatitude, tmpLongitude));
+//            return true;
+//        }
+//        lastLatitude = tmpLatitude;
+//        lastLongitude = tmpLongitude;
+//
+//        return false;
+//    }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (isFlittedLocation(location)) {
-            return;
-        }
+//        if (isFlittedLocation(location)) {
+//            return;
+//        }
 
         long result = gpsDatabase.insert(new LocationItem(location));
         if (result >= 1) {
-            Log.v(TAG, "GPS Record has been saved into database.");
+            Log.v(TAG, "GPS Record has been saved to database.");
         }
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        switch (status) {
+            case LocationProvider.AVAILABLE:
 
+                break;
+            case LocationProvider.OUT_OF_SERVICE:
+
+                break;
+            case LocationProvider.TEMPORARILY_UNAVAILABLE:
+
+                break;
+        }
     }
+
 
     @Override
     public void onProviderEnabled(String s) {
-        Log.i(TAG, "GPS is enabled, reopen database.");
+
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        Log.w(TAG, "GPS is disabled");
-        gpsDatabase.close();
+
     }
 }
 

@@ -12,9 +12,15 @@ public class Environment extends android.os.Environment {
 
     public static final String PREF_AUTO_START = "autoStart";
     public static final String PREF_RECORD_BY = "recordBy";
+    public static final String PREF_GPS_MINTIME = "gpsMinTime";
+    public static final String PREF_GPS_MINDISTANCE = "gpsMinDistance";
 
     public static final String RECORD_BY_DAY = "RECORD_BY_DAY";
     public static final String RECORD_BY_TIMES = "RECORD_BY_TIMES";
+
+    public static final String DEFAULT_GPS_MINTIME = "2000";
+    public static final String DEFAULT_GPS_MINDISTANCE = "10";
+
 
     public static boolean isExternalStoragePresent() {
         return Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);

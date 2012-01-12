@@ -31,25 +31,34 @@ interface RecordServerBinder {
 }
 
 public class RecordService extends Service {
-
-
     private SharedPreferences sharedPreferences;
     private GPSDatabase gpsDatabase;
-    private GPSWatcher gpsWatcher;
-    private LocationManager locationManager;
+    private RecordService.ServiceBinder serviceBinder;
 
     /**
      *
      */
     public class ServiceBinder extends Binder implements RecordServerBinder {
         private int status = ServiceBinder.STATUS_STOPPED;
+        private GPSWatcher gpsWatcher;
+        private LocationManager locationManager;
+
+        ServiceBinder() {
+            gpsWatcher = new GPSWatcher(getApplicationContext(), gpsDatabase);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        }
 
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RUNNING) {
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                gpsWatcher = new GPSWatcher(getApplicationContext(), gpsDatabase);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsWatcher);
+                Log.v(TAG, "Start gps records server");
+
+                long minTime = Long.parseLong(sharedPreferences.getString(Environment.PREF_GPS_MINTIME, Environment.DEFAULT_GPS_MINTIME));
+                float minDistance = Float.parseFloat(sharedPreferences.getString(Environment.PREF_GPS_MINDISTANCE, Environment.DEFAULT_GPS_MINDISTANCE));
+
+
+                Log.e(TAG, minTime + "             " + minDistance);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsWatcher);
 
                 status = ServiceBinder.STATUS_RUNNING;
             }
@@ -60,6 +69,7 @@ public class RecordService extends Service {
             if (status == ServiceBinder.STATUS_RUNNING) {
                 locationManager.removeUpdates(gpsWatcher);
                 status = ServiceBinder.STATUS_STOPPED;
+                Log.v(TAG, "Gps records server is stopped");
             }
         }
 
@@ -74,7 +84,7 @@ public class RecordService extends Service {
         }
     }
 
-    private ServiceBinder serviceBinder = new ServiceBinder();
+
     private final String TAG = RecordService.class.getName();
 
 //
@@ -97,6 +107,8 @@ public class RecordService extends Service {
 
         String recordBy = sharedPreferences.getString(Environment.PREF_RECORD_BY, Environment.RECORD_BY_TIMES);
         gpsDatabase = new GPSDatabase(Environment.getDatabaseFile(recordBy));
+
+        serviceBinder = new ServiceBinder();
 
         boolean autoStart = sharedPreferences.getBoolean(Environment.PREF_AUTO_START, false);
         if (autoStart) {

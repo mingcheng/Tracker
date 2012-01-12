@@ -120,7 +120,7 @@ public class GPSDatabase {
         return 0;
     }
 
-    public long setMeta(String tag, String value) {
+    public long addMeta(String tag, String value) {
         ContentValues values = new ContentValues();
 
         values.put(COLUMN.META_NAME, tag);

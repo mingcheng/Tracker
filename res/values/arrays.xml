@@ -7,4 +7,14 @@
         <item>RECORD_BY_DAY</item>
         <item>RECORD_BY_TIMES</item>
     </string-array>
+    <string-array name="gpsMinTimeValues">
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+    </string-array>
+    <string-array name="gpsMinDistanceValues">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
 </resources>

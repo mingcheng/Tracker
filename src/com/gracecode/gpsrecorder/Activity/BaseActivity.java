@@ -61,7 +61,11 @@ public class BaseActivity extends Activity {
 
     @Override
     public void onDestroy() {
-        unbindService(serviceConnection);
+        if (serviceBinder != null) {
+            unbindService(serviceConnection);
+            serviceBinder = null;
+        }
+
         super.onDestroy();
     }
 }
