@@ -51,13 +51,9 @@ public class RecordService extends Service {
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RUNNING) {
-                Log.v(TAG, "Start gps records server");
-
                 long minTime = Long.parseLong(sharedPreferences.getString(Environment.PREF_GPS_MINTIME, Environment.DEFAULT_GPS_MINTIME));
                 float minDistance = Float.parseFloat(sharedPreferences.getString(Environment.PREF_GPS_MINDISTANCE, Environment.DEFAULT_GPS_MINDISTANCE));
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsWatcher);
-
-                gpsDatabase.addMeta("START_TIME", String.valueOf(System.currentTimeMillis()));
                 status = ServiceBinder.STATUS_RUNNING;
             }
         }
@@ -67,8 +63,6 @@ public class RecordService extends Service {
             if (status == ServiceBinder.STATUS_RUNNING) {
                 locationManager.removeUpdates(gpsWatcher);
                 status = ServiceBinder.STATUS_STOPPED;
-                gpsDatabase.addMeta("STOP_TIME", String.valueOf(System.currentTimeMillis()));
-                Log.v(TAG, "Gps records server is stopped");
             }
         }
 

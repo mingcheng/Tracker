@@ -59,6 +59,8 @@ public class GPSDatabase {
 
     public GPSDatabase(File file) throws SQLiteException {
         openDatabase(file);
+
+        addMeta("START_TIME", String.valueOf(System.currentTimeMillis()));
     }
 
     /**
@@ -207,6 +209,7 @@ public class GPSDatabase {
     }
 
     public void close() {
+        addMeta("STOP_TIME", String.valueOf(System.currentTimeMillis()));
         if (sqliteDatabase != null) {
             sqliteDatabase.close();
         }

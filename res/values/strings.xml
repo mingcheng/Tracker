@@ -20,10 +20,13 @@
     <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder(author: @feelinglucky)</string>
     <string name="initialing">Initialing</string>
     <string name="recording">Recording</string>
+    <string name="idle">Idle</string>
     <string name="ready">Ready for record</string>
     <string name="norecords">--</string>
     <string name="records">%d Points</string>
     <string name="menu_about">About</string>
     <string name="menu_configure">Configure</string>
     <string name="menu_records">Records</string>
+    <string name="menu_pause">Pause</string>
+    <string name="menu_start">Start</string>
 </resources>
