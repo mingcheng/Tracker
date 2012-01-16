@@ -7,12 +7,12 @@
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
     <string name="no_description">- none description -</string>
-    <string name="export_kml">Export KML</string>
+    <string name="export_kml">Export</string>
     <string name="delete">Delete</string>
-    <string name="has_deleted">%s rows marked as deleted</string>
+    <string name="has_deleted">%s is deleted</string>
     <string name="info">Info</string>
     <string name="notice">Notice</string>
-    <string name="sure_to_del">Are you sure to mark this item as deleted?</string>
+    <string name="sure_to_del">You sure to delete this database?</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
     <string name="save_kml_finished">KML file is ready.</string>
@@ -33,5 +33,7 @@
     <string name="not_record_anything">Does\'t record anything</string>
     <string name="result_report">Recorded %s points, bye</string>
     <string name="use_recovery_database_file">Use recovery database file for records</string>
+    <string name="update_title">Title</string>
+    <string name="update_description">Description</string>
 </resources>
 

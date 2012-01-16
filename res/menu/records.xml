@@ -3,12 +3,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/export" android:title="@string/export_kml"
-          android:alphabeticShortcut="e" />
+        />
 
+    <item android:id="@+id/title" android:title="@string/update_title"
+        />
 
-    <!--<item android:id="@+id/info" android:title="@string/info"-->
-          <!--android:alphabeticShortcut="i" />-->
+    <item android:id="@+id/description" android:title="@string/update_description"
+        />
+
+    <item android:id="@+id/info" android:title="@string/info"
+        />
 
     <item android:id="@+id/delete" android:title="@string/delete"
-          android:alphabeticShortcut="d" />
+        />
 </menu>
