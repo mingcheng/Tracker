@@ -4,18 +4,44 @@ package com.gracecode.gpsrecorder.dao;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+
+interface Meta {
+    public static final String TITLE = "TITLE";
+    public static final String DESCRIPTION = "DESCRIPTION";
+    public static final String STOP_TIME = "STOP_TIME";
+    public static final String START_TIME = "START_TIME";
+    public static final String RESUME_TIME = "RESUME_TIME";
+
+    public Date getStartTime();
+
+    public Date getStopTime();
+
+    public Points getLastRecord();
+
+    public String getTitle();
+
+    public String getDescription();
+
+    public boolean updateDescription(String description);
+
+    public boolean updateTitle(String title);
+}
+
 
 public class GPSDatabase {
     private final String TAG = GPSDatabase.class.getName();
 
     private final int STATUS_DELETED = 0x1;
     private final int STATUS_NORMAL = 0x0;
+    private GPSDatabase.Meta meta;
 
     public final static class COLUMN {
         static final String LATITUDE = "latitude";
@@ -56,10 +82,98 @@ public class GPSDatabase {
 
     private SQLiteDatabase sqliteDatabase;
 
+    public class Meta implements com.gracecode.gpsrecorder.dao.Meta {
+
+
+        public boolean addMeta(String tag, String value) {
+            ContentValues values = new ContentValues();
+
+            values.put(COLUMN.META_NAME, tag);
+            values.put(COLUMN.META_VALUE, value);
+
+            try {
+                return sqliteDatabase.insert(META_TABLE_NAME, null, values) > 0 ? true : false;
+            } catch (SQLiteConstraintException e) {
+                Log.e(TAG, "The name which marked as value: " + tag
+                    + " is already exists, pls use updateMeta method for update this item.");
+            } catch (SQLException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            return false;
+        }
+
+        private String getMeta(String tag) {
+            String result = "";
+            try {
+                String sql = "SELECT " + COLUMN.META_VALUE + " FROM " + META_TABLE_NAME
+                    + " WHERE " + COLUMN.META_NAME + " = '" + tag + "' LIMIT 1";
+                Cursor cursor = sqliteDatabase.rawQuery(sql, null);
+                cursor.moveToFirst();
+
+                if (cursor.getCount() > 0) {
+                    result = cursor.getString(cursor.getColumnIndex(COLUMN.META_VALUE));
+                }
+                cursor.close();
+            } catch (SQLiteException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            return result.trim();
+        }
+
+        private Date getDateField(String tag) {
+            String date = getMeta(tag);
+            if (date.length() > 0) {
+                try {
+                    return (new Date(Long.parseLong(date)));
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public Date getStartTime() {
+            return getDateField(START_TIME);
+        }
+
+        @Override
+        public Date getStopTime() {
+            return getDateField(STOP_TIME);
+        }
+
+        @Override
+        public Points getLastRecord() {
+            return getLastRecord();
+        }
+
+        @Override
+        public String getTitle() {
+            return getMeta(TITLE);
+        }
+
+        @Override
+        public String getDescription() {
+            return getMeta(DESCRIPTION);
+        }
+
+        @Override
+        public boolean updateDescription(String description) {
+            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public boolean updateTitle(String title) {
+            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
+
     public GPSDatabase(File file) throws SQLiteException {
         openDatabase(file);
-
-        addMeta("START_TIME", String.valueOf(System.currentTimeMillis()));
+        meta = new Meta();
     }
 
     /**
@@ -81,13 +195,6 @@ public class GPSDatabase {
     }
 
 
-    public SQLiteDatabase getSqlite() {
-        return sqliteDatabase;
-    }
-
-    /**
-     * @return
-     */
     public long getValvedCount() {
         long count = 0;
         Cursor cursor;
@@ -105,7 +212,7 @@ public class GPSDatabase {
         return count;
     }
 
-    public long insert(LocationItem location) {
+    public long insert(Points location) {
         ContentValues values = new ContentValues();
 
         values.put(COLUMN.LATITUDE, location.getLatitude());
@@ -126,39 +233,25 @@ public class GPSDatabase {
         return 0;
     }
 
-    public long addMeta(String tag, String value) {
-        ContentValues values = new ContentValues();
 
-        values.put(COLUMN.META_NAME, tag);
-        values.put(COLUMN.META_VALUE, value);
+    private Points getSingleLocationItemFromCursor(Cursor cursor) {
+        Points points = new Points();
 
-        try {
-            return sqliteDatabase.insert(META_TABLE_NAME, null, values);
-        } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
-        }
+        points.setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LATITUDE)));
+        points.setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LONGITUDE)));
+        points.setBearing(cursor.getFloat(cursor.getColumnIndex(COLUMN.BEARING)));
+        points.setAltitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.ALTITUDE)));
+        points.setAccuracy(cursor.getFloat(cursor.getColumnIndex(COLUMN.ACCURACY)));
+        points.setSpeed(cursor.getFloat(cursor.getColumnIndex(COLUMN.SPEED)));
+        points.setTime(cursor.getLong(cursor.getColumnIndex(COLUMN.TIME)));
+        points.setCount(cursor.getInt(cursor.getColumnIndex(COLUMN.COUNT)));
 
-        return 0;
+        return points;
     }
 
-    private LocationItem getSingleLocationItemFromCursor(Cursor cursor) {
-        LocationItem locationItem = new LocationItem();
-
-        locationItem.setLatitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LATITUDE)));
-        locationItem.setLongitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.LONGITUDE)));
-        locationItem.setBearing(cursor.getFloat(cursor.getColumnIndex(COLUMN.BEARING)));
-        locationItem.setAltitude(cursor.getDouble(cursor.getColumnIndex(COLUMN.ALTITUDE)));
-        locationItem.setAccuracy(cursor.getFloat(cursor.getColumnIndex(COLUMN.ACCURACY)));
-        locationItem.setSpeed(cursor.getFloat(cursor.getColumnIndex(COLUMN.SPEED)));
-        locationItem.setTime(cursor.getLong(cursor.getColumnIndex(COLUMN.TIME)));
-        locationItem.setCount(cursor.getInt(cursor.getColumnIndex(COLUMN.COUNT)));
-
-        return locationItem;
-    }
-
-    public LocationItem getLastRecord() {
+    public Points getLastRecord() {
         Cursor result;
-        LocationItem data = new LocationItem();
+        Points data = new Points();
         data.setTime((new Date()).getTime());
 
         try {
@@ -179,8 +272,8 @@ public class GPSDatabase {
     }
 
     // @todo reformat this into ArrayList
-    public LocationGroup getValvedData() {
-        LocationGroup locationGroup = new LocationGroup();
+    public ArrayList<Points> getValvedData() {
+        ArrayList<Points> pointsGroup = new ArrayList<Points>();
         Cursor cursor;
 
         try {
@@ -189,7 +282,7 @@ public class GPSDatabase {
                     " from location WHERE del = " + STATUS_NORMAL + " ORDER BY time DESC", null);
 
             for (cursor.moveToFirst(); cursor.moveToNext(); ) {
-                locationGroup.add(getSingleLocationItemFromCursor(cursor));
+                pointsGroup.add(getSingleLocationItemFromCursor(cursor));
             }
 
             cursor.close();
@@ -197,7 +290,15 @@ public class GPSDatabase {
 
         }
 
-        return locationGroup;
+        return pointsGroup;
+    }
+
+    public Meta getMeta() {
+        return meta;
+    }
+
+    public boolean addMeta(String tag, String value) {
+        return meta.addMeta(tag, value);
     }
 
 //    // @todo move into Location
@@ -213,9 +314,9 @@ public class GPSDatabase {
 //    }
 
     public void close() {
-        addMeta("STOP_TIME", String.valueOf(System.currentTimeMillis()));
         if (sqliteDatabase != null) {
             sqliteDatabase.close();
+            sqliteDatabase = null;
         }
     }
 }

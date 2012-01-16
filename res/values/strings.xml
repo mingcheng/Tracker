@@ -3,9 +3,10 @@
     <string name="app_name">GPS Recorder</string>
     <string name="service_name">GPSRecorder Server</string>
     <string name="menu_label_stop">Stop &amp; Exit</string>
-    <string name="default_font">r.ttf</string>
+    <string name="default_font">chillout.ttf</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
+    <string name="no_description">- none description -</string>
     <string name="export_kml">Export KML</string>
     <string name="delete">Delete</string>
     <string name="has_deleted">%s rows marked as deleted</string>
@@ -20,7 +21,7 @@
     <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder(author: @feelinglucky)</string>
     <string name="initialing">Initialing</string>
     <string name="recording">Recording</string>
-    <string name="idle">Idle</string>
+    <string name="idle">idle</string>
     <string name="ready">Ready for record</string>
     <string name="norecords">--</string>
     <string name="records">%d Points</string>
@@ -29,6 +30,8 @@
     <string name="menu_records">Records</string>
     <string name="menu_pause">Pause</string>
     <string name="menu_start">Start</string>
-    <string name="not_record_anything">Not record anything</string>
+    <string name="not_record_anything">Does\'t record anything</string>
     <string name="result_report">Recorded %s points, bye</string>
+    <string name="use_recovery_database_file">Use recovery database file for records</string>
 </resources>
+

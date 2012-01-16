@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.activity.Preference;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
-import com.gracecode.gpsrecorder.dao.LocationItem;
+import com.gracecode.gpsrecorder.dao.Points;
 import com.gracecode.gpsrecorder.util.Environment;
 import com.gracecode.gpsrecorder.util.GPSWatcher;
 
@@ -31,7 +31,7 @@ interface RecordServerBinder {
 
     public int getStatus();
 
-    public LocationItem getLastRecord();
+    public Points getLastRecord();
 }
 
 public class RecordService extends Service {
@@ -107,7 +107,7 @@ public class RecordService extends Service {
         }
 
         @Override
-        public LocationItem getLastRecord() {
+        public Points getLastRecord() {
             return gpsDatabase.getLastRecord();
         }
     }
@@ -143,13 +143,21 @@ public class RecordService extends Service {
 
         // resume the database file which not close by application self.
         File lastOpenedDatabaseFile = getLastOpenedDatabaseFile();
-        gpsDatabaseFile = (lastOpenedDatabaseFile != null && lastOpenedDatabaseFile.isFile()) ?
+        Boolean useRecoveryDatabaseFile = (lastOpenedDatabaseFile != null && lastOpenedDatabaseFile.isFile());
+        gpsDatabaseFile = useRecoveryDatabaseFile ?
             lastOpenedDatabaseFile : Environment.getDatabaseFile(recordBy);
-        setLastOpenedDatabaseFilePath(gpsDatabaseFile);
 
         environment = new Environment(getApplicationContext());
         gpsDatabase = new GPSDatabase(gpsDatabaseFile);
         serviceBinder = new ServiceBinder();
+
+        if (useRecoveryDatabaseFile) {
+            gpsDatabase.addMeta(GPSDatabase.Meta.RESUME_TIME, String.valueOf(System.currentTimeMillis()));
+            Toast.makeText(this, getString(R.string.use_recovery_database_file), Toast.LENGTH_LONG).show();
+        } else {
+            gpsDatabase.addMeta(GPSDatabase.Meta.START_TIME, String.valueOf(System.currentTimeMillis()));
+        }
+        setLastOpenedDatabaseFilePath(gpsDatabaseFile);
 
         boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
         if (autoStart) {
@@ -170,14 +178,16 @@ public class RecordService extends Service {
     public void onDestroy() {
         long valvedCount = gpsDatabase.getValvedCount();
         String resultMessage = String.format(getString(R.string.result_report), valvedCount);
+        boolean autoClean = sharedPreferences.getBoolean(Preference.AUTO_CLEAN, true);
 
         if (switchAirplaneMode) {
             environment.setAirPlaneMode(currentAirPlaneMode);
         }
         serviceBinder.stopRecord();
+        gpsDatabase.addMeta(GPSDatabase.Meta.STOP_TIME, String.valueOf(System.currentTimeMillis()));
         gpsDatabase.close();
 
-        if (valvedCount <= 0) {
+        if (autoClean && valvedCount <= 0) {
             resultMessage = getString(R.string.not_record_anything);
             gpsDatabaseFile.delete();
             Log.w(TAG, "Records is finished, but without any records, clean it");

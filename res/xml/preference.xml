@@ -10,7 +10,6 @@
                             android:summaryOff="Manual start record by user"
             />
 
-
         <CheckBoxPreference android:key="autoClean"
                             android:title="Auto Clean"
                             android:defaultValue="true"

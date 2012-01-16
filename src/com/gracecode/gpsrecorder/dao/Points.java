@@ -2,15 +2,15 @@ package com.gracecode.gpsrecorder.dao;
 
 import android.location.Location;
 
-public class LocationItem extends Location {
-    protected static final String PROVIDER = LocationItem.class.getName();
+public class Points extends Location {
+    protected static final String PROVIDER = Points.class.getName();
     int count = 0;
 
-    public LocationItem() {
+    public Points() {
         super(PROVIDER);
     }
 
-    public LocationItem(Location location) {
+    public Points(Location location) {
         super(location);
     }
 

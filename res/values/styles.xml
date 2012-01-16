@@ -1,6 +1,5 @@
 <resources>
-    <color name="title">#a2d900</color>
-    <color name="highlight">#f9615a</color>
+
 
     <style name="Window" parent="@android:style/Theme.NoTitleBar">
 
@@ -9,7 +8,8 @@
     <style name="Item.Content" parent="@android:style/TextAppearance.Large">
         <item name="android:textColor">@color/highlight</item>
         <item name="android:layout_marginBottom">20dip</item>
-        <item name="android:layout_marginTop">10dip</item>
+        <item name="android:layout_marginTop">5dip</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="Item.Title" parent="@android:style/TextAppearance.Small">
@@ -17,7 +17,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title</item>
         <item name="android:layout_column">1</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Status.Time" parent="@android:style/TextAppearance.Medium">
@@ -26,6 +26,8 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">24dp</item>
+        '
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="Status.Records" parent="@android:style/TextAppearance.Large">
@@ -33,8 +35,8 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">24sp</item>
         <item name="android:layout_marginTop">14dp</item>
+        <item name="android:textSize">28sp</item>
     </style>
 
     <style name="Status.Status" parent="@android:style/TextAppearance.Large">
@@ -43,5 +45,6 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">28dp</item>
+        <item name="android:textSize">28sp</item>
     </style>
 </resources>

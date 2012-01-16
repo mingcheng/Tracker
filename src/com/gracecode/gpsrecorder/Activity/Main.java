@@ -11,8 +11,9 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
+import com.gracecode.gpsrecorder.RecordService;
 import com.gracecode.gpsrecorder.RecordService.ServiceBinder;
-import com.gracecode.gpsrecorder.dao.LocationItem;
+import com.gracecode.gpsrecorder.dao.Points;
 import com.gracecode.gpsrecorder.util.Environment;
 
 import java.text.SimpleDateFormat;
@@ -27,8 +28,10 @@ public class Main extends BaseActivity {
     private static double maxSpeed = 0.0;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
-    private LocationItem lastLocationRecord;
+    private Points lastLocationRecord;
     private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
+
+    public Intent recordServerIntent;
 
     /**
      * Handle the records for show the last recorded status.
@@ -195,6 +198,10 @@ public class Main extends BaseActivity {
             return;
         }
 
+        recordServerIntent = new Intent(this, RecordService.class);
+        startService(recordServerIntent);
+        bindService(recordServerIntent, serviceConnection, BIND_AUTO_CREATE);
+
         findAllTextView((ViewGroup) findViewById(R.id.root));
         initialViewUpdater();
     }
@@ -224,7 +231,7 @@ public class Main extends BaseActivity {
 
             case R.id.stop:
                 serviceBinder.stopRecord();
-                stopService();
+                stopService(recordServerIntent);
                 finish();
                 return true;
 

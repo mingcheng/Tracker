@@ -7,7 +7,9 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.Log;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
-import com.gracecode.gpsrecorder.dao.LocationItem;
+import com.gracecode.gpsrecorder.dao.Points;
+
+import java.text.DecimalFormat;
 
 
 public class GPSWatcher implements LocationListener {
@@ -38,32 +40,32 @@ public class GPSWatcher implements LocationListener {
     }
 
 
-//    private static String lastLatitude;
-//    private static String lastLongitude;
-//
-//    protected boolean isFlittedLocation(Location location) {
-//        final DecimalFormat formatter = new DecimalFormat("####.###");
-//        String tmpLongitude = formatter.format(location.getLongitude());
-//        String tmpLatitude = formatter.format(location.getLatitude());
-//
-//        if (tmpLatitude.equals(lastLatitude) && tmpLongitude.equals(lastLongitude)) {
-//            Log.v(TAG, String.format("The same latitude %s and longitude %s, ignore this.",
-//                tmpLatitude, tmpLongitude));
-//            return true;
-//        }
-//        lastLatitude = tmpLatitude;
-//        lastLongitude = tmpLongitude;
-//
-//        return false;
-//    }
+    private static String lastLatitude;
+    private static String lastLongitude;
+
+    protected boolean isFlittedLocation(Location location) {
+        final DecimalFormat formatter = new DecimalFormat("####.###");
+        String tmpLongitude = formatter.format(location.getLongitude());
+        String tmpLatitude = formatter.format(location.getLatitude());
+
+        if (tmpLatitude.equals(lastLatitude) && tmpLongitude.equals(lastLongitude)) {
+            Log.v(TAG, String.format("The same latitude %s and longitude %s, ignore this.",
+                tmpLatitude, tmpLongitude));
+            return true;
+        }
+        lastLatitude = tmpLatitude;
+        lastLongitude = tmpLongitude;
+
+        return false;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
-//        if (isFlittedLocation(location)) {
-//            return;
-//        }
+        if (isFlittedLocation(location)) {
+            return;
+        }
 
-        long result = gpsDatabase.insert(new LocationItem(location));
+        long result = gpsDatabase.insert(new Points(location));
         if (result >= 1) {
             Log.v(TAG, "GPS Record has been saved to database.");
         }
