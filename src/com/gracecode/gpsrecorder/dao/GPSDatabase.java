@@ -30,9 +30,9 @@ interface Meta {
 
     public String getDescription();
 
-    public boolean updateDescription(String description);
+    public boolean addOrUpdateDescription(String description);
 
-    public boolean updateTitle(String title);
+    public boolean addOrUpdateTitle(String title);
 }
 
 
@@ -42,6 +42,8 @@ public class GPSDatabase {
     private final int STATUS_DELETED = 0x1;
     private final int STATUS_NORMAL = 0x0;
     private GPSDatabase.Meta meta;
+    private File databaseFile;
+
 
     public final static class COLUMN {
         static final String LATITUDE = "latitude";
@@ -83,7 +85,40 @@ public class GPSDatabase {
     private SQLiteDatabase sqliteDatabase;
 
     public class Meta implements com.gracecode.gpsrecorder.dao.Meta {
+        public boolean isMetaExists(String tag) {
+            int number = 0;
+            try {
+                String sql = "SELECT COUNT(" + COLUMN.META_NAME + ") as " + COLUMN.COUNT + " FROM "
+                    + META_TABLE_NAME + " WHERE name = '" + tag + "'";
 
+                Cursor cursor = sqliteDatabase.rawQuery(sql, null);
+                cursor.moveToFirst();
+                if (cursor.getCount() > 0) {
+                    number = cursor.getInt(cursor.getColumnIndex(COLUMN.COUNT));
+                }
+                cursor.close();
+            } catch (SQLiteConstraintException e) {
+                Log.e(TAG, "The name which marked as value: " + tag
+                    + " is already exists, pls use updateMeta method for update this item.");
+            } catch (SQLException e) {
+                Log.e(TAG, e.getMessage());
+            }
+
+            return number > 0 ? true : false;
+        }
+
+        public boolean updateMeta(String tag, String value) {
+            int effectRows = 0;
+            ContentValues values = new ContentValues();
+            values.put(COLUMN.META_VALUE, value);
+
+            try {
+                effectRows = sqliteDatabase.update(META_TABLE_NAME, values, COLUMN.META_NAME + " = '" + tag + "'", null);
+            } catch (SQLException e) {
+                Log.e(TAG, e.getMessage());
+            }
+            return effectRows > 0 ? true : false;
+        }
 
         public boolean addMeta(String tag, String value) {
             ContentValues values = new ContentValues();
@@ -95,7 +130,7 @@ public class GPSDatabase {
                 return sqliteDatabase.insert(META_TABLE_NAME, null, values) > 0 ? true : false;
             } catch (SQLiteConstraintException e) {
                 Log.e(TAG, "The name which marked as value: " + tag
-                    + " is already exists, pls use updateMeta method for update this item.");
+                    + " is already exists, pls use updateMeta method for update.");
             } catch (SQLException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -135,6 +170,14 @@ public class GPSDatabase {
             return null;
         }
 
+        public boolean addOrUpdateMeta(String tag, String value) {
+            if (isMetaExists(tag)) {
+                return updateMeta(tag, value);
+            } else {
+                return addMeta(tag, value);
+            }
+        }
+
         @Override
         public Date getStartTime() {
             return getDateField(START_TIME);
@@ -161,13 +204,13 @@ public class GPSDatabase {
         }
 
         @Override
-        public boolean updateDescription(String description) {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        public boolean addOrUpdateDescription(String description) {
+            return addOrUpdateMeta(DESCRIPTION, description);
         }
 
         @Override
-        public boolean updateTitle(String title) {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        public boolean addOrUpdateTitle(String title) {
+            return addOrUpdateMeta(TITLE, title);
         }
     }
 
@@ -186,12 +229,17 @@ public class GPSDatabase {
         }
 
         sqliteDatabase = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+        this.databaseFile = databaseFile;
 
         if (isNeedCreateTable) {
             sqliteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);
             sqliteDatabase.execSQL(SQL_CREATE_META_TABLE);
         }
 
+    }
+
+    public File getFile() {
+        return databaseFile;
     }
 
 

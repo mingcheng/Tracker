@@ -1,9 +1,7 @@
 package com.gracecode.gpsrecorder.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +26,6 @@ public class Records extends BaseActivity {
 
     //
     private ListView listView;
-    protected ArrayList<File> storageFileList;
     protected ArrayList<GPSDatabase> gpsDatabaseList;
 
     //    private SimpleAdapter listViewAdapter;
@@ -43,7 +40,6 @@ public class Records extends BaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             GPSDatabase database = gpsDatabaseList.get(position);
-            File databaseFile = storageFileList.get(position);
             GPSDatabase.Meta meta = database.getMeta();
 
             LayoutInflater inflater = (LayoutInflater) context
@@ -60,7 +56,8 @@ public class Records extends BaseActivity {
 
             String title = meta.getTitle();
             if (title.length() <= 0) {
-                title = databaseFile.getName().replace(Environment.SQLITE_DATABASE_FILENAME_EXT, "");
+                File tmp = database.getFile();
+                title = tmp.getName().replace(Environment.SQLITE_DATABASE_FILENAME_EXT, "");
             }
             nameView.setText(title);
 
@@ -100,7 +97,6 @@ public class Records extends BaseActivity {
         progressDialog.setCancelable(false);
 
         gpsDatabaseList = new ArrayList<GPSDatabase>();
-        storageFileList = new ArrayList<File>();
         getStorageDatabases();
 
         updateListView();
@@ -113,7 +109,6 @@ public class Records extends BaseActivity {
 
     protected void getStorageDatabasesMeta(Date selectedDate) {
         gpsDatabaseList.clear();
-        storageFileList.clear();
 
         // get the parent directory handle
         File currentStorageDir = Environment.getStorageDirectory(selectedDate);
@@ -140,7 +135,6 @@ public class Records extends BaseActivity {
         closeDatabases();
         for (File dbFile : storageFileArray) {
             if (dbFile.exists() && dbFile.isFile()) {
-                storageFileList.add(dbFile);
                 try {
                     GPSDatabase database = new GPSDatabase(dbFile);
                     if (autoClean && database.getValvedCount() <= 0) {
@@ -171,17 +165,37 @@ public class Records extends BaseActivity {
         listView.setAdapter(gpsdatabaseAdapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.records, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+        }
+
+        return false;
+    }
+
     //长按菜单响应函数
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int position = info.position;
+        final int position = info.position;
 
         switch (item.getItemId()) {
             case R.id.export:
 //                progressDialog.show();
                 return true;
 
+            case R.id.description:
+                updateDescriptionByModalDialog(position);
+                return true;
             case R.id.delete:
                 confirmDeleteDatabaseFile(position);
                 return true;
@@ -189,39 +203,65 @@ public class Records extends BaseActivity {
         return false;
     }
 
+    private void updateDescriptionByModalDialog(final int position) {
+        final EditText editText = new EditText(this);
+        final GPSDatabase storageDatabase = gpsDatabaseList.get(position);
+        final GPSDatabase.Meta meta = storageDatabase.getMeta();
+        editText.setText(meta.getDescription());
+
+        environment.showModalDialog(getString(R.string.update_description), null, editText,
+            new Runnable() {
+                @Override
+                public void run() {
+                    String description = editText.getText().toString();
+                    String result = String.format("%s is updated", storageDatabase.getFile().getName());
+
+                    if (!meta.addOrUpdateDescription(description)) {
+                        result = "update error!";
+                    }
+                    Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+                    gpsdatabaseAdapter.notifyDataSetChanged();
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            }
+        );
+    }
+
 
     private void confirmDeleteDatabaseFile(final int position) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        final File storageFile = storageFileList.get(position);
         final GPSDatabase storageDatabase = gpsDatabaseList.get(position);
+        final File storageFile = storageDatabase.getFile();
 
         if (storageFile.isFile() && storageFile.canWrite()) {
-            dialog.setTitle(getString(R.string.notice))
-                .setMessage(getString(R.string.sure_to_del))
-                .setIcon(android.R.drawable.ic_dialog_alert);
-
-            dialog.setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
+            Runnable onConfirmDelete = new Runnable() {
+                @Override
+                public void run() {
                     storageDatabase.close();
                     if (storageFile.delete()) {
                         Toast.makeText(context, String.format(getString(R.string.has_deleted), storageFile.getAbsolutePath()),
                             Toast.LENGTH_LONG).show();
 
                         gpsDatabaseList.remove(position);
-                        storageFileList.remove(position);
                         gpsdatabaseAdapter.notifyDataSetChanged();
                     }
+                }
+            };
+
+            Runnable onCancelDelete = new Runnable() {
+                @Override
+                public void run() {
 
                 }
-            });
+            };
 
-            dialog.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                }
-            });
-
-            dialog.show();
+            environment.showConfirmDialog(getString(R.string.notice),
+                String.format(getString(R.string.sure_to_del), storageFile.getName()),
+                onConfirmDelete, onCancelDelete);
         }
     }
 

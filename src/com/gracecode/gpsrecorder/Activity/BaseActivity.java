@@ -9,12 +9,13 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import com.gracecode.gpsrecorder.RecordService;
 import com.gracecode.gpsrecorder.dao.GPSDatabase;
+import com.gracecode.gpsrecorder.util.Environment;
 import com.mobclick.android.MobclickAgent;
 
 public class BaseActivity extends Activity {
     protected GPSDatabase gpsDatabase;
     protected SharedPreferences sharedPreferences;
-
+    protected Environment environment;
     protected RecordService.ServiceBinder serviceBinder;
     public ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -33,7 +34,7 @@ public class BaseActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
+        environment = new Environment(this);
         MobclickAgent.onError(this);
     }
 

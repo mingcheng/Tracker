@@ -12,7 +12,7 @@
     <string name="has_deleted">%s is deleted</string>
     <string name="info">Info</string>
     <string name="notice">Notice</string>
-    <string name="sure_to_del">You sure to delete this database?</string>
+    <string name="sure_to_del">Confirm delete %s?</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
     <string name="save_kml_finished">KML file is ready.</string>
@@ -35,5 +35,6 @@
     <string name="use_recovery_database_file">Use recovery database file for records</string>
     <string name="update_title">Title</string>
     <string name="update_description">Description</string>
+    <string name="merge">Merge</string>
 </resources>
 

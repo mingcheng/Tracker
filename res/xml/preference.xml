@@ -14,6 +14,7 @@
                             android:title="Auto Clean"
                             android:defaultValue="true"
                             android:summary="Note! Uncheck this maybe have many empty record database"
+                            android:enabled="false"
             />
 
         <ListPreference android:key="recordBy"
@@ -57,7 +58,7 @@
                         android:summary="The minimum distance interval for notifications, in meters."
                         android:entries="@array/gpsMinDistanceValues"
                         android:entryValues="@array/gpsMinDistanceValues"
-                        android:defaultValue="5"
+                        android:defaultValue="3"
             />
     </PreferenceCategory>
 
