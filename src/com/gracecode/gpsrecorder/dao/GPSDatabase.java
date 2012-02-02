@@ -225,6 +225,10 @@ public class GPSDatabase {
     protected void openDatabase(File databaseFile) throws SQLException {
         boolean isNeedCreateTable = false;
         if (!databaseFile.exists()) {
+            File parentDir = databaseFile.getParentFile();
+            if (!parentDir.exists()) {
+                parentDir.mkdirs();
+            }
             isNeedCreateTable = true;
         }
 
@@ -241,7 +245,6 @@ public class GPSDatabase {
     public File getFile() {
         return databaseFile;
     }
-
 
     public long getValvedCount() {
         long count = 0;

@@ -3,7 +3,7 @@
     <string name="app_name">GPS Recorder</string>
     <string name="service_name">GPSRecorder Server</string>
     <string name="menu_label_stop">Stop &amp; Exit</string>
-    <string name="default_font">chillout.ttf</string>
+    <string name="default_font">lcd.ttf</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
     <string name="no_description">- none description -</string>

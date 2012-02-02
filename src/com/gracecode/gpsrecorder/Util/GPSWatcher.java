@@ -39,7 +39,6 @@ public class GPSWatcher implements LocationListener {
         gpsDatabase = database;
     }
 
-
     private static String lastLatitude;
     private static String lastLongitude;
 
