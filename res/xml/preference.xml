@@ -2,6 +2,17 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="User Interface">
+        <ListPreference android:key="orientation"
+                        android:title="Orientation"
+                        android:summary="The Screen Orientation"
+                        android:entries="@array/orientation"
+                        android:entryValues="@array/orientation"
+                        android:defaultValue="portrait"
+            />
+    </PreferenceCategory>
+
+
     <PreferenceCategory android:title="Record Options">
         <CheckBoxPreference android:key="autoStart"
                             android:title="Auto Start Record"

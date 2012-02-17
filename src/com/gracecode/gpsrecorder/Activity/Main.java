@@ -2,6 +2,7 @@ package com.gracecode.gpsrecorder.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +10,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
 import com.gracecode.gpsrecorder.RecordService;
 import com.gracecode.gpsrecorder.RecordService.ServiceBinder;
@@ -191,7 +191,6 @@ public class Main extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
 
         if (!Environment.isExternalStoragePresent()) {
             Log.e(TAG, "External storage not presented.");
@@ -202,10 +201,23 @@ public class Main extends BaseActivity {
         startService(recordServerIntent);
         bindService(recordServerIntent, serviceConnection, BIND_AUTO_CREATE);
 
+        setContentView(R.layout.main);
+
         findAllTextView((ViewGroup) findViewById(R.id.root));
         initialViewUpdater();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateOrientation();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateOrientation();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -215,6 +227,20 @@ public class Main extends BaseActivity {
         return true;
     }
 
+    public void updateOrientation() {
+        String userConfOrient = sharedPreferences.getString(Preference.USER_ORIENTATION, Preference.DEFAULT_USER_ORIENTATION);
+        int orgOrient = getRequestedOrientation();
+
+        if (userConfOrient.equals(Preference.DEFAULT_USER_ORIENTATION)) {
+            if (orgOrient != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        } else {
+            if (orgOrient != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -260,9 +286,13 @@ public class Main extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
-            Toast.makeText(this, getString(R.string.still_running), Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+//                Toast.makeText(this, getString(R.string.still_running), Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (NullPointerException e) {
+//            Log.e(TAG, "Make toast text error while destroy activity.");
+//        }
 
         timer.cancel();
         super.onDestroy();

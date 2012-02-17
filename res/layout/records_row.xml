@@ -4,7 +4,14 @@
                 android:layout_width="wrap_content"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
+
     >
+
+    <CheckBox
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/checkbox"
+        />
 
     <TextView android:layout_width="fill_parent"
               android:layout_height="wrap_content"
@@ -13,6 +20,7 @@
               android:text=""
               android:textStyle="bold"
               android:textColor="@color/title"
+              android:paddingLeft="50dp"
         />
 
     <TextView android:layout_width="fill_parent"
@@ -23,6 +31,7 @@
               android:layout_marginTop="18sp"
               android:paddingTop="10dp"
               android:paddingBottom="30dp"
+              android:paddingLeft="50dp"
         />
 
     <TextView android:layout_width="wrap_content"
