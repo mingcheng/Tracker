@@ -36,5 +36,6 @@
     <string name="update_title">Title</string>
     <string name="update_description">Description</string>
     <string name="merge">Merge</string>
+    <string name="gps_not_presented">GPS Not Presented</string>
+    <string name="storage_not_presented">Storage Not Presented</string>
 </resources>
-
