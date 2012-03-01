@@ -1,15 +1,19 @@
 package com.gracecode.gpsrecorder.activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
 import com.gracecode.gpsrecorder.RecordService;
 import com.gracecode.gpsrecorder.RecordService.ServiceBinder;
@@ -24,7 +28,7 @@ import java.util.TimerTask;
 
 public class Main extends BaseActivity {
     private static final String TAG = Main.class.getName();
-    private Timer timer;
+    private Timer timer = null;
     private static double maxSpeed = 0.0;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
@@ -192,9 +196,21 @@ public class Main extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 判断外界条件
         if (!Environment.isExternalStoragePresent()) {
             Log.e(TAG, "External storage not presented.");
-            return;
+            Toast.makeText(this, getString(R.string.storage_not_presented), Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS);
+            startActivity(myIntent);
+        }
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.e(TAG, "GPS not Enabled");
+            Toast.makeText(this, getString(R.string.gps_not_presented), Toast.LENGTH_SHORT).show();
+
+            Intent myIntent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
+            startActivity(myIntent);
         }
 
         recordServerIntent = new Intent(this, RecordService.class);
@@ -294,7 +310,9 @@ public class Main extends BaseActivity {
 //            Log.e(TAG, "Make toast text error while destroy activity.");
 //        }
 
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
         super.onDestroy();
     }
 }

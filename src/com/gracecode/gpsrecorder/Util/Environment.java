@@ -48,6 +48,7 @@ public class Environment extends android.os.Environment {
     }
 
 
+
     public static File getStorageDirectory(Date date) {
         String storageDirectory = Environment.getExternalStoragePath()
             + File.separator + "gpsrecorder" + File.separator;
