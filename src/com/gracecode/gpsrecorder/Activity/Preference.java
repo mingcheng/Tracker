@@ -23,7 +23,6 @@ public class Preference extends PreferenceActivity implements SharedPreferences.
     public static final String DEFAULT_GPS_MINTIME = "2000";
     public static final String DEFAULT_GPS_MINDISTANCE = "10";
     private SharedPreferences preferenceManager;
-    private static final String TAG = Preference.class.getName();
     public static final String DEFAULT_USER_ORIENTATION = "portrait";
 
 

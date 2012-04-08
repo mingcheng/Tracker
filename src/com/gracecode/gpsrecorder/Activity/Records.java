@@ -15,7 +15,7 @@ import com.gracecode.gpsrecorder.R;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Records extends BaseActivity {
+public class Records extends Base {
     public static final int HIDE_PROGRESS_DIALOG = 0x1;
     private final String TAG = Records.class.getName();
     private Context context;
@@ -234,7 +234,7 @@ public class Records extends BaseActivity {
 //        final GPSDatabase.Meta meta = storageDatabase.getMeta();
 //        editText.setText(meta.getDescription());
 //
-//        environment.showModalDialog(getString(R.string.update_description), null, editText,
+//        uiHelper.showModalDialog(getString(R.string.update_description), null, editText,
 //            new Runnable() {
 //                @Override
 //                public void run() {
@@ -284,7 +284,7 @@ public class Records extends BaseActivity {
 //                }
 //            };
 //
-//            environment.showConfirmDialog(getString(R.string.notice),
+//            uiHelper.showConfirmDialog(getString(R.string.notice),
 //                String.format(getString(R.string.sure_to_del), storageFile.getName()),
 //                onConfirmDelete, onCancelDelete);
 //        }

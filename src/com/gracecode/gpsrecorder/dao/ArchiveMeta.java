@@ -1,4 +1,4 @@
-package com.gracecode.gpsrecorder.recorder;
+package com.gracecode.gpsrecorder.dao;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

@@ -4,8 +4,8 @@ import android.database.Cursor;
 
 import java.io.*;
 
-public class KMLHelper {
-    private final static String TAG = KMLHelper.class.getName();
+public class KMLExporter {
+    private final static String TAG = KMLExporter.class.getName();
 
     private final static String KML_FILE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
         "<kml xmlns=\"http://www.opengis.net/kml/2.2\" \n" +
@@ -60,7 +60,7 @@ public class KMLHelper {
     private String multiGeometryCoordinatesString;
     private String coordinatesString;
 
-    public KMLHelper(String name, String description, Cursor data) {
+    public KMLExporter(String name, String description, Cursor data) {
         this.data = data;
         this.name = name;
         this.description = description;

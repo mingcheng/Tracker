@@ -1,48 +1,46 @@
-package com.gracecode.gpsrecorder.recorder;
+package com.gracecode.gpsrecorder.service;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import com.gracecode.gpsrecorder.dao.Archive;
 import com.gracecode.gpsrecorder.util.Logger;
 
-import java.text.DecimalFormat;
-
+import java.math.BigDecimal;
 
 public class Listener implements LocationListener {
     private Archive archive;
+    private BigDecimal lastLatitude;
+    private BigDecimal lastLongitude;
+    private final static int ACCURACY = 3;
+
 
     public Listener(Archive archive) {
         this.archive = archive;
     }
 
-    private static String lastLatitude;
-    private static String lastLongitude;
+    private boolean filter(Location location) {
+        BigDecimal longitude = (new BigDecimal(location.getLongitude())).setScale(
+            ACCURACY, BigDecimal.ROUND_HALF_UP);
 
-    protected boolean isFlittedLocation(Location location) {
-        final DecimalFormat formatter = new DecimalFormat("####.###");
-        String tmpLongitude = formatter.format(location.getLongitude());
-        String tmpLatitude = formatter.format(location.getLatitude());
+        BigDecimal latitude = (new BigDecimal(location.getLatitude())).setScale(
+            ACCURACY, BigDecimal.ROUND_HALF_UP);
 
-        if (tmpLatitude.equals(lastLatitude) && tmpLongitude.equals(lastLongitude)) {
-            Logger.e(String.format("The same latitude %s and longitude %s, ignore this.",
-                tmpLatitude, tmpLongitude));
-            return true;
+        if (latitude.equals(lastLatitude) && longitude.equals(lastLongitude)) {
+            return false;
         }
-        lastLatitude = tmpLatitude;
-        lastLongitude = tmpLongitude;
 
-        return false;
+        lastLatitude = latitude;
+        lastLongitude = longitude;
+        return true;
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (isFlittedLocation(location)) {
-            return;
-        }
-        if (archive.add(location)) {
+        if (filter(location) && archive.add(location)) {
             Logger.i(String.format(
-                "Location(%f,%f) has been saved into database.", location.getLatitude(), location.getLongitude()
+                "Location(%f, %f) has been saved into database.", location.getLatitude(), location.getLongitude()
             ));
         }
     }

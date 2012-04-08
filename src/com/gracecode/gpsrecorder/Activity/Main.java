@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,10 +16,9 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gracecode.gpsrecorder.R;
-import com.gracecode.gpsrecorder.RecordService;
-import com.gracecode.gpsrecorder.RecordService.ServiceBinder;
-import com.gracecode.gpsrecorder.dao.Points;
-import com.gracecode.gpsrecorder.util.Environment;
+import com.gracecode.gpsrecorder.dao.ArchiveMeta;
+import com.gracecode.gpsrecorder.service.ArchiveNameHelper;
+import com.gracecode.gpsrecorder.service.Recoder.ServiceBinder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,19 +26,18 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Main extends BaseActivity {
+public class Main extends Base {
     private static final String TAG = Main.class.getName();
     private Timer timer = null;
     private static double maxSpeed = 0.0;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
-    private Points lastLocationRecord;
+    private Location lastLocationRecord;
     private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
-
-    public Intent recordServerIntent;
+    protected ArchiveMeta archiveMeta = null;
 
     /**
-     * Handle the records for show the last recorded status.
+     * Handle the records_context for show the last recorded status.
      */
     private Handler handle = new Handler() {
         long visible_flag = 0;
@@ -46,26 +45,25 @@ public class Main extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_UPDATE_STATE_VIEW:
+                    if (serviceBinder == null) {
+                        return;
+                    }
+
                     TextView records = (TextView) findViewById(R.id.status);
                     String statusLabel = getString(R.string.ready);
 
-                    try {
-                        switch (serviceBinder.getStatus()) {
-                            case ServiceBinder.STATUS_RUNNING:
-                                statusLabel = getString(R.string.recording);
-                                break;
-                            case ServiceBinder.STATUS_STOPPED:
-                                statusLabel = getString(R.string.ready);
-                            default:
-                        }
-                        records.setText(statusLabel);
-                        records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
-
-                        // update the ui status
-                        updateView();
-                    } catch (NullPointerException e) {
-                        Log.e(TAG, "ServerBinder is null, maybe service is not ready.");
+                    switch (serviceBinder.getStatus()) {
+                        case ServiceBinder.STATUS_RUNNING:
+                            statusLabel = getString(R.string.recording);
+                            break;
+                        case ServiceBinder.STATUS_STOPPED:
+                            statusLabel = getString(R.string.ready);
+                        default:
                     }
+                    records.setText(statusLabel);
+                    records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
+
+                    updateView();
                     break;
             }
         }
@@ -108,20 +106,27 @@ public class Main extends BaseActivity {
     }
 
     private void updateView() {
-        // get last record by server binder
-        lastLocationRecord = serviceBinder.getLastRecord();
+        if (serviceBinder == null) {
+            return;
+        }
+        Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
 
         for (int i = 0; i < textViewsGroup.size(); i++) {
             double numberValue = 0;
             String stringValue = "";
             TextView textView = textViewsGroup.get(i);
-            int count = lastLocationRecord.getCount();
-            Boolean isrunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
+            long count = 0;
 
             try {
+                if (isRunning) {
+                    lastLocationRecord = serviceBinder.getLastRecord();
+                    archiveMeta = serviceBinder.getArchiveMeta();
+                    count = archiveMeta.getCount();
+                }
+
                 switch (textView.getId()) {
                     case R.id.status:
-                        int stamp = (isrunning) ? R.string.recording : R.string.idle;
+                        int stamp = (isRunning) ? R.string.recording : R.string.idle;
                         stringValue = getString(stamp);
                         break;
                     case R.id.records:
@@ -133,7 +138,7 @@ public class Main extends BaseActivity {
                         break;
                     case R.id.time:
                         stringValue = new SimpleDateFormat(getString(R.string.time_format)).format(
-                            new Date(isrunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
+                            new Date(isRunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
                         break;
                     case R.id.speed:
                         double speed = lastLocationRecord.getSpeed();
@@ -197,7 +202,7 @@ public class Main extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         // 判断外界条件
-        if (!Environment.isExternalStoragePresent()) {
+        if (!ArchiveNameHelper.isExternalStoragePresent()) {
             Log.e(TAG, "External storage not presented.");
             Toast.makeText(this, getString(R.string.storage_not_presented), Toast.LENGTH_SHORT).show();
             Intent myIntent = new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS);
@@ -213,9 +218,6 @@ public class Main extends BaseActivity {
             startActivity(myIntent);
         }
 
-        recordServerIntent = new Intent(this, RecordService.class);
-        startService(recordServerIntent);
-        bindService(recordServerIntent, serviceConnection, BIND_AUTO_CREATE);
 
         setContentView(R.layout.main);
 
@@ -229,11 +231,6 @@ public class Main extends BaseActivity {
         updateOrientation();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateOrientation();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -307,7 +304,7 @@ public class Main extends BaseActivity {
 //                Toast.makeText(this, getString(R.string.still_running), Toast.LENGTH_SHORT).show();
 //            }
 //        } catch (NullPointerException e) {
-//            Log.e(TAG, "Make toast text error while destroy activity.");
+//            Logger.e(TAG, "Make toast text error while destroy activity.");
 //        }
 
         if (timer != null) {

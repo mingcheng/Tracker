@@ -31,11 +31,13 @@
     <string name="menu_pause">Pause</string>
     <string name="menu_start">Start</string>
     <string name="not_record_anything">Does\'t record anything</string>
-    <string name="result_report">Recorded %s points, bye</string>
+    <string name="result_report">Recorded %s points.</string>
     <string name="use_recovery_database_file">Use recovery database file for records</string>
     <string name="update_title">Title</string>
     <string name="update_description">Description</string>
     <string name="merge">Merge</string>
     <string name="gps_not_presented">GPS Not Presented</string>
+    <string name="use_resume_archive_file">Use Resume File: %s</string>
     <string name="storage_not_presented">Storage Not Presented</string>
+    <string name="calendar">Select Month</string>
 </resources>

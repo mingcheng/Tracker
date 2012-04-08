@@ -10,11 +10,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ArchiveFileNameHelper {
-
+public class ArchiveNameHelper {
     private Context context;
     private SharedPreferences sharedPreferences;
-    private String lastOpenedDatabasePath;
     private static final String LAST_OPENED_ARCHIVE_FILE_NAME = "lastOpenedArchiveFileName";
     private SharedPreferences.Editor editor;
 
@@ -24,7 +22,7 @@ public class ArchiveFileNameHelper {
     public static final String GROUP_BY_EACH_DAY = "yyyyMMdd";
 
 
-    public ArchiveFileNameHelper(Context context) {
+    public ArchiveNameHelper(Context context) {
         this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         this.editor = this.sharedPreferences.edit();
@@ -84,7 +82,7 @@ public class ArchiveFileNameHelper {
         return null;
     }
 
-    public boolean clearLastOpenedDatabaseFilePath() {
+    public boolean clearLastOpenedArchiveFileName() {
         if (sharedPreferences.contains(LAST_OPENED_ARCHIVE_FILE_NAME)) {
             editor.remove(LAST_OPENED_ARCHIVE_FILE_NAME);
             return editor.commit();
@@ -93,7 +91,7 @@ public class ArchiveFileNameHelper {
         return false;
     }
 
-    public boolean setLastOpenedDatabaseFilePath(String name) {
+    public boolean setLastOpenedArchiveFileName(String name) {
         editor.putString(LAST_OPENED_ARCHIVE_FILE_NAME, name);
         return editor.commit();
     }

@@ -22,13 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Records"
-                  android:screenOrientation="behind"
-                  android:theme="@style/Window">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        <!--<activity android:name=".activity.Records"-->
+        <!--android:screenOrientation="behind"-->
+        <!--android:theme="@style/Window">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
         <activity android:name=".activity.Preference"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".RecordService"
+            android:name=".service.Recoder"
             android:label="@string/service_name"
             android:enabled="true"
             >

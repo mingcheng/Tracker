@@ -1,7 +1,7 @@
 <?php 
 
 if (PHP_SAPI != "cli") {
-    exit; 
+    die("cli only!");
 }
 
 $database_file = realpath(isset($argv[1]) ? $argv[1] : null);
@@ -27,9 +27,9 @@ foreach($db->query($sql) as $row) {
 
 $coordinates = trim(implode("", $coordinates));
 
-$kml_tempalte = file_get_contents("template.kml");
+$kml_tempalte_file = dirname(__FILE__) . "/template.kml";
 
 
-printf($kml_tempalte, 'name', 'name', 'desp', $coordinates);
+printf(file_get_contents($kml_tempalte_file), 'name', 'name', 'desp', $coordinates);
 
 $db = null;

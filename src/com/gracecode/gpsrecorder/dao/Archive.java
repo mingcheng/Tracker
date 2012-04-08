@@ -1,4 +1,4 @@
-package com.gracecode.gpsrecorder.recorder;
+package com.gracecode.gpsrecorder.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -167,6 +167,9 @@ public class Archive {
     }
 
     public void close() {
+        if (database != null) {
+            database.close();
+        }
         databaseHelper.close();
     }
 }
