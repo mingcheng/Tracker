@@ -161,15 +161,14 @@ public class Archive {
             cursor.close();
         } catch (SQLiteException e) {
             Logger.e(e.getMessage());
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage());
         }
 
         return geoPoints;
     }
 
     public void close() {
-        if (database != null) {
-            database.close();
-        }
         databaseHelper.close();
     }
 }

@@ -30,6 +30,11 @@
                 style="@style/Status.Time"
                 android:id="@+id/time"
                 />
+            <TextView
+                style="@style/Status.Time"
+                android:id="@+id/distance"
+                android:visibility="invisible"
+                />
         </LinearLayout>
 
         <TableLayout

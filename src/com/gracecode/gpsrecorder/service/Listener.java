@@ -9,12 +9,16 @@ import com.gracecode.gpsrecorder.util.Logger;
 
 import java.math.BigDecimal;
 
+/**
+ * 绑定 LocationListner 回调并记录到数据库
+ *
+ * @author mingcheng<lucky@gracecode.com>
+ */
 public class Listener implements LocationListener {
     private Archive archive;
     private BigDecimal lastLatitude;
     private BigDecimal lastLongitude;
-    private final static int ACCURACY = 3;
-
+    private final static int ACCURACY = 4;
 
     public Listener(Archive archive) {
         this.archive = archive;
@@ -40,7 +44,7 @@ public class Listener implements LocationListener {
     public void onLocationChanged(Location location) {
         if (filter(location) && archive.add(location)) {
             Logger.i(String.format(
-                "Location(%f, %f) has been saved into database.", location.getLatitude(), location.getLongitude()
+                "Location(%f, %f) has been saved into database.", lastLatitude, lastLongitude
             ));
         }
     }
@@ -58,7 +62,6 @@ public class Listener implements LocationListener {
                 break;
         }
     }
-
 
     @Override
     public void onProviderEnabled(String s) {

@@ -24,8 +24,8 @@ public class ArchiveNameHelper {
 
     public ArchiveNameHelper(Context context) {
         this.context = context;
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        this.editor = this.sharedPreferences.edit();
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.editor = sharedPreferences.edit();
     }
 
     public static boolean isExternalStoragePresent() {

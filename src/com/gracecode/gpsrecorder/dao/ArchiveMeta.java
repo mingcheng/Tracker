@@ -3,8 +3,10 @@ package com.gracecode.gpsrecorder.dao;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.location.Location;
 import com.gracecode.gpsrecorder.util.Logger;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ArchiveMeta {
@@ -27,6 +29,27 @@ public class ArchiveMeta {
 
     public boolean setDescription(String description) {
         return false;
+    }
+
+    /**
+     * 获得当前已经记录的距离
+     *
+     * @return
+     */
+    public float getDistance() {
+        ArrayList<Location> locations = archive.fetchAll();
+        Location lastComputedLocation = null;
+        float distance = 0;
+        for (int i = 0; i < locations.size(); i++) {
+            Location location = locations.get(i);
+            if (lastComputedLocation != null) {
+                distance += lastComputedLocation.distanceTo(location);
+            }
+
+            lastComputedLocation = location;
+        }
+
+        return distance;
     }
 
     public Date getStartTime() {
