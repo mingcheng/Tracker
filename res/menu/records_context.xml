@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/export" android:title="@string/export_kml"
+          android:icon="@drawable/ic_menu_goto"
+        />
+
+    <!--<item android:id="@+id/delete" android:title="@string/merge"-->
+    <!--android:icon="@drawable/ic_menu_copy"-->
+    <!--/>-->
+
+    <!--<item android:id="@+id/title" android:title="@string/update_title"-->
+    <!--android:icon="@drawable/ic_menu_mark"-->
+    <!--/>-->
+
+    <item android:id="@+id/description" android:title="@string/update_description"
+          android:icon="@drawable/ic_menu_mark"
+        />
+
+    <item android:id="@+id/info" android:title="@string/info"
+          android:icon="@drawable/ic_menu_mylocation"
+        />
+
+    <item android:id="@+id/delete" android:title="@string/delete"
+          android:icon="@drawable/ic_menu_stop"
+        />
+</menu>
