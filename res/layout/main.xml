@@ -13,7 +13,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/root"
-                    android:padding="20dp"
         >
 
         <LinearLayout
@@ -40,12 +39,19 @@
                 />
         </LinearLayout>
 
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/toggleButton"
+            />
 
         <TableLayout
+            android:padding="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="1"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/toggleButton"
             >
 
             <TableRow>
