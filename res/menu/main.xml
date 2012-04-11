@@ -33,10 +33,10 @@
               android:icon="@drawable/ic_menu_help"
             />
 
-        <item android:id="@+id/stop"
-              android:title="@string/menu_label_stop"
-              android:alphabeticShortcut="x"
-              android:icon="@drawable/ic_menu_block"
-            />
+        <!--<item android:id="@+id/stop"-->
+        <!--android:title="@string/menu_label_stop"-->
+        <!--android:alphabeticShortcut="x"-->
+        <!--android:icon="@drawable/ic_menu_block"-->
+        <!--/>-->
     </group>
 </menu>
