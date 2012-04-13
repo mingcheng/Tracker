@@ -85,11 +85,17 @@ public class BaiduMap extends MapActivity {
 
             @Override
             public void performAction(View view) {
-                uiHelper.showConfirmDialog("Delete", "Sure?", new Runnable() {
+                uiHelper.showConfirmDialog(getString(R.string.delete),
+                    String.format(getString(R.string.sure_to_del), archiveFileName),
+                    new Runnable() {
                         @Override
                         public void run() {
                             File archiveFile = new File(archiveFileName);
-                            archiveFile.delete();
+                            if (archiveFile.delete()) {
+                                uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
+                            } else {
+                                uiHelper.showLongToast(getString(R.string.delete_error));
+                            }
                             finish();
                         }
                     }, new Runnable() {

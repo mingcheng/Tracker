@@ -9,7 +9,8 @@
     <string name="no_description">- none description -</string>
     <string name="export_kml">Export</string>
     <string name="delete">Delete</string>
-    <string name="has_deleted">%s is deleted</string>
+    <string name="has_deleted">%s has been deleted</string>
+    <string name="delete_error">delete error, pls check your card</string>
     <string name="info">Info</string>
     <string name="notice">Notice</string>
     <string name="sure_to_del">Confirm delete %s?</string>
