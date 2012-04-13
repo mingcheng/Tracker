@@ -69,8 +69,10 @@ public class ArchiveNameHelper {
             }
         });
 
-        for (int i = 0; i < archiveFiles.length; i++) {
-            result.add((archiveFiles[i]).getAbsolutePath());
+        if (archiveFiles != null) {
+            for (int i = 0; i < archiveFiles.length; i++) {
+                result.add((archiveFiles[i]).getAbsolutePath());
+            }
         }
 
         return result;

@@ -7,12 +7,15 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.util.UIHelper;
+import com.markupartist.android.widget.ActionBar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class BaiduMap extends MapActivity {
@@ -24,7 +27,8 @@ public class BaiduMap extends MapActivity {
     private Context context;
     private ArrayList<Location> locations;
     private BMapManager bMapManager = null;
-    private ToggleButton toggleSatelliteButton;
+    private ActionBar actionBar;
+    private UIHelper uiHelper;
 
     @Override
     protected boolean isRouteDisplayed() {
@@ -53,7 +57,7 @@ public class BaiduMap extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.baidu_map);
 
-        context = getApplicationContext();
+        context = this;
 
         bMapManager = new BMapManager(getApplication());
         bMapManager.init("30183AD8A6AFE7CE8F649ED4CD258211E8DE78D7", new MyGeneralListener());
@@ -61,20 +65,43 @@ public class BaiduMap extends MapActivity {
         super.initMapActivity(bMapManager);
 
         mapView = (MapView) findViewById(R.id.bmapsView);
+        actionBar = (ActionBar) findViewById(R.id.action_bar);
+
+        mapView.setBuiltInZoomControls(true);
         mapViewController = mapView.getController();
 
+        uiHelper = new UIHelper(context);
         archiveFileName = getIntent().getStringExtra(ARCHIVE_FILE_NAME);
         archive = new Archive(getApplicationContext(), archiveFileName);
-        Location location = archive.getLastRecord();
-
-        GeoPoint point = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-        mapView.setBuiltInZoomControls(true);
-        mapViewController.setCenter(point);
-        mapViewController.setZoom(16);
 
         locations = archive.fetchAll();
 
-        mapView.getOverlays().add(new WalkedOverlay());
+
+        actionBar.addAction(new ActionBar.Action() {
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_menu_stop;
+            }
+
+            @Override
+            public void performAction(View view) {
+                uiHelper.showConfirmDialog("Delete", "Sure?", new Runnable() {
+                        @Override
+                        public void run() {
+                            File archiveFile = new File(archiveFileName);
+                            archiveFile.delete();
+                            finish();
+                        }
+                    }, new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    }
+                );
+            }
+        });
+
     }
 
     @Override
@@ -83,6 +110,29 @@ public class BaiduMap extends MapActivity {
             bMapManager.start();
         }
         super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        int size = locations.size();
+        Location firstLocation = locations.get(0);
+//        Location lastLocation = locations.get(size - 1);
+//        Location centerLocation = locations.get(size / 2);
+
+        mapView.getOverlays().add(new RouteOverlay());
+
+        GeoPoint firstLocationPoint = new GeoPoint(
+            (int) (firstLocation.getLatitude() * 1E6),
+            (int) (firstLocation.getLongitude() * 1E6)
+        );
+
+        //float distance = firstLocation.distanceTo(lastLocation);
+
+        // @todo 自动计算默认缩放的地图界面
+        mapViewController.setCenter(firstLocationPoint);
+        mapViewController.setZoom(13);
     }
 
     @Override
@@ -103,7 +153,7 @@ public class BaiduMap extends MapActivity {
         super.onDestroy();
     }
 
-    private class WalkedOverlay extends Overlay {
+    private class RouteOverlay extends Overlay {
         @Override
         public void draw(Canvas canvas, MapView mapView, boolean shadow) {
             Projection projection = mapView.getProjection();

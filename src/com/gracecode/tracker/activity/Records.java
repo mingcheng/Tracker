@@ -1,6 +1,5 @@
 package com.gracecode.tracker.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
     private ArrayList<Archive> archives;
 
     //    private SimpleAdapter listViewAdapter;
-    private ProgressDialog progressDialog;
     private ArchiveNameHelper archiveFileNameHelper;
 
     @Override
