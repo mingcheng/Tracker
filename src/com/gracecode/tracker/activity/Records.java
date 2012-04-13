@@ -34,7 +34,7 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Archive archive = archives.get(i);
-        Intent intent = new Intent(this, ArchiveMapView.class);
+        Intent intent = new Intent(this, BaiduMap.class);
         intent.putExtra("archiveName", archive.getArchiveFileName());
 
         startActivity(intent);

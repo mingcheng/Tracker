@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <com.baidu.mapapi.MapView
+        android:id="@+id/bmapsView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+        <include layout="@layout/action_bar" />
+
+        <!--<ToggleButton-->
+        <!--android:id="@+id/toggle_satellite_mode"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_below="@id/action_bar"-->
+        <!--android:layout_marginTop="50dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--/>-->
+    </RelativeLayout>
+
+</FrameLayout>

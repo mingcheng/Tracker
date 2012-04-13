@@ -3,7 +3,7 @@
           package="com.gracecode.tracker"
           android:versionCode="3"
           android:versionName="0.99">
-    <uses-sdk android:targetSdkVersion="7" android:minSdkVersion="7"></uses-sdk>
+    <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,8 +28,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ArchiveMapView"
-                  android:theme="@style/Window">
+        <activity android:name=".activity.BaiduMap"
+                  android:theme="@style/Window"
+                  android:launchMode="singleTask"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.GoogleMap"
+                  android:theme="@style/Window"
+                  android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -54,6 +63,7 @@
             android:enabled="true"
             >
         </service>
+        <uses-library android:name="com.google.android.maps" />
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
     </application>
 </manifest>

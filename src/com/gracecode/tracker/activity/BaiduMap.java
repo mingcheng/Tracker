@@ -8,13 +8,14 @@ import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
 
 import java.util.ArrayList;
 
-public class ArchiveMapView extends MapActivity {
+public class BaiduMap extends MapActivity {
     private static final String ARCHIVE_FILE_NAME = "archiveName";
     private String archiveFileName;
     private Archive archive;
@@ -23,6 +24,7 @@ public class ArchiveMapView extends MapActivity {
     private Context context;
     private ArrayList<Location> locations;
     private BMapManager bMapManager = null;
+    private ToggleButton toggleSatelliteButton;
 
     @Override
     protected boolean isRouteDisplayed() {
@@ -49,7 +51,7 @@ public class ArchiveMapView extends MapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_view);
+        setContentView(R.layout.baidu_map);
 
         context = getApplicationContext();
 
@@ -58,8 +60,23 @@ public class ArchiveMapView extends MapActivity {
 
         super.initMapActivity(bMapManager);
 
+//        toggleSatelliteButton = (ToggleButton) findViewById(R.id.toggle_satellite_mode);
         mapView = (MapView) findViewById(R.id.bmapsView);
-        mapView.setTraffic(true);
+
+
+//        toggleSatelliteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (toggleSatelliteButton.isChecked()) {
+//                    toggleSatelliteButton.setChecked(false);
+//                    mapView.setSatellite(false);
+//                } else {
+//                    toggleSatelliteButton.setChecked(true);
+//                    mapView.setSatellite(true);
+//                }
+//            }
+//        });
+
 
         mapViewController = mapView.getController();
 
@@ -73,6 +90,7 @@ public class ArchiveMapView extends MapActivity {
         mapViewController.setZoom(16);
 
         locations = archive.fetchAll();
+
         mapView.getOverlays().add(new WalkedOverlay());
     }
 
@@ -86,8 +104,6 @@ public class ArchiveMapView extends MapActivity {
 
     @Override
     public void onPause() {
-
-
         if (bMapManager != null) {
             bMapManager.stop();
         }
@@ -100,6 +116,7 @@ public class ArchiveMapView extends MapActivity {
             bMapManager.destroy();
         }
 
+        archive.close();
         super.onDestroy();
     }
 
@@ -113,6 +130,7 @@ public class ArchiveMapView extends MapActivity {
             geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
 
             Paint paint = new Paint();
+            paint.setAntiAlias(true);
             paint.setColor(Color.RED);
             paint.setStrokeWidth(4);
 
@@ -131,7 +149,6 @@ public class ArchiveMapView extends MapActivity {
 
                 lastGeoPoint = geoPoint;
             }
-
 
             super.draw(canvas, mapView, shadow);
         }

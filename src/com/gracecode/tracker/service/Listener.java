@@ -10,7 +10,7 @@ import com.gracecode.tracker.util.Logger;
 import java.math.BigDecimal;
 
 /**
- * 绑定 LocationListner 回调并记录到数据库
+ * 绑定 LocationListener 回调并记录到数据库
  *
  * @author mingcheng<lucky@gracecode.com>
  */
@@ -18,7 +18,7 @@ public class Listener implements LocationListener {
     private Archive archive;
     private BigDecimal lastLatitude;
     private BigDecimal lastLongitude;
-    private final static int ACCURACY = 4;
+    private final static int ACCURACY = 3;
 
     public Listener(Archive archive) {
         this.archive = archive;
