@@ -17,6 +17,7 @@ import com.gracecode.tracker.util.Logger;
 import com.gracecode.tracker.util.UIHelper;
 
 import java.io.File;
+import java.util.Date;
 
 /**
  *
@@ -53,6 +54,7 @@ public class Recoder extends Service {
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
+        private ArchiveMeta meta = null;
 
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -83,6 +85,12 @@ public class Recoder extends Service {
                     geoArchive.open(archiveFileName);
                     archiveFileNameHelper.setLastOpenedArchiveFileName(archiveFileName);
 
+                    // 获取 Meta 信息
+                    meta = getArchiveMeta();
+
+                    // 设置开始时间
+                    meta.setStartTime(new Date());
+
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, listener);
@@ -104,12 +112,18 @@ public class Recoder extends Service {
                     (new File(archiveFileName)).delete();
                     uiHelper.showLongToast(getString(R.string.not_record_anything));
                 } else {
+                    // 设置结束记录时间
+                    meta.setEndTime(new Date());
+
                     uiHelper.showLongToast(String.format(
                         getString(R.string.result_report), String.valueOf(totalCount)
                     ));
                 }
 
+                // 清除操作
                 geoArchive.close();
+                meta = null;
+
                 archiveFileNameHelper.clearLastOpenedArchiveFileName();
                 status = ServiceBinder.STATUS_STOPPED;
             }

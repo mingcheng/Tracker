@@ -16,13 +16,14 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Records extends Base implements AdapterView.OnItemClickListener {
     private Context context;
+    private static final String ARCHIVE_FILE_NAME = "archiveName";
 
-    //
     private ListView listView;
     private ArrayList<String> archiveFileNames;
     private ArrayList<Archive> archives;
@@ -35,7 +36,7 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Archive archive = archives.get(i);
         Intent intent = new Intent(this, BaiduMap.class);
-        intent.putExtra("archiveName", archive.getArchiveFileName());
+        intent.putExtra(ARCHIVE_FILE_NAME, archive.getArchiveFileName());
 
         startActivity(intent);
     }
@@ -60,7 +61,10 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
             TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
             TextView betweenView = (TextView) rowView.findViewById(R.id.between);
 
-            countView.setText(String.valueOf(archiveMeta.getCount()));
+            File f = new File(archive.getArchiveFileName());
+            countView.setText(String.format("%.2fm", archiveMeta.getDistance()));
+            betweenView.setText(String.valueOf(archiveMeta.getCount()));
+            nameView.setText(f.getName());
 
 //            String description = archiveMeta.getDescription();
 //            if (description.length() <= 0) {
@@ -86,16 +90,6 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         this.archiveFileNameHelper = new ArchiveNameHelper(context);
 
         archives = new ArrayList<Archive>();
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//        progressDialog.setMessage(getString(R.string.saving));
-//        progressDialog.setCancelable(false);
-//
-        //  locations = new ArrayList<Location>();
-
-//        getStorageDatabases();
-//
-//
     }
 
 

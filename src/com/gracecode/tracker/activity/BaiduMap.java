@@ -60,24 +60,7 @@ public class BaiduMap extends MapActivity {
 
         super.initMapActivity(bMapManager);
 
-//        toggleSatelliteButton = (ToggleButton) findViewById(R.id.toggle_satellite_mode);
         mapView = (MapView) findViewById(R.id.bmapsView);
-
-
-//        toggleSatelliteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (toggleSatelliteButton.isChecked()) {
-//                    toggleSatelliteButton.setChecked(false);
-//                    mapView.setSatellite(false);
-//                } else {
-//                    toggleSatelliteButton.setChecked(true);
-//                    mapView.setSatellite(true);
-//                }
-//            }
-//        });
-
-
         mapViewController = mapView.getController();
 
         archiveFileName = getIntent().getStringExtra(ARCHIVE_FILE_NAME);

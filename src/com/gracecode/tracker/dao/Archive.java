@@ -18,6 +18,7 @@ public class Archive {
     protected String archiveName;
 
     public final static class DATABASE_COLUMN {
+        static final String ID = "id";
         static final String LATITUDE = "latitude";
         static final String LONGITUDE = "longitude";
         static final String SPEED = "speed";
@@ -26,7 +27,7 @@ public class Archive {
         static final String ACCURACY = "accuracy";
         static final String TIME = "time";
         static final String COUNT = "count";
-        static final String META_NAME = "archiveName";
+        static final String META_NAME = "meta";
         static final String META_VALUE = "value";
     }
 
@@ -49,7 +50,7 @@ public class Archive {
         private static final String SQL_CREATE_META_TABLE =
             "create table " + ArchiveMeta.TABLE_NAME + " ("
                 + "id integer primary key autoincrement, "
-                + "archiveName string not null unique,"
+                + "meta string not null unique,"
                 + "value string default null"
                 + ");";
 
