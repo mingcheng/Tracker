@@ -14,14 +14,16 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
+import com.gracecode.tracker.util.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Records extends Base implements AdapterView.OnItemClickListener {
     private Context context;
-    private static final String ARCHIVE_FILE_NAME = "archiveName";
+    public static final String INTENT_ARCHIVE_FILE_NAME = "archiveName";
 
     private ListView listView;
     private ArrayList<String> archiveFileNames;
@@ -34,7 +36,7 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Archive archive = archives.get(i);
         Intent intent = new Intent(this, BaiduMap.class);
-        intent.putExtra(ARCHIVE_FILE_NAME, archive.getArchiveFileName());
+        intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archive.getArchiveFileName());
 
         startActivity(intent);
     }
@@ -116,7 +118,12 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         Iterator<String> iterator = archiveFileNames.iterator();
         while (iterator.hasNext()) {
             String name = (String) iterator.next();
-            archives.add(new Archive(context, name));
+            try {
+                archives.add(new Archive(context, name));
+            } catch (IOException e) {
+                Logger.e(getString(R.string.archive_not_exists));
+                continue;
+            }
         }
     }
 

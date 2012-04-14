@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import com.gracecode.tracker.util.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Archive {
@@ -87,10 +89,15 @@ public class Archive {
         geoPoints = new ArrayList<Location>();
     }
 
-    public Archive(Context context, String name) {
+    public Archive(Context context, String name) throws IOException {
         this.context = context;
         geoPoints = new ArrayList<Location>();
+        this.open(name);
+    }
 
+    public Archive(Context context, String name, int mode) throws IOException {
+        this.context = context;
+        geoPoints = new ArrayList<Location>();
         this.open(name);
     }
 
@@ -98,11 +105,31 @@ public class Archive {
         return archiveName;
     }
 
-    public void open(String name) {
+    public void open(String name) throws IOException {
+        File f = new File(name);
+        if (!f.exists()) {
+            throw new IOException();
+        }
+
         this.archiveName = name;
         databaseHelper = new ArchiveDatabaseHelper(context, name);
-        database = databaseHelper.getWritableDatabase();
+        database = databaseHelper.getReadableDatabase();
         archiveMeta = new ArchiveMeta(this);
+    }
+
+    public void openOrCreate(String name) {
+        File file = new File(name);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            open(name);
+
+            // 重新开启可读写的数据库
+            database = databaseHelper.getWritableDatabase();
+        } catch (IOException e) {
+
+        }
     }
 
     public ArchiveMeta getArchiveMeta() {

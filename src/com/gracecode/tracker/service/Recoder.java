@@ -42,10 +42,10 @@ interface Binder {
 public class Recoder extends Service {
     protected Recoder.ServiceBinder serviceBinder;
     private SharedPreferences sharedPreferences;
-    private Archive geoArchive;
+    private Archive archive;
 
     private Listener listener;
-    private LocationManager locationManager;
+    private static LocationManager locationManager = null;
 
     private ArchiveNameHelper archiveFileNameHelper;
     private String archiveFileName;
@@ -57,9 +57,9 @@ public class Recoder extends Service {
         private ArchiveMeta meta = null;
 
         ServiceBinder() {
+            archive = new Archive(getApplicationContext());
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            geoArchive = new Archive(getApplicationContext());
-            listener = new Listener(geoArchive);
+            listener = new Listener(archive);
         }
 
         @Override
@@ -82,7 +82,7 @@ public class Recoder extends Service {
                 }
 
                 try {
-                    geoArchive.open(archiveFileName);
+                    archive.openOrCreate(archiveFileName);
                     archiveFileNameHelper.setLastOpenedArchiveFileName(archiveFileName);
 
                     // 获取 Meta 信息
@@ -94,6 +94,7 @@ public class Recoder extends Service {
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, listener);
+
                 } catch (SQLiteException e) {
                     Logger.e(e.getMessage());
                 }
@@ -121,7 +122,7 @@ public class Recoder extends Service {
                 }
 
                 // 清除操作
-                geoArchive.close();
+                archive.close();
                 meta = null;
 
                 archiveFileNameHelper.clearLastOpenedArchiveFileName();
@@ -136,17 +137,17 @@ public class Recoder extends Service {
 
         @Override
         public ArchiveMeta getArchiveMeta() {
-            return geoArchive.getArchiveMeta();
+            return archive.getArchiveMeta();
         }
 
         @Override
         public Archive getArchive() {
-            return geoArchive;
+            return archive;
         }
 
         @Override
         public Location getLastRecord() {
-            return geoArchive.getLastRecord();
+            return archive.getLastRecord();
         }
     }
 

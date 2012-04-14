@@ -55,6 +55,12 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.Detail"
+                  android:theme="@style/Window">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.Recoder"
             android:label="@string/service_name"

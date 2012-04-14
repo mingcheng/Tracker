@@ -16,11 +16,10 @@ import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class BaiduMap extends MapActivity {
-    private static final String ARCHIVE_FILE_NAME = "archiveName";
-    private String archiveFileName;
     private Archive archive;
     private MapView mapView;
     private MapController mapViewController;
@@ -29,6 +28,7 @@ public class BaiduMap extends MapActivity {
     private BMapManager bMapManager = null;
     private ActionBar actionBar;
     private UIHelper uiHelper;
+    private String archiveFileName;
 
     @Override
     protected boolean isRouteDisplayed() {
@@ -71,8 +71,13 @@ public class BaiduMap extends MapActivity {
         mapViewController = mapView.getController();
 
         uiHelper = new UIHelper(context);
-        archiveFileName = getIntent().getStringExtra(ARCHIVE_FILE_NAME);
-        archive = new Archive(getApplicationContext(), archiveFileName);
+        archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
+        try {
+            archive = new Archive(getApplicationContext(), archiveFileName);
+        } catch (IOException e) {
+            uiHelper.showLongToast(getString(R.string.archive_not_exists));
+            finish();
+        }
 
         locations = archive.fetchAll();
 

@@ -19,10 +19,12 @@ public class Base extends Activity {
     protected UIHelper uiHelper;
     public Intent recordServerIntent;
     protected ActionBar actionBar;
+    protected Base context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         uiHelper = new UIHelper(this);
 

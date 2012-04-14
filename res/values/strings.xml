@@ -41,4 +41,5 @@
     <string name="use_resume_archive_file">Use Resume File: %s</string>
     <string name="storage_not_presented">Storage Not Presented</string>
     <string name="calendar">Select Month</string>
+    <string name="archive_not_exists">archive not exists</string>
 </resources>

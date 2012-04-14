@@ -7,10 +7,12 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
-import com.google.android.maps.*;
+import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.util.UIHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GoogleMap extends MapActivity {
@@ -21,6 +23,7 @@ public class GoogleMap extends MapActivity {
     private Context context;
     private Archive archive;
     private ArrayList<Location> locations;
+    private UIHelper uiHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,15 @@ public class GoogleMap extends MapActivity {
 
         mapView = (MapView) findViewById(R.id.google_mapview);
         mapController = mapView.getController();
-
+        uiHelper = new UIHelper(context);
 
         context = getApplicationContext();
-        archive = new Archive(context, getIntent().getStringExtra(ARCHIVE_FILE_NAME));
+        try {
+            archive = new Archive(context, getIntent().getStringExtra(ARCHIVE_FILE_NAME));
+        } catch (IOException e) {
+            uiHelper.showLongToast(getString(R.string.archive_not_exists));
+            finish();
+        }
         locations = archive.fetchAll();
 
         mapView.getOverlays().add(new WalkedOverlay());
