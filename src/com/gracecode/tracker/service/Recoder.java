@@ -14,6 +14,7 @@ import com.gracecode.tracker.activity.Preference;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Notifier;
 import com.gracecode.tracker.util.UIHelper;
 
 import java.io.File;
@@ -36,6 +37,8 @@ interface Binder {
 
     public Archive getArchive();
 
+    public Notifier getNotifier();
+
     public Location getLastRecord();
 }
 
@@ -51,6 +54,7 @@ public class Recoder extends Service {
     private String archiveFileName;
     private UIHelper uiHelper;
     private Context context;
+    private Notifier notifier;
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
@@ -99,6 +103,7 @@ public class Recoder extends Service {
                     Logger.e(e.getMessage());
                 }
 
+                notifier.publish();
                 status = ServiceBinder.STATUS_RUNNING;
             }
         }
@@ -127,6 +132,8 @@ public class Recoder extends Service {
 
                 archiveFileNameHelper.clearLastOpenedArchiveFileName();
                 status = ServiceBinder.STATUS_STOPPED;
+
+                notifier.cancel();
             }
         }
 
@@ -146,6 +153,11 @@ public class Recoder extends Service {
         }
 
         @Override
+        public Notifier getNotifier() {
+            return notifier;
+        }
+
+        @Override
         public Location getLastRecord() {
             return archive.getLastRecord();
         }
@@ -158,6 +170,8 @@ public class Recoder extends Service {
 
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.notifier = new Notifier(context);
+
         this.archiveFileNameHelper = new ArchiveNameHelper(context);
         this.uiHelper = new UIHelper(context);
         this.serviceBinder = new ServiceBinder();

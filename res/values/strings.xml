@@ -25,6 +25,7 @@
     <string name="idle">idle</string>
     <string name="ready">Ready for record</string>
     <string name="norecords">--</string>
+    <string name="running">Tracker is running</string>
     <string name="records">%d Points</string>
     <string name="menu_about">About</string>
     <string name="menu_configure">Configure</string>

@@ -19,6 +19,7 @@ import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 import com.gracecode.tracker.service.Recoder.ServiceBinder;
 import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Notifier;
 import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;
@@ -73,6 +74,7 @@ public class Main extends Base {
     };
     private long needCountDistance = 0;
     private ToggleButton toggleButton;
+    private Notifier notifier;
 
     /**
      * 找到所有的 TextView 元素
@@ -115,6 +117,7 @@ public class Main extends Base {
             return;
         }
         Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
+        notifier = serviceBinder.getNotifier();
 
         for (int i = 0; i < textViewsGroup.size(); i++) {
             double numberValue = 0;
@@ -148,6 +151,10 @@ public class Main extends Base {
                             if (distance > 0) {
                                 numberValue = distance;
                                 textView.setVisibility(View.VISIBLE);
+
+                                notifier.setRecords(count);
+                                notifier.setDistance(distance);
+                                notifier.publish();
                             } else {
                                 textView.setVisibility(View.INVISIBLE);
                             }
