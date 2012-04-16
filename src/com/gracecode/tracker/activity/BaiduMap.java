@@ -128,6 +128,9 @@ public class BaiduMap extends MapActivity {
         super.onStart();
 
         int size = locations.size();
+        if (size <= 0) {
+            return;
+        }
         Location firstLocation = locations.get(0);
 //        Location lastLocation = locations.get(size - 1);
 //        Location centerLocation = locations.get(size / 2);

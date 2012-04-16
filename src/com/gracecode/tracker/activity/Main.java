@@ -152,9 +152,12 @@ public class Main extends Base {
                                 numberValue = distance;
                                 textView.setVisibility(View.VISIBLE);
 
-                                notifier.setRecords(count);
-                                notifier.setDistance(distance);
-                                notifier.publish();
+                                // 更新顶部提示条
+                                if (isRunning) {
+                                    notifier.setRecords(count);
+                                    notifier.setDistance(distance);
+                                    notifier.publish();
+                                }
                             } else {
                                 textView.setVisibility(View.INVISIBLE);
                             }
