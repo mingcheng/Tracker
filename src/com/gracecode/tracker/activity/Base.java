@@ -71,7 +71,6 @@ public class Base extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-
         MobclickAgent.onPause(this);
     }
 

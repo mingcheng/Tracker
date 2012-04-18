@@ -3,7 +3,6 @@ package com.gracecode.tracker.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 import com.gracecode.tracker.service.Recoder.ServiceBinder;
 import com.gracecode.tracker.util.Logger;
-import com.gracecode.tracker.util.Notifier;
 import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +27,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main extends Base {
-    private static final String TAG = Main.class.getName();
     private Timer timer = null;
     private static double maxSpeed = 0.0;
 
@@ -37,6 +34,8 @@ public class Main extends Base {
     private Location lastLocationRecord;
     private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
     protected ArchiveMeta archiveMeta = null;
+    private long needCountDistance = 0;
+    private ToggleButton toggleButton;
 
     /**
      * Handle the records_context for show the last recorded status.
@@ -72,9 +71,7 @@ public class Main extends Base {
             }
         }
     };
-    private long needCountDistance = 0;
-    private ToggleButton toggleButton;
-    private Notifier notifier;
+
 
     /**
      * 找到所有的 TextView 元素
@@ -101,15 +98,16 @@ public class Main extends Base {
                 message.what = MESSAGE_UPDATE_STATE_VIEW;
                 handle.sendMessage(message);
             }
-        }, 1000, 1000);
+        }, 0, 1000);
 
         // change the font for nice look
-        Typeface face = Typeface.createFromAsset(getAssets(),
-            getString(R.string.default_font));
-        for (int i = 0; i < textViewsGroup.size(); i++) {
-            TextView t = textViewsGroup.get(i);
-            t.setTypeface(face);
-        }
+//        Typeface face = Typeface.createFromAsset(getAssets(),
+//            getString(R.string.default_font));
+//
+//        for (int i = 0; i < textViewsGroup.size(); i++) {
+//            TextView t = textViewsGroup.get(i);
+//            t.setTypeface(face);
+//        }
     }
 
     private void updateView() {
@@ -117,7 +115,6 @@ public class Main extends Base {
             return;
         }
         Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
-        notifier = serviceBinder.getNotifier();
 
         for (int i = 0; i < textViewsGroup.size(); i++) {
             double numberValue = 0;
@@ -151,13 +148,6 @@ public class Main extends Base {
                             if (distance > 0) {
                                 numberValue = distance;
                                 textView.setVisibility(View.VISIBLE);
-
-                                // 更新顶部提示条
-                                if (isRunning) {
-                                    notifier.setRecords(count);
-                                    notifier.setDistance(distance);
-                                    notifier.publish();
-                                }
                             } else {
                                 textView.setVisibility(View.INVISIBLE);
                             }
@@ -227,8 +217,15 @@ public class Main extends Base {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.main);
+
+        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        findAllTextView((ViewGroup) findViewById(R.id.root));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         // 判断外界条件
         if (!ArchiveNameHelper.isExternalStoragePresent()) {
@@ -247,8 +244,6 @@ public class Main extends Base {
             startActivity(myIntent);
         }
 
-
-        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -264,26 +259,17 @@ public class Main extends Base {
             }
         });
 
-        findAllTextView((ViewGroup) findViewById(R.id.root));
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.app_name));
             actionBar.removeAllActions();
             actionBar.addAction(new ActionBar.IntentAction(this,
                 new Intent(this, Records.class), R.drawable.ic_menu_goto));
         }
-        //updateOrientation();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         updateViewStatus();
     }
 
@@ -305,21 +291,6 @@ public class Main extends Base {
         return true;
     }
 
-//    public void updateOrientation() {
-//        String userConfOrient = sharedPreferences.getString(Preference.USER_ORIENTATION, Preference.DEFAULT_USER_ORIENTATION);
-//        int orgOrient = getRequestedOrientation();
-//
-//        if (userConfOrient.equals(Preference.DEFAULT_USER_ORIENTATION)) {
-//            if (orgOrient != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//            }
-//        } else {
-//            if (orgOrient != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//            }
-//        }
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent t;
@@ -332,12 +303,6 @@ public class Main extends Base {
             case R.id.pause:
                 serviceBinder.stopRecord();
                 return true;
-
-//            case R.id.stop:
-//                serviceBinder.stopRecord();
-//                stopService(recordServerIntent);
-//                finish();
-//                return true;
 
             case R.id.records:
                 t = new Intent(Main.this, Records.class);
@@ -364,13 +329,9 @@ public class Main extends Base {
 
     @Override
     public void onDestroy() {
-//        try {
-//            if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
-//                Toast.makeText(this, getString(R.string.still_running), Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (NullPointerException e) {
-//            Logger.e(TAG, "Make toast text error while destroy activity.");
-//        }
+        if (serviceBinder != null && serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+            uiHelper.showLongToast(getString(R.string.still_running));
+        }
 
         super.onDestroy();
     }

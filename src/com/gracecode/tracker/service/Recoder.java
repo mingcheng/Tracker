@@ -19,6 +19,8 @@ import com.gracecode.tracker.util.UIHelper;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -36,8 +38,6 @@ interface Binder {
     public ArchiveMeta getArchiveMeta();
 
     public Archive getArchive();
-
-    public Notifier getNotifier();
 
     public Location getLastRecord();
 }
@@ -59,6 +59,8 @@ public class Recoder extends Service {
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
         private ArchiveMeta meta = null;
+        private TimerTask notifierTask;
+        private Timer timer = null;
 
         ServiceBinder() {
             archive = new Archive(getApplicationContext());
@@ -69,6 +71,26 @@ public class Recoder extends Service {
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RUNNING) {
+                notifierTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        ArchiveMeta archiveMeta = getArchiveMeta();
+                        float distance = archiveMeta.getDistance();
+                        long count = archiveMeta.getCount();
+
+                        if (count > 0) {
+                            notifier.setRecords(count);
+                        }
+                        if (distance > 0) {
+                            notifier.setDistance(distance);
+                            //notifier.number = Math.round(distance / 1000);
+                        }
+
+                        notifier.publish();
+                    }
+                };
+                timer = new Timer();
+
                 // 从配置文件获取距离和精度选项
                 long minTime = Long.parseLong(sharedPreferences.getString(Preference.GPS_MINTIME,
                     Preference.DEFAULT_GPS_MINTIME));
@@ -103,7 +125,8 @@ public class Recoder extends Service {
                     Logger.e(e.getMessage());
                 }
 
-                notifier.publish();
+                // 另开个线程展示通知信息
+                timer.schedule(notifierTask, 0, 5000);
                 status = ServiceBinder.STATUS_RUNNING;
             }
         }
@@ -130,10 +153,11 @@ public class Recoder extends Service {
                 archive.close();
                 meta = null;
 
+                notifier.cancel();
+                timer.cancel();
+
                 archiveFileNameHelper.clearLastOpenedArchiveFileName();
                 status = ServiceBinder.STATUS_STOPPED;
-
-                notifier.cancel();
             }
         }
 
@@ -150,11 +174,6 @@ public class Recoder extends Service {
         @Override
         public Archive getArchive() {
             return archive;
-        }
-
-        @Override
-        public Notifier getNotifier() {
-            return notifier;
         }
 
         @Override
@@ -188,10 +207,10 @@ public class Recoder extends Service {
         super.onStart(intent, startId);
     }
 
-    @Override
-    public void onDestroy() {
-        serviceBinder.stopRecord();
-    }
+//    @Override
+//    public void onDestroy() {
+//        serviceBinder.stopRecord();
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {

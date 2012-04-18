@@ -26,6 +26,7 @@ public class Notifier extends Notification {
 
         this.intent = new Intent(context, Main.class);
         this.intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
         this.contentView = new RemoteViews(context.getPackageName(), R.layout.notifier);
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
