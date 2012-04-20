@@ -75,17 +75,17 @@ public class Recoder extends Service {
                     @Override
                     public void run() {
                         ArchiveMeta archiveMeta = getArchiveMeta();
-                        float distance = archiveMeta.getDistance();
-                        long count = archiveMeta.getCount();
-
-                        if (count > 0) {
-                            notifier.setRecords(count);
+                        if (archiveMeta != null) {
+                            float distance = archiveMeta.getDistance();
+                            long count = archiveMeta.getCount();
+                            if (count > 0) {
+                                notifier.setRecords(count);
+                            }
+                            if (distance > 0) {
+                                notifier.setDistance(distance);
+                                //notifier.number = Math.round(distance / 1000);
+                            }
                         }
-                        if (distance > 0) {
-                            notifier.setDistance(distance);
-                            //notifier.number = Math.round(distance / 1000);
-                        }
-
                         notifier.publish();
                     }
                 };
@@ -115,7 +115,9 @@ public class Recoder extends Service {
                     meta = getArchiveMeta();
 
                     // 设置开始时间
-                    meta.setStartTime(new Date());
+                    if (meta != null) {
+                        meta.setStartTime(new Date());
+                    }
 
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,

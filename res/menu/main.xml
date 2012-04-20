@@ -4,39 +4,28 @@
     <group>
         <item android:id="@+id/start"
               android:title="@string/menu_start"
-              android:alphabeticShortcut="o"
-              android:icon="@drawable/ic_menu_play_clip"
+
             />
 
         <item android:id="@+id/pause"
               android:title="@string/menu_pause"
-              android:alphabeticShortcut="p"
-              android:icon="@drawable/ic_menu_stop"
+
             />
     </group>
     <group>
         <item android:id="@+id/records"
               android:title="@string/menu_records"
-              android:alphabeticShortcut="r"
-              android:icon="@drawable/ic_menu_view"
+
             />
 
         <item android:id="@+id/configure"
               android:title="@string/menu_configure"
-              android:alphabeticShortcut="c"
-              android:icon="@drawable/ic_menu_preferences"
+
             />
 
         <item android:id="@+id/about"
               android:title="@string/menu_about"
-              android:alphabeticShortcut="a"
-              android:icon="@drawable/ic_menu_help"
-            />
 
-        <!--<item android:id="@+id/stop"-->
-        <!--android:title="@string/menu_label_stop"-->
-        <!--android:alphabeticShortcut="x"-->
-        <!--android:icon="@drawable/ic_menu_block"-->
-        <!--/>-->
+            />
     </group>
 </menu>

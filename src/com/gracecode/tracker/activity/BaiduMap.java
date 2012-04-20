@@ -85,7 +85,7 @@ public class BaiduMap extends MapActivity {
         actionBar.addAction(new ActionBar.Action() {
             @Override
             public int getDrawable() {
-                return R.drawable.ic_menu_stop;
+                return android.R.drawable.ic_delete;
             }
 
             @Override

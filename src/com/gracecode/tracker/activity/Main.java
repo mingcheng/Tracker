@@ -263,7 +263,7 @@ public class Main extends Base {
             actionBar.setTitle(getString(R.string.app_name));
             actionBar.removeAllActions();
             actionBar.addAction(new ActionBar.IntentAction(this,
-                new Intent(this, Records.class), R.drawable.ic_menu_goto));
+                new Intent(this, Records.class), android.R.drawable.ic_menu_send));
         }
     }
 

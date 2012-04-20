@@ -43,7 +43,8 @@ public class ArchiveNameHelper {
     }
 
     public static File getStorageDirectory(Date date) {
-        String saveDirectory = getExternalStoragePath() + File.separator + SAVED_EXTERNAL_DIRECTORY + File.separator;
+        String saveDirectory = getExternalStoragePath() + File.separator + SAVED_EXTERNAL_DIRECTORY
+            + File.separator + new SimpleDateFormat(GROUP_BY_EACH_MONTH).format(date);
 
         // 如果保存目录不存在，则自动创建个
         File saveDirectoryFile = new File(saveDirectory);
@@ -51,8 +52,7 @@ public class ArchiveNameHelper {
             saveDirectoryFile.mkdirs();
         }
 
-        saveDirectory += File.separator + new SimpleDateFormat(GROUP_BY_EACH_MONTH).format(date);
-        return new File(saveDirectory);
+        return saveDirectoryFile;
     }
 
     public static File getCurrentStorageDirectory() {
@@ -71,14 +71,14 @@ public class ArchiveNameHelper {
             }
         });
 
-        // 根据最后修改时间排序
-        Arrays.sort(archiveFiles, new Comparator<File>() {
-            public int compare(File f1, File f2) {
-                return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
-            }
-        });
-
         if (archiveFiles != null) {
+            // 根据最后修改时间排序
+            Arrays.sort(archiveFiles, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
+                }
+            });
+
             for (int i = 0; i < archiveFiles.length; i++) {
                 result.add((archiveFiles[i]).getAbsolutePath());
             }
@@ -98,7 +98,7 @@ public class ArchiveNameHelper {
             databaseFileName = (new SimpleDateFormat(GROUP_BY_EACH_DAY).format(new Date())) + SQLITE_DATABASE_FILENAME_EXT;
         }
 
-        File databaseFile = new File(getCurrentStorageDirectory().getAbsoluteFile() + File.separator + databaseFileName);
+        File databaseFile = new File(getCurrentStorageDirectory().getAbsolutePath() + File.separator + databaseFileName);
         return databaseFile.getAbsolutePath();
     }
 
