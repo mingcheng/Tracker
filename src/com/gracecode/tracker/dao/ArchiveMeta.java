@@ -2,11 +2,13 @@ package com.gracecode.tracker.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import com.gracecode.tracker.util.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,7 +37,8 @@ public class ArchiveMeta {
         long result = 0;
         try {
             if (isMetaExists(name)) {
-                result = database.update(TABLE_NAME, values, Archive.DATABASE_COLUMN.META_NAME + "=" + name, null);
+                result = database.update(TABLE_NAME, values,
+                    Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
             } else {
                 result = database.insert(TABLE_NAME, null, values);
             }
@@ -50,15 +53,19 @@ public class ArchiveMeta {
         Cursor cursor;
         String result = "";
         try {
-            cursor = database.rawQuery(
-                "SELECT " + Archive.DATABASE_COLUMN.META_VALUE
-                    + " FROM " + Archive.TABLE_NAME
-                    + " LIMIT 1", null);
+            String sql = "SELECT " + Archive.DATABASE_COLUMN.META_VALUE
+                + " FROM " + TABLE_NAME
+                + " WHERE " + Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'"
+                + " LIMIT 1";
+
+            cursor = database.rawQuery(sql, null);
             cursor.moveToFirst();
 
             result = cursor.getString(cursor.getColumnIndex(Archive.DATABASE_COLUMN.META_VALUE));
             cursor.close();
         } catch (SQLiteException e) {
+            Logger.e(e.getMessage());
+        } catch (CursorIndexOutOfBoundsException e) {
             Logger.e(e.getMessage());
         }
 
@@ -71,13 +78,15 @@ public class ArchiveMeta {
         try {
             cursor = database.rawQuery(
                 "SELECT count(id) AS count"
-                    + " FROM " + Archive.TABLE_NAME
-                    + " WHERE " + Archive.DATABASE_COLUMN.META_NAME + "=" + name, null);
+                    + " FROM " + TABLE_NAME
+                    + " WHERE " + Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
             cursor.moveToFirst();
 
             count = cursor.getInt(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
             cursor.close();
         } catch (SQLiteException e) {
+            Logger.e(e.getMessage());
+        } catch (CursorIndexOutOfBoundsException e) {
             Logger.e(e.getMessage());
         }
 
@@ -106,11 +115,11 @@ public class ArchiveMeta {
     }
 
     public Date getStartTime() {
-        return new Date(getMeta(START_TIME));
+        return new Date(Long.parseLong(getMeta(START_TIME), 10));
     }
 
     public Date getEndTime() {
-        return new Date(getMeta(END_TIME));
+        return new Date(Long.parseLong(getMeta(END_TIME), 10));
     }
 
     public boolean setStartTime(Date date) {
@@ -128,7 +137,12 @@ public class ArchiveMeta {
     }
 
     public boolean setDescription(String description) {
-        return setMeta(DESCRIPTION, description);
+        boolean result = setMeta(DESCRIPTION, description);
+        if (result) {
+            File file = new File(archive.getArchiveFileName());
+            file.setLastModified(getEndTime().getTime());
+        }
+        return result;
     }
 
     public long getCount() {
