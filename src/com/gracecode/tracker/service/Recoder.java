@@ -63,14 +63,15 @@ public class Recoder extends Service {
         private Timer timer = null;
 
         ServiceBinder() {
-            archive = new Archive(getApplicationContext());
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            listener = new Listener(archive);
         }
 
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RUNNING) {
+                archive = new Archive(getApplicationContext());
+                listener = new Listener(archive);
+
                 notifierTask = new TimerTask() {
                     @Override
                     public void run() {
@@ -83,7 +84,6 @@ public class Recoder extends Service {
                             }
                             if (distance > 0) {
                                 notifier.setDistance(distance);
-                                //notifier.number = Math.round(distance / 1000);
                             }
                         }
                         notifier.publish();
@@ -209,10 +209,6 @@ public class Recoder extends Service {
         super.onStart(intent, startId);
     }
 
-//    @Override
-//    public void onDestroy() {
-//        serviceBinder.stopRecord();
-//    }
 
     @Override
     public IBinder onBind(Intent intent) {

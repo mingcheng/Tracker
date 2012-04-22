@@ -252,11 +252,12 @@ public class Main extends Base {
             public void onClick(View view) {
                 if (serviceBinder != null) {
                     if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+                        long count = archiveMeta.getCount();
                         serviceBinder.stopRecord();
                         toggleButton.setChecked(false);
 
                         // 如果已经有记录，则显示保存信息
-                        if (archiveMeta.getCount() > 0) {
+                        if (count > 0) {
                             Intent intent = new Intent(context, Detail.class);
                             intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getArchiveFileName());
                             startActivity(intent);
