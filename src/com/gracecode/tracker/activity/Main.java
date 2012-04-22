@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 import com.gracecode.tracker.service.Recoder.ServiceBinder;
@@ -34,6 +35,7 @@ public class Main extends Base {
     private Location lastLocationRecord;
     private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
     protected ArchiveMeta archiveMeta = null;
+    private Archive archive = null;
     private long needCountDistance = 0;
     private ToggleButton toggleButton;
 
@@ -126,6 +128,7 @@ public class Main extends Base {
                 if (isRunning) {
                     lastLocationRecord = serviceBinder.getLastRecord();
                     archiveMeta = serviceBinder.getArchiveMeta();
+                    archive = serviceBinder.getArchive();
                     count = archiveMeta.getCount();
                 }
 
@@ -251,6 +254,13 @@ public class Main extends Base {
                     if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
                         serviceBinder.stopRecord();
                         toggleButton.setChecked(false);
+
+                        // 如果已经有记录，则显示保存信息
+                        if (archiveMeta.getCount() > 0) {
+                            Intent intent = new Intent(context, Detail.class);
+                            intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getArchiveFileName());
+                            startActivity(intent);
+                        }
                     } else {
                         serviceBinder.startRecord();
                         toggleButton.setChecked(true);
