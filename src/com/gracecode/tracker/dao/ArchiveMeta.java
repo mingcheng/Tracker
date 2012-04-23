@@ -119,7 +119,12 @@ public class ArchiveMeta {
     }
 
     public Date getEndTime() {
-        return new Date(Long.parseLong(getMeta(END_TIME), 10));
+        try {
+            long endTime = Long.parseLong(getMeta(END_TIME), 10);
+            return new Date(endTime);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public boolean setStartTime(Date date) {

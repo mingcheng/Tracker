@@ -14,6 +14,7 @@ import com.markupartist.android.widget.ActionBar;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Detail extends Base implements View.OnClickListener {
     private String archiveFileName;
@@ -62,7 +63,9 @@ public class Detail extends Base implements View.OnClickListener {
 
         mArchiveName.setText(archive.getArchiveFileName());
         mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
-        mEndTime.setText(formatter.format(archiveMeta.getEndTime()));
+
+        Date endTime = archiveMeta.getEndTime();
+        mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
 
         mDistance.setText(String.valueOf(archiveMeta.getDistance()));
         mRecords.setText(String.valueOf(archiveMeta.getCount()));
