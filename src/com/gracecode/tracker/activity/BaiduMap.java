@@ -15,7 +15,6 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -95,8 +94,7 @@ public class BaiduMap extends MapActivity {
                     new Runnable() {
                         @Override
                         public void run() {
-                            File archiveFile = new File(archiveFileName);
-                            if (archiveFile.delete()) {
+                            if (archive.delete()) {
                                 uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
                             } else {
                                 uiHelper.showLongToast(getString(R.string.delete_error));

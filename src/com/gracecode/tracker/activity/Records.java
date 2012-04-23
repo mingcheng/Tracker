@@ -41,6 +41,10 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         startActivity(intent);
     }
 
+
+    /**
+     * ListView 的 Adapter
+     */
     public class ArchivesAdapter extends ArrayAdapter<Archive> {
 
         public ArchivesAdapter(ArrayList<Archive> archives) {
@@ -83,21 +87,29 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         setContentView(R.layout.records);
 
         this.context = getApplicationContext();
-        listView = (ListView) findViewById(R.id.records_list);
-
-        listView.setOnItemClickListener(this);
-
+        this.listView = (ListView) findViewById(R.id.records_list);
         this.archiveFileNameHelper = new ArchiveNameHelper(context);
 
-        archives = new ArrayList<Archive>();
-
-        archiveFileNames = archiveFileNameHelper.getArchiveFilesFormCurrentMonth();
-        openArchivesFromFileNames();
-
-        archivesAdapter = new ArchivesAdapter(archives);
-        listView.setAdapter(archivesAdapter);
+        this.archives = new ArrayList<Archive>();
+        this.archivesAdapter = new ArchivesAdapter(archives);
+        this.listView.setAdapter(archivesAdapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        listView.setOnItemClickListener(this);
+        archiveFileNames = archiveFileNameHelper.getArchiveFilesFormCurrentMonth();
+
+        openArchivesFromFileNames();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        closeArchives();
+    }
 
     @Override
     public void onResume() {
@@ -105,21 +117,25 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         archivesAdapter.notifyDataSetChanged();
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
-
-
     }
 
+    /**
+     * 从指定目录读取所有已保存的列表
+     */
     private void openArchivesFromFileNames() {
-        closeArchives();
+
+
         Iterator<String> iterator = archiveFileNames.iterator();
         while (iterator.hasNext()) {
             String name = (String) iterator.next();
             try {
-                archives.add(new Archive(context, name));
+                Archive archive = new Archive(context, name);
+                if (archive.getArchiveMeta().getCount() > 0) {
+                    archives.add(archive);
+                }
             } catch (IOException e) {
                 Logger.e(getString(R.string.archive_not_exists));
                 continue;
@@ -127,16 +143,18 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         }
     }
 
+    /**
+     * 清除列表
+     */
     private void closeArchives() {
-        if (archives != null && archives.size() > 1) {
-            Iterator<Archive> iterator = archives.iterator();
-            while (iterator.hasNext()) {
-                Archive archive = (Archive) iterator.next();
+        Iterator<Archive> iterator = archives.iterator();
+        while (iterator.hasNext()) {
+            Archive archive = (Archive) iterator.next();
+            if (archive != null) {
                 archive.close();
             }
-
-            archives.clear();
         }
+        archives.clear();
     }
 
 //

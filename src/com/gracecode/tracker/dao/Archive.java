@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Archive {
+    public static final int MODE_READ_ONLY = 0x001;
+    public static final int MODE_READ_WRITE = 0x002;
 
     private static final String NEVER_USED_LOCATION_PROVIDER = "";
     protected String archiveName;
@@ -92,20 +94,20 @@ public class Archive {
     public Archive(Context context, String name) throws IOException {
         this.context = context;
         geoPoints = new ArrayList<Location>();
-        this.open(name);
+        this.open(name, MODE_READ_WRITE);
     }
 
     public Archive(Context context, String name, int mode) throws IOException {
         this.context = context;
         geoPoints = new ArrayList<Location>();
-        this.open(name);
+        this.open(name, mode);
     }
 
     public String getArchiveFileName() {
         return archiveName;
     }
 
-    public void open(String name) throws IOException {
+    public void open(String name, int mode) throws IOException {
         File f = new File(name);
         if (!f.exists()) {
             throw new IOException();
@@ -113,8 +115,20 @@ public class Archive {
 
         this.archiveName = name;
         databaseHelper = new ArchiveDatabaseHelper(context, name);
-        database = databaseHelper.getReadableDatabase();
+        switch (mode) {
+            case MODE_READ_ONLY:
+                database = databaseHelper.getReadableDatabase();
+                break;
+            case MODE_READ_WRITE:
+            default:
+                database = databaseHelper.getWritableDatabase();
+                break;
+        }
         archiveMeta = new ArchiveMeta(this);
+    }
+
+    public void open(String name) throws IOException {
+        open(name, MODE_READ_WRITE);
     }
 
     public void openOrCreate(String name) {
@@ -123,13 +137,15 @@ public class Archive {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            open(name);
-
-            // 重新开启可读写的数据库
-            database = databaseHelper.getWritableDatabase();
+            open(name, MODE_READ_WRITE);
         } catch (IOException e) {
-
+            Logger.e(e.getMessage());
         }
+    }
+
+    public boolean delete() {
+        close();
+        return (new File(archiveName)).delete();
     }
 
     public ArchiveMeta getArchiveMeta() {

@@ -20,6 +20,7 @@ public class Base extends Activity {
     public Intent recordServerIntent;
     protected ActionBar actionBar;
     protected Base context;
+    protected Recoder.ServiceBinder serviceBinder = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,6 @@ public class Base extends Activity {
         MobclickAgent.onError(this);
     }
 
-    protected Recoder.ServiceBinder serviceBinder = null;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
