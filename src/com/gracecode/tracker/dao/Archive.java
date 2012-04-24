@@ -11,15 +11,13 @@ import android.location.Location;
 import com.gracecode.tracker.util.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Archive {
     public static final int MODE_READ_ONLY = 0x001;
     public static final int MODE_READ_WRITE = 0x002;
-
+    public static final String TABLE_NAME = "records";
     private static final String NEVER_USED_LOCATION_PROVIDER = "";
-    protected String archiveName;
 
     public final static class DATABASE_COLUMN {
         static final String ID = "id";
@@ -34,8 +32,6 @@ public class Archive {
         static final String META_NAME = "meta";
         static final String META_VALUE = "value";
     }
-
-    public static final String TABLE_NAME = "records";
 
     protected class ArchiveDatabaseHelper extends SQLiteOpenHelper {
 
@@ -80,41 +76,54 @@ public class Archive {
         }
     }
 
-    private ArrayList<Location> geoPoints;
-    private ArchiveMeta archiveMeta = null;
+    protected String name;
+    private ArrayList<Location> locations;
+    private ArchiveMeta meta;
     protected ArchiveDatabaseHelper databaseHelper = null;
-    protected SQLiteDatabase database = null;
+    protected SQLiteDatabase database;
     protected Context context;
+    protected int mode = MODE_READ_ONLY;
 
     public Archive(Context context) {
         this.context = context;
-        geoPoints = new ArrayList<Location>();
+        this.locations = new ArrayList<Location>();
     }
 
-    public Archive(Context context, String name) throws IOException {
+    public Archive(Context context, String name) {
         this.context = context;
-        geoPoints = new ArrayList<Location>();
-        this.open(name, MODE_READ_WRITE);
+        this.locations = new ArrayList<Location>();
+        this.open(name, MODE_READ_ONLY);
     }
 
-    public Archive(Context context, String name, int mode) throws IOException {
+    public Archive(Context context, String name, int mode) {
         this.context = context;
-        geoPoints = new ArrayList<Location>();
-        this.open(name, mode);
+        this.locations = new ArrayList<Location>();
+        this.mode = mode;
+        this.open(name, this.mode);
     }
 
-    public String getArchiveFileName() {
-        return archiveName;
+    public String getName() {
+        return name;
     }
 
-    public void open(String name, int mode) throws IOException {
-        File f = new File(name);
-        if (!f.exists()) {
-            throw new IOException();
+    public void open(String name, int mode) {
+        // 防止重复打开数据库
+        if (databaseHelper != null) {
+            close();
         }
+        this.name = name;
+        this.mode = mode;
+        this.databaseHelper = new ArchiveDatabaseHelper(context, name);
 
-        this.archiveName = name;
-        databaseHelper = new ArchiveDatabaseHelper(context, name);
+        this.reopen(this.mode);
+        this.meta = new ArchiveMeta(this);
+    }
+
+    public void open(String name) {
+        open(name, MODE_READ_ONLY);
+    }
+
+    public SQLiteDatabase reopen(int mode) {
         switch (mode) {
             case MODE_READ_ONLY:
                 database = databaseHelper.getReadableDatabase();
@@ -124,32 +133,19 @@ public class Archive {
                 database = databaseHelper.getWritableDatabase();
                 break;
         }
-        archiveMeta = new ArchiveMeta(this);
-    }
 
-    public void open(String name) throws IOException {
-        open(name, MODE_READ_WRITE);
-    }
-
-    public void openOrCreate(String name) {
-        File file = new File(name);
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            open(name, MODE_READ_WRITE);
-        } catch (IOException e) {
-            Logger.e(e.getMessage());
-        }
+        return database;
     }
 
     public boolean delete() {
-        close();
-        return (new File(archiveName)).delete();
+        if (databaseHelper != null) {
+            close();
+        }
+        return (new File(name)).delete();
     }
 
-    public ArchiveMeta getArchiveMeta() {
-        return archiveMeta;
+    public ArchiveMeta getMeta() {
+        return meta;
     }
 
     public boolean add(Location point) {
@@ -172,47 +168,50 @@ public class Archive {
         return false;
     }
 
+    /**
+     * 获取最后个已记录的位置
+     *
+     * @return
+     */
     public Location getLastRecord() {
-        Cursor cursor = null;
-        Location point = null;
         try {
-            cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME
+            Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME
                 + " ORDER BY time DESC LIMIT 1", null);
             cursor.moveToFirst();
+
             if (cursor.getCount() > 0) {
-                point = getLocationFromCursor(cursor);
+                return getLocationFromCursor(cursor);
             }
             cursor.close();
         } catch (SQLiteException e) {
             Logger.e(e.getMessage());
         }
 
-        return point;
+        return null;
     }
 
     private Location getLocationFromCursor(Cursor cursor) {
-        Location points = new Location(NEVER_USED_LOCATION_PROVIDER);
+        Location location = new Location(NEVER_USED_LOCATION_PROVIDER);
 
-        points.setLatitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.LATITUDE)));
-        points.setLongitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.LONGITUDE)));
-        points.setBearing(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.BEARING)));
-        points.setAltitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.ALTITUDE)));
-        points.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.ACCURACY)));
-        points.setSpeed(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.SPEED)));
-        points.setTime(cursor.getLong(cursor.getColumnIndex(DATABASE_COLUMN.TIME)));
+        location.setLatitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.LATITUDE)));
+        location.setLongitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.LONGITUDE)));
+        location.setBearing(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.BEARING)));
+        location.setAltitude(cursor.getDouble(cursor.getColumnIndex(DATABASE_COLUMN.ALTITUDE)));
+        location.setAccuracy(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.ACCURACY)));
+        location.setSpeed(cursor.getFloat(cursor.getColumnIndex(DATABASE_COLUMN.SPEED)));
+        location.setTime(cursor.getLong(cursor.getColumnIndex(DATABASE_COLUMN.TIME)));
 
-        return points;
+        return location;
     }
 
     public ArrayList<Location> fetchAll() {
-        Cursor cursor = null;
         try {
-            cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY time DESC", null);
+            Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY time DESC", null);
 
-            geoPoints.clear();
+            locations.clear();
             for (int i = 0; i < cursor.getCount(); i++) {
                 cursor.moveToPosition(i);
-                geoPoints.add(getLocationFromCursor(cursor));
+                locations.add(getLocationFromCursor(cursor));
             }
 
             cursor.close();
@@ -222,10 +221,13 @@ public class Archive {
             Logger.e(e.getMessage());
         }
 
-        return geoPoints;
+        return locations;
     }
 
     public void close() {
-        databaseHelper.close();
+        if (databaseHelper != null) {
+            databaseHelper.close();
+            databaseHelper = null;
+        }
     }
 }

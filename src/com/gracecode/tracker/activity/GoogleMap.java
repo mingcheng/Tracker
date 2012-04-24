@@ -12,11 +12,10 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.util.UIHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GoogleMap extends MapActivity {
-    private static final String ARCHIVE_FILE_NAME = "archiveName";
+    private static final String ARCHIVE_FILE_NAME = "name";
 
     private MapView mapView;
     private MapController mapController;
@@ -35,12 +34,7 @@ public class GoogleMap extends MapActivity {
         uiHelper = new UIHelper(context);
 
         context = getApplicationContext();
-        try {
-            archive = new Archive(context, getIntent().getStringExtra(ARCHIVE_FILE_NAME));
-        } catch (IOException e) {
-            uiHelper.showLongToast(getString(R.string.archive_not_exists));
-            finish();
-        }
+        archive = new Archive(context, getIntent().getStringExtra(ARCHIVE_FILE_NAME));
         locations = archive.fetchAll();
 
         mapView.getOverlays().add(new WalkedOverlay());

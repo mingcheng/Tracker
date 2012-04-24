@@ -12,7 +12,6 @@ import com.gracecode.tracker.dao.ArchiveMeta;
 import com.markupartist.android.widget.ActionBar;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,13 +34,8 @@ public class Detail extends Base implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        try {
-            archive = new Archive(context, archiveFileName);
-            archiveMeta = archive.getArchiveMeta();
-        } catch (IOException e) {
-            uiHelper.showLongToast(getString(R.string.archive_not_exists));
-            finish();
-        }
+        archive = new Archive(context, archiveFileName, Archive.MODE_READ_WRITE);
+        archiveMeta = archive.getMeta();
 
         setContentView(R.layout.detail);
 
@@ -61,15 +55,15 @@ public class Detail extends Base implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 
-        mArchiveName.setText(archive.getArchiveFileName());
+        mArchiveName.setText(archive.getName());
         mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
 
         Date endTime = archiveMeta.getEndTime();
         mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
 
-        mDistance.setText(String.valueOf(archiveMeta.getDistance()));
+        mDistance.setText(String.valueOf(archiveMeta.getDistance() / 1000));
         mRecords.setText(String.valueOf(archiveMeta.getCount()));
-
+        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * 3600 / 1000));
         mDescription.setText(archiveMeta.getDescription());
 
         mButton.setOnClickListener(this);
@@ -84,7 +78,7 @@ public class Detail extends Base implements View.OnClickListener {
             @Override
             public void performAction(View view) {
                 Intent intent = new Intent(context, BaiduMap.class);
-                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getArchiveFileName());
+                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
                 startActivity(intent);
             }
         });

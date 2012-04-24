@@ -18,7 +18,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="save_kml_finished">KML file is ready.</string>
     <string name="saving">Saving. Please wait...</string>
-    <string name="still_running">GPS Recorder is still running, open the menu to stop recording.</string>
+    <string name="still_running">Tracker is still running.</string>
     <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder(author: @feelinglucky)</string>
     <string name="initialing">Initialing</string>
     <string name="recording">Recording</string>

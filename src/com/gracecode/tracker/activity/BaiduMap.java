@@ -15,7 +15,6 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class BaiduMap extends MapActivity {
@@ -71,12 +70,8 @@ public class BaiduMap extends MapActivity {
 
         uiHelper = new UIHelper(context);
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        try {
-            archive = new Archive(getApplicationContext(), archiveFileName);
-        } catch (IOException e) {
-            uiHelper.showLongToast(getString(R.string.archive_not_exists));
-            finish();
-        }
+        archive = new Archive(getApplicationContext(), archiveFileName);
+
 
         locations = archive.fetchAll();
 

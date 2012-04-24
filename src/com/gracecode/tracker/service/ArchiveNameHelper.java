@@ -91,7 +91,7 @@ public class ArchiveNameHelper {
         return getArchiveFilesNameByMonth(new Date());
     }
 
-    public String getNewArchiveFileName() {
+    public String getNewName() {
         String RECORD_BY = sharedPreferences.getString(Preference.RECORD_BY, Preference.RECORD_BY_TIMES);
         String databaseFileName = System.currentTimeMillis() + SQLITE_DATABASE_FILENAME_EXT;
         if (RECORD_BY.equals(Preference.RECORD_BY_DAY)) {
@@ -108,7 +108,7 @@ public class ArchiveNameHelper {
      *
      * @return
      */
-    public String getResumeArchiveFileName() {
+    public String getResumeName() {
         if (sharedPreferences.contains(LAST_OPENED_ARCHIVE_FILE_NAME)) {
             return sharedPreferences.getString(LAST_OPENED_ARCHIVE_FILE_NAME, "");
         }
@@ -116,7 +116,7 @@ public class ArchiveNameHelper {
         return null;
     }
 
-    public boolean clearLastOpenedArchiveFileName() {
+    public boolean clearLastOpenedName() {
         if (sharedPreferences.contains(LAST_OPENED_ARCHIVE_FILE_NAME)) {
             editor.remove(LAST_OPENED_ARCHIVE_FILE_NAME);
             return editor.commit();
@@ -125,13 +125,13 @@ public class ArchiveNameHelper {
         return false;
     }
 
-    public boolean setLastOpenedArchiveFileName(String name) {
+    public boolean setLastOpenedName(String name) {
         editor.putString(LAST_OPENED_ARCHIVE_FILE_NAME, name);
         return editor.commit();
     }
 
-    public boolean hasResumeArchiveFile() {
-        String resumeArchiveFileName = getResumeArchiveFileName();
+    public boolean hasResumeName() {
+        String resumeArchiveFileName = getResumeName();
         if (resumeArchiveFileName != null) {
             File resumeFile = new File(resumeArchiveFileName);
             return (resumeFile.exists() && resumeFile.isFile() && resumeFile.canWrite()) ? true : false;

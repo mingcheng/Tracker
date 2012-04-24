@@ -5,6 +5,7 @@ import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.util.Logger;
 
 import java.math.BigDecimal;
@@ -15,10 +16,12 @@ import java.math.BigDecimal;
  * @author mingcheng<lucky@gracecode.com>
  */
 public class Listener implements LocationListener {
+    private final static int ACCURACY = 3;
+
     private Archive archive;
+    private ArchiveMeta meta = null;
     private BigDecimal lastLatitude;
     private BigDecimal lastLongitude;
-    private final static int ACCURACY = 3;
 
     public Listener(Archive archive) {
         this.archive = archive;
@@ -43,11 +46,25 @@ public class Listener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (filter(location) && archive.add(location)) {
+            this.meta = archive.getMeta();
             Logger.i(String.format(
                 "Location(%f, %f) has been saved into database.", lastLatitude, lastLongitude
             ));
+
+            // 另外开个线程处理，避免线程锁住
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (meta != null) {
+                        meta.setRawDistance();
+                        meta.setRawCount();
+                        meta.setRawAverageSpeed();
+                    }
+                }
+            }).start();
         }
     }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -73,4 +90,3 @@ public class Listener implements LocationListener {
 
     }
 }
-

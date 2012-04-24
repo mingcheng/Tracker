@@ -13,7 +13,7 @@ public class KMLExporter {
         "    xmlns:kml=\"http://www.opengis.net/kml/2.2\" \n" +
         "    xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
         "    <Document>\n" +
-        "        <archiveName>%s</archiveName>\n" +
+        "        <name>%s</name>\n" +
         "        <description><![CDATA[%s]]></description>\n" +
         "        <Style id=\"redLine\">\n" +
         "            <LineStyle>\n" +
@@ -26,7 +26,7 @@ public class KMLExporter {
         "</kml>";
 
     private final static String COORDINATES_TEMPLATE = "<Placemark>\n" +
-        "            <archiveName>%s</archiveName>\n" +
+        "            <name>%s</name>\n" +
         "            <description><![CDATA[%s]]></description>\n" +
         "            <styleUrl>#redLine</styleUrl>\n" +
         "            <MultiGeometry>\n" +
@@ -37,7 +37,7 @@ public class KMLExporter {
         "        </Placemark>";
 
 //    private final static String POINT_TEMPLATE = "<Placemark>\n" +
-//        "            <archiveName>在第一路口向右转，朝新月路行进 目的地在左侧</archiveName>\n" +
+//        "            <name>在第一路口向右转，朝新月路行进 目的地在左侧</name>\n" +
 //        "            <description>行驶 140&amp;#160;米</description>\n" +
 //        "            <LookAt>\n" +
 //        "                <longitude>120.21091</longitude>\n" +

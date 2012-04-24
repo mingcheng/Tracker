@@ -17,7 +17,7 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
-import com.gracecode.tracker.service.Recoder.ServiceBinder;
+import com.gracecode.tracker.service.Recorder.ServiceBinder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 
@@ -123,13 +123,15 @@ public class Main extends Base {
             String stringValue = "";
             TextView textView = textViewsGroup.get(i);
             long count = 0;
+            float speed = 0;
 
             try {
                 if (isRunning) {
                     lastLocationRecord = serviceBinder.getLastRecord();
-                    archiveMeta = serviceBinder.getArchiveMeta();
+                    archiveMeta = serviceBinder.getMeta();
                     archive = serviceBinder.getArchive();
                     count = archiveMeta.getCount();
+                    speed = archiveMeta.getAverageSpeed();
                 }
 
                 switch (textView.getId()) {
@@ -146,10 +148,10 @@ public class Main extends Base {
                         break;
                     case R.id.distance:
                         // @todo 考虑性能问题
-                        if (++needCountDistance % 5 == 0) {
+                        if (++needCountDistance % 5 == 0 && isRunning) {
                             float distance = archiveMeta.getDistance();
                             if (distance > 0) {
-                                numberValue = distance;
+                                numberValue = distance / 1000;
                                 textView.setVisibility(View.VISIBLE);
                             } else {
                                 textView.setVisibility(View.INVISIBLE);
@@ -161,13 +163,12 @@ public class Main extends Base {
                             new Date(isRunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
                         break;
                     case R.id.speed:
-                        double speed = lastLocationRecord.getSpeed();
                         if (maxSpeed < speed) {
                             maxSpeed = speed;
                         }
 
-                        if (maxSpeed != 0.0) {
-                            stringValue = String.format("%.1f(%.1f)", speed, maxSpeed);
+                        if (speed > 0) {
+                            stringValue = String.format("%.1f(%.1f)", speed * 3600 / 1000, maxSpeed * 3600 / 1000);
                         } else {
                             throw new NullPointerException();
                         }
@@ -252,14 +253,14 @@ public class Main extends Base {
             public void onClick(View view) {
                 if (serviceBinder != null) {
                     if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
-                        long count = archiveMeta.getCount();
+                        long count = archiveMeta.getRawCount();
                         serviceBinder.stopRecord();
                         toggleButton.setChecked(false);
 
                         // 如果已经有记录，则显示保存信息
                         if (count > 0) {
                             Intent intent = new Intent(context, Detail.class);
-                            intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getArchiveFileName());
+                            intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
                             startActivity(intent);
                         }
                     } else {
