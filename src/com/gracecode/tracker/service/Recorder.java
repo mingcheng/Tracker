@@ -111,7 +111,7 @@ public class Recorder extends Service {
                     @Override
                     public void run() {
                         float distance = meta.getDistance();
-                        long count = meta.getRawCount();
+                        long count = meta.getCount();
                         if (count > 0) {
                             notifier.setRecords(count);
                         }
@@ -133,7 +133,7 @@ public class Recorder extends Service {
             if (status == ServiceBinder.STATUS_RUNNING) {
                 locationManager.removeUpdates(listener);
 
-                long totalCount = getMeta().getRawCount();
+                long totalCount = getMeta().getCount();
                 if (totalCount <= 0) {
                     (new File(archivName)).delete();
                     uiHelper.showLongToast(getString(R.string.not_record_anything));

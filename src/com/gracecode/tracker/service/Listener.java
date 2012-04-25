@@ -57,8 +57,6 @@ public class Listener implements LocationListener {
                 public void run() {
                     if (meta != null) {
                         meta.setRawDistance();
-                        meta.setRawCount();
-                        meta.setRawAverageSpeed();
                     }
                 }
             }).start();

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.Main;
+import com.gracecode.tracker.activity.Tracker;
 
 public class Notifier extends Notification {
     private NotificationManager notificationManager;
@@ -24,7 +24,7 @@ public class Notifier extends Notification {
         this.flags |= Notification.DEFAULT_LIGHTS;
         this.context = context;
 
-        this.intent = new Intent(context, Main.class);
+        this.intent = new Intent(context, Tracker.class);
         this.intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.contentIntent = PendingIntent.getActivity(context, 0, intent, 0);

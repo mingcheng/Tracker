@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:orientation="vertical"
+              android:padding="10dp"
+              android:layout_height="fill_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView android:text="Time"
+                  style="@style/Item.Title"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="00:02:32"
+                      style="@style/Item.Content"
+                />
+
+            <TextView android:text="32"
+                      style="@style/Item.Title"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView android:text="Distance"
+                  style="@style/Item.Title"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="434.32"
+                      style="@style/Item.Content"
+                />
+
+            <TextView android:text="km"
+                      style="@style/Item.Title"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginBottom="15dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:text="Speed"
+                  style="@style/Item.Title"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="34.32"
+                      style="@style/Item.Content"
+                />
+
+            <TextView android:text="km/h"
+                      style="@style/Item.Title"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:text="Max Speed"
+                  style="@style/Item.Title"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="134.32"
+                      style="@style/Item.Content"
+                />
+
+            <TextView android:text="km/h"
+                      style="@style/Item.Title"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

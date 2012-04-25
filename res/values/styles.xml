@@ -5,17 +5,17 @@
 
     <style name="Item.Content" parent="@android:style/TextAppearance.Large">
         <item name="android:textColor">@color/highlight</item>
-        <item name="android:layout_marginBottom">20dip</item>
-        <item name="android:layout_marginTop">5dip</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginRight">10dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">42sp</item>
     </style>
 
     <style name="Item.Title" parent="@android:style/TextAppearance.Small">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/title</item>
-        <item name="android:layout_column">1</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Status.Time" parent="@android:style/TextAppearance.Medium">

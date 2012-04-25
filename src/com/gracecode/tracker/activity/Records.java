@@ -66,7 +66,7 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
 
             File f = new File(archive.getName());
             countView.setText(String.format("%.2fm", archiveMeta.getDistance()));
-            betweenView.setText(String.valueOf(archiveMeta.getRawCount()));
+            betweenView.setText(String.valueOf(archiveMeta.getCount()));
             nameView.setText(f.getName());
 
             String description = archiveMeta.getDescription();

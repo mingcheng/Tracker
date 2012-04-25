@@ -20,9 +20,12 @@ public class ArchiveMeta {
     public static final String AVERAGE_SPEED = "AVERAGE_SPEED";
     public static final String DISTANCE = "distance";
     public static final String TABLE_NAME = "meta";
+    public static final double KM_PER_HOUR_CNT = 3.597;
 
     protected Archive archive;
     private SQLiteDatabase database;
+    private static final int FUNC_AVG = 0x1;
+    private static final int FUNC_MAX = 0x2;
 
     public ArchiveMeta(Archive archive) {
         this.archive = archive;
@@ -139,7 +142,7 @@ public class ArchiveMeta {
         return result;
     }
 
-    public long getRawCount() {
+    public long getCount() {
         Cursor cursor;
         long count = 0;
         try {
@@ -156,15 +159,6 @@ public class ArchiveMeta {
         }
 
         return count;
-    }
-
-    public boolean setRawCount() {
-        long count = getRawCount();
-        return set(COUNT, String.valueOf(count));
-    }
-
-    public long getCount() {
-        return Long.parseLong(get(COUNT, "0"));
     }
 
 
@@ -194,31 +188,45 @@ public class ArchiveMeta {
         return set(DISTANCE, String.valueOf(distance));
     }
 
-
     public float getDistance() {
         return Float.parseFloat(get(DISTANCE, "0.0"));
     }
 
-    public float getRawAverageSpeed() {
-        ArrayList<Location> locations = archive.fetchAll();
-        if (locations.size() <= 0) {
-            return 0;
-        }
-        float mow = 0;
-        for (int i = 0; i < locations.size(); i++) {
-            Location location = locations.get(i);
-            mow += location.getSpeed();
+    private float getSpeed(int type) {
+        String func;
+        switch (type) {
+            case FUNC_AVG:
+                func = "avg";
+                break;
+            case FUNC_MAX:
+            default:
+                func = "max";
+                break;
         }
 
-        return mow / locations.size();
-    }
+        String sql = "SELECT " + func + "(" + Archive.DATABASE_COLUMN.SPEED
+            + ") AS " + Archive.DATABASE_COLUMN.SPEED
+            + " FROM " + Archive.TABLE_NAME + " LIMIT 1";
 
-    public boolean setRawAverageSpeed() {
-        float speed = getRawAverageSpeed();
-        return set(AVERAGE_SPEED, String.valueOf(speed));
+        Cursor cursor;
+        float speed = 0;
+        try {
+            cursor = database.rawQuery(sql, null);
+            cursor.moveToFirst();
+            speed = cursor.getFloat(cursor.getColumnIndex(Archive.DATABASE_COLUMN.SPEED));
+            cursor.close();
+        } catch (SQLiteException e) {
+            Logger.e(e.getMessage());
+        }
+
+        return speed;
     }
 
     public float getAverageSpeed() {
-        return Float.parseFloat(get(AVERAGE_SPEED, "0.0"));
+        return getSpeed(FUNC_AVG);
+    }
+
+    public float getMaxSpeed() {
+        return getSpeed(FUNC_MAX);
     }
 }

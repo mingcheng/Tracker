@@ -28,6 +28,7 @@ public class Detail extends Base implements View.OnClickListener {
     private Button mButton;
     private SimpleDateFormat formatter;
     private TextView mArchiveName;
+    private TextView mMaxSpeed;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Detail extends Base implements View.OnClickListener {
         mDistance = (TextView) findViewById(R.id.distance);
         mRecords = (TextView) findViewById(R.id.records);
         mSpeed = (TextView) findViewById(R.id.speed);
+        mMaxSpeed = (TextView) findViewById(R.id.max_speed);
         mDescription = (EditText) findViewById(R.id.description);
         mButton = (Button) findViewById(R.id.update);
 
@@ -61,9 +63,10 @@ public class Detail extends Base implements View.OnClickListener {
         Date endTime = archiveMeta.getEndTime();
         mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
 
-        mDistance.setText(String.valueOf(archiveMeta.getDistance() / 1000));
+        mDistance.setText(String.valueOf(archiveMeta.getDistance()));
         mRecords.setText(String.valueOf(archiveMeta.getCount()));
-        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * 3600 / 1000));
+        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
+        mMaxSpeed.setText(String.valueOf(archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
         mDescription.setText(archiveMeta.getDescription());
 
         mButton.setOnClickListener(this);

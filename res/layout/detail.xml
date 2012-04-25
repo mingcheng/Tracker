@@ -78,7 +78,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="speed"
+        android:text="average speed"
         />
 
     <TextView
@@ -86,6 +86,19 @@
         android:layout_width="wrap_content"
         android:text="0"
         android:id="@+id/speed"
+        />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="max speed"
+        />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="0"
+        android:id="@+id/max_speed"
         />
 
     <TextView

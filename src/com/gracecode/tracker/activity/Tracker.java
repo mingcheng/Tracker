@@ -27,9 +27,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Main extends Base {
+public class Tracker extends Base {
     private Timer timer = null;
-    private static double maxSpeed = 0.0;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
     private Location lastLocationRecord;
@@ -124,6 +123,7 @@ public class Main extends Base {
             TextView textView = textViewsGroup.get(i);
             long count = 0;
             float speed = 0;
+            float maxSpeed = 0;
 
             try {
                 if (isRunning) {
@@ -132,6 +132,7 @@ public class Main extends Base {
                     archive = serviceBinder.getArchive();
                     count = archiveMeta.getCount();
                     speed = archiveMeta.getAverageSpeed();
+                    maxSpeed = archiveMeta.getMaxSpeed();
                 }
 
                 switch (textView.getId()) {
@@ -163,12 +164,8 @@ public class Main extends Base {
                             new Date(isRunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
                         break;
                     case R.id.speed:
-                        if (maxSpeed < speed) {
-                            maxSpeed = speed;
-                        }
-
                         if (speed > 0) {
-                            stringValue = String.format("%.1f(%.1f)", speed * 3600 / 1000, maxSpeed * 3600 / 1000);
+                            stringValue = String.format("%.2f(%.2f)", speed, maxSpeed);
                         } else {
                             throw new NullPointerException();
                         }
@@ -317,12 +314,12 @@ public class Main extends Base {
                 return true;
 
             case R.id.records:
-                t = new Intent(Main.this, Records.class);
+                t = new Intent(Tracker.this, Records.class);
                 startActivity(t);
                 return true;
 
             case R.id.configure:
-                t = new Intent(Main.this, Preference.class);
+                t = new Intent(Tracker.this, Preference.class);
                 startActivity(t);
                 return true;
 
