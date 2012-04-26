@@ -3,6 +3,8 @@ package com.gracecode.tracker.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -22,10 +24,7 @@ import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Tracker extends Base {
     private Timer timer = null;
@@ -133,6 +132,25 @@ public class Tracker extends Base {
                     count = archiveMeta.getCount();
                     speed = archiveMeta.getAverageSpeed();
                     maxSpeed = archiveMeta.getMaxSpeed();
+
+
+                    GpsStatus gpsStatus = serviceBinder.getGpsStatus();
+                    Iterator<GpsSatellite> satellites = (gpsStatus.getSatellites()).iterator();
+
+
+                    int k = 0;
+                    int j = 0;
+                    while (satellites.hasNext()) {
+                        GpsSatellite satellite = satellites.next();
+                        if (satellite.hasEphemeris()) {
+                            j++;
+                        }
+                        k++;
+                    }
+
+                    if (i % 50 == 0) {
+                        uiHelper.showShortToast("Connected: " + j + " / " + k + " / " + gpsStatus.getMaxSatellites());
+                    }
                 }
 
                 switch (textView.getId()) {
@@ -165,7 +183,8 @@ public class Tracker extends Base {
                         break;
                     case R.id.speed:
                         if (speed > 0) {
-                            stringValue = String.format("%.2f(%.2f)", speed, maxSpeed);
+                            stringValue = String.format("%.2f(%.2f)",
+                                speed * ArchiveMeta.KM_PER_HOUR_CNT, maxSpeed * ArchiveMeta.KM_PER_HOUR_CNT);
                         } else {
                             throw new NullPointerException();
                         }

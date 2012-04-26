@@ -157,7 +157,7 @@ public class Archive {
         values.put(DATABASE_COLUMN.BEARING, point.getBearing());
         values.put(DATABASE_COLUMN.ALTITUDE, point.getAltitude());
         values.put(DATABASE_COLUMN.ACCURACY, point.getAccuracy());
-        values.put(DATABASE_COLUMN.TIME, point.getTime());
+        values.put(DATABASE_COLUMN.TIME, System.currentTimeMillis());
 
         try {
             return database.insert(TABLE_NAME, null, values) > 0 ? true : false;
@@ -206,7 +206,7 @@ public class Archive {
 
     public ArrayList<Location> fetchAll() {
         try {
-            Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY time DESC", null);
+            Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY time ASC", null);
 
             locations.clear();
             for (int i = 0; i < cursor.getCount(); i++) {

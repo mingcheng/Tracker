@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon"
+        android:src="@drawable/tray"
         android:id="@+id/img"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"

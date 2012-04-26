@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -48,6 +49,7 @@ public class Recorder extends Service {
     private Archive archive;
 
     private Listener listener;
+    private StatusListener statusListener;
     private LocationManager locationManager = null;
 
     private ArchiveNameHelper nameHelper;
@@ -66,6 +68,7 @@ public class Recorder extends Service {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             archive = new Archive(getApplicationContext());
             listener = new Listener(archive);
+            statusListener = new StatusListener();
         }
 
         @Override
@@ -101,7 +104,7 @@ public class Recorder extends Service {
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, listener);
-
+                    locationManager.addGpsStatusListener(statusListener);
                 } catch (SQLiteException e) {
                     Logger.e(e.getMessage());
                 }
@@ -128,10 +131,15 @@ public class Recorder extends Service {
             }
         }
 
+        public GpsStatus getGpsStatus() {
+            return locationManager.getGpsStatus(null);
+        }
+
         @Override
         public void stopRecord() {
             if (status == ServiceBinder.STATUS_RUNNING) {
                 locationManager.removeUpdates(listener);
+                locationManager.removeGpsStatusListener(statusListener);
 
                 long totalCount = getMeta().getCount();
                 if (totalCount <= 0) {

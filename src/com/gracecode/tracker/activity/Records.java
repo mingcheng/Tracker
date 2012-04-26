@@ -131,10 +131,9 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
     private void openArchivesFromFileNames() {
         Iterator<String> iterator = archiveFileNames.iterator();
         while (iterator.hasNext()) {
-            String name = (String) iterator.next();
-
+            String name = iterator.next();
             Archive archive = new Archive(context, name);
-
+//            archive.getMeta().setRawDistance();
             if (archive.getMeta().getCount() > 0) {
                 archives.add(archive);
             }

@@ -2,4 +2,6 @@
     <color name="gray">#666666</color>
     <color name="title">#a2d900</color>
     <color name="highlight">#cccccc</color>
+    <color name="actionbar_background">#272a2c</color>
+    <color name="route_color">#e92525</color>
 </resources>

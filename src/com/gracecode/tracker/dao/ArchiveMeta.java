@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import com.gracecode.tracker.util.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,9 +15,7 @@ public class ArchiveMeta {
     public static final String DESCRIPTION = "DESCRIPTION";
     public static final String END_TIME = "END_TIME";
     public static final String START_TIME = "START_TIME";
-    public static final String COUNT = "COUNT";
-    public static final String AVERAGE_SPEED = "AVERAGE_SPEED";
-    public static final String DISTANCE = "distance";
+    public static final String DISTANCE = "DISTANCE";
     public static final String TABLE_NAME = "meta";
     public static final double KM_PER_HOUR_CNT = 3.597;
 
@@ -48,6 +45,12 @@ public class ArchiveMeta {
         } catch (SQLiteException e) {
             Logger.e(e.getMessage());
         }
+
+        // 自动返回最后更新的数据更新时间
+//        if (result > 0) {
+//            File file = new File(archive.getName());
+//            file.setLastModified(getEndTime().getTime());
+//        }
 
         return result > 0 ? true : false;
     }
@@ -135,10 +138,6 @@ public class ArchiveMeta {
 
     public boolean setDescription(String description) {
         boolean result = set(DESCRIPTION, description);
-        if (result) {
-            File file = new File(archive.getName());
-            file.setLastModified(getEndTime().getTime());
-        }
         return result;
     }
 

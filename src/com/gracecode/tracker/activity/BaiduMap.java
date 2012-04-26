@@ -1,23 +1,26 @@
 package com.gracecode.tracker.activity;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.*;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class BaiduMap extends MapActivity {
+public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeListener {
     private Archive archive;
     private MapView mapView;
     private MapController mapViewController;
@@ -27,10 +30,32 @@ public class BaiduMap extends MapActivity {
     private ActionBar actionBar;
     private UIHelper uiHelper;
     private String archiveFileName;
+    private SeekBar mSeeker;
+    private SimpleDateFormat dateFormat;
+    private ToggleButton mSatellite;
 
     @Override
     protected boolean isRouteDisplayed() {
         return false;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        try {
+            Location location = locations.get(seekBar.getProgress() - 1);
+            uiHelper.showShortToast(dateFormat.format(location.getTime()));
+            setCenterPoint(location);
+        } catch (IndexOutOfBoundsException e) {
+            return;
+        }
     }
 
     // 常用事件监听，用来处理通常的网络错误，授权验证错误等
@@ -66,46 +91,22 @@ public class BaiduMap extends MapActivity {
         actionBar = (ActionBar) findViewById(R.id.action_bar);
 
         mapView.setBuiltInZoomControls(true);
+        //mapView.setDrawOverlayWhenZooming(false);
         mapViewController = mapView.getController();
+        // mapView.setSatellite(true);
+
+        mSeeker = (SeekBar) findViewById(R.id.seek);
+        mSatellite = (ToggleButton) findViewById(R.id.satellite);
 
         uiHelper = new UIHelper(context);
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
+        //archiveFileName = "/mnt/sdcard/tracker/201204/1334727127367.sqlite";
+
+        // @todo 有时差问题
+        dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
+
         archive = new Archive(getApplicationContext(), archiveFileName);
-
-
         locations = archive.fetchAll();
-
-
-        actionBar.addAction(new ActionBar.Action() {
-            @Override
-            public int getDrawable() {
-                return android.R.drawable.ic_delete;
-            }
-
-            @Override
-            public void performAction(View view) {
-                uiHelper.showConfirmDialog(getString(R.string.delete),
-                    String.format(getString(R.string.sure_to_del), archiveFileName),
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (archive.delete()) {
-                                uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
-                            } else {
-                                uiHelper.showLongToast(getString(R.string.delete_error));
-                            }
-                            finish();
-                        }
-                    }, new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }
-                );
-            }
-        });
-
     }
 
     @Override
@@ -113,6 +114,38 @@ public class BaiduMap extends MapActivity {
         if (bMapManager != null) {
             bMapManager.start();
         }
+
+        actionBar.removeAllActions();
+//        actionBar.addAction(new ActionBar.Action() {
+//            @Override
+//            public int getDrawable() {
+//                return android.R.drawable.ic_delete;
+//            }
+//
+//            @Override
+//            public void performAction(View view) {
+//                uiHelper.showConfirmDialog(getString(R.string.delete),
+//                    String.format(getString(R.string.sure_to_del), archiveFileName),
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (archive.delete()) {
+//                                uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
+//                            } else {
+//                                uiHelper.showLongToast(getString(R.string.delete_error));
+//                            }
+//                            finish();
+//                        }
+//                    }, new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                        }
+//                    }
+//                );
+//            }
+//        });
+
         super.onResume();
     }
 
@@ -124,22 +157,45 @@ public class BaiduMap extends MapActivity {
         if (size <= 0) {
             return;
         }
+
+        MyLocationOverlay myLocationOverlay = new MyLocationOverlay(context, mapView);
+        myLocationOverlay.disableMyLocation();
+        myLocationOverlay.disableCompass();
+
+        mSeeker.setMax(locations.size());
+        mSeeker.setProgress(0);
+        mSeeker.setOnSeekBarChangeListener(this);
+
+        mSatellite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mSatellite.isChecked()) {
+                    mapView.setSatellite(true);
+                } else {
+                    mapView.setSatellite(false);
+                }
+
+                bMapManager.stop();
+                bMapManager.start();
+                uiHelper.showShortToast(getString(R.string.toggle_satellite));
+            }
+        });
+
         Location firstLocation = locations.get(0);
 //        Location lastLocation = locations.get(size - 1);
 //        Location centerLocation = locations.get(size / 2);
 
-        mapView.getOverlays().add(new RouteOverlay());
 
-        GeoPoint firstLocationPoint = new GeoPoint(
-            (int) (firstLocation.getLatitude() * 1E6),
-            (int) (firstLocation.getLongitude() * 1E6)
-        );
+        // mapView.getOverlays().add(new RouteOverlay());
+        // mapView.getOverlays().add(myLocationOverlay);
+
+        Drawable marker = getResources().getDrawable(R.drawable.mark);
+        mapView.getOverlays().add(new RouteItemizedOverlay(marker, context));
 
         //float distance = firstLocation.distanceTo(lastLocation);
-
         // @todo 自动计算默认缩放的地图界面
-        mapViewController.setCenter(firstLocationPoint);
-        mapViewController.setZoom(13);
+        setCenterPoint(firstLocation);
+        mapViewController.setZoom(14);
     }
 
     @Override
@@ -148,6 +204,12 @@ public class BaiduMap extends MapActivity {
             bMapManager.stop();
         }
         super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        mapView.getOverlays().clear();
+        super.onStop();
     }
 
     @Override
@@ -160,38 +222,93 @@ public class BaiduMap extends MapActivity {
         super.onDestroy();
     }
 
-    private class RouteOverlay extends Overlay {
+    class RouteItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+        Bitmap bitmap = null;
+
+        private List<OverlayItem> geoPointList = new ArrayList<OverlayItem>();
+        private Paint paint;
+
+        public RouteItemizedOverlay(Drawable marker, Context context) {
+            super(boundCenterBottom(marker));
+
+            for (int i = 0; i < locations.size(); i++) {
+                Location x = locations.get(i);
+
+                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
+                geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
+
+                geoPointList.add(new OverlayItem(geoPoint, x.getLatitude() + "", x.getLongitude() + ""));
+            }
+
+
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);
+            paint.setAlpha(95);
+            paint.setStrokeWidth(6);
+
+            populate();
+        }
+
         @Override
         public void draw(Canvas canvas, MapView mapView, boolean shadow) {
             Projection projection = mapView.getProjection();
 
-            Location loc = archive.getLastRecord();
-            GeoPoint geoPoint = new GeoPoint((int) (loc.getLatitude() * 1E6), (int) (loc.getLongitude() * 1E6));
-            geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
+            GeoPoint lastGeoPoint = null;
+            bitmap = Bitmap.createBitmap(mapView.getWidth(), mapView.getHeight(), Bitmap.Config.ARGB_8888);
 
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setColor(Color.RED);
-            paint.setStrokeWidth(4);
-
-            int offset = 0;
-            GeoPoint lastGeoPoint = geoPoint;
+            Canvas tmpCanvas = new Canvas(bitmap);
             for (int i = 0; i < locations.size(); i++) {
                 Location x = locations.get(i);
 
-                geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
+                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
                 geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
 
-                Point last = projection.toPixels(lastGeoPoint, null);
-
                 Point current = projection.toPixels(geoPoint, null);
-                canvas.drawLine(last.x + offset, last.y + offset, current.x + offset, current.y + offset, paint);
+                if (lastGeoPoint != null) {
+                    Point last = projection.toPixels(lastGeoPoint, null);
+
+                    tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
+                } else {
+                    tmpCanvas.drawPoint(current.x, current.y, paint);
+                }
 
                 lastGeoPoint = geoPoint;
             }
 
-            super.draw(canvas, mapView, shadow);
+            canvas.drawBitmap(bitmap, 0, 0, null);
         }
+
+
+        @Override
+        protected OverlayItem createItem(int i) {
+            return geoPointList.get(i);
+        }
+
+        @Override
+        public int size() {
+            return geoPointList.size();
+        }
+
+
+//        @Override
+//        protected boolean onTap(int i) {
+//            //uiHelper.showShortToast(createItem(i).getSnippet());
+//            return true;
+//        }
     }
 
+
+    private void setCenterPoint(Location location) {
+        GeoPoint geoPoint = new GeoPoint(
+            (int) (location.getLatitude() * 1E6),
+            (int) (location.getLongitude() * 1E6)
+        );
+
+        // 计算地图偏移
+        geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
+
+        // @todo 自动计算默认缩放的地图界面
+        mapViewController.setCenter(geoPoint);
+    }
 }

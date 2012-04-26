@@ -44,4 +44,5 @@
     <string name="calendar">Select Month</string>
     <string name="archive_not_exists">archive not exists</string>
     <string name="updated">Updated</string>
+    <string name="toggle_satellite">Toggle Satellite Mode</string>
 </resources>
