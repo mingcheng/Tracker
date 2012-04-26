@@ -1,7 +1,8 @@
 package com.gracecode.tracker.activity;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         try {
             Location location = locations.get(seekBar.getProgress() - 1);
             uiHelper.showShortToast(dateFormat.format(location.getTime()));
-            setCenterPoint(location);
+            setCenterPoint(location, true);
         } catch (IndexOutOfBoundsException e) {
             return;
         }
@@ -102,7 +103,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         //archiveFileName = "/mnt/sdcard/tracker/201204/1334727127367.sqlite";
 
-        // @todo 有时差问题
         dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
 
         archive = new Archive(getApplicationContext(), archiveFileName);
@@ -194,7 +194,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         //float distance = firstLocation.distanceTo(lastLocation);
         // @todo 自动计算默认缩放的地图界面
-        setCenterPoint(firstLocation);
+        setCenterPoint(firstLocation, false);
         mapViewController.setZoom(14);
     }
 
@@ -233,7 +233,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
             for (int i = 0; i < locations.size(); i++) {
                 Location x = locations.get(i);
-
                 GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
                 geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
 
@@ -241,43 +240,46 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
             }
 
 
-            paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setColor(Color.RED);
-            paint.setAlpha(95);
-            paint.setStrokeWidth(6);
+//            paint = new Paint();
+//            paint.setAntiAlias(true);
+//            paint.setColor(Color.RED);
+//            paint.setAlpha(95);
+//            paint.setStrokeWidth(6);
 
             populate();
         }
 
-        @Override
-        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-            Projection projection = mapView.getProjection();
-
-            GeoPoint lastGeoPoint = null;
-            bitmap = Bitmap.createBitmap(mapView.getWidth(), mapView.getHeight(), Bitmap.Config.ARGB_8888);
-
-            Canvas tmpCanvas = new Canvas(bitmap);
-            for (int i = 0; i < locations.size(); i++) {
-                Location x = locations.get(i);
-
-                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
-                geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
-
-                Point current = projection.toPixels(geoPoint, null);
-                if (lastGeoPoint != null) {
-                    Point last = projection.toPixels(lastGeoPoint, null);
-
-                    tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
-                } else {
-                    tmpCanvas.drawPoint(current.x, current.y, paint);
-                }
-
-                lastGeoPoint = geoPoint;
-            }
-
-            canvas.drawBitmap(bitmap, 0, 0, null);
-        }
+//        @Override
+//        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+//            Projection projection = mapView.getProjection();
+//
+//            GeoPoint lastGeoPoint = null;
+//            int maxWidth = mapView.getWidth();
+//            int maxHeight = mapView.getHeight();
+//            bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
+//
+//            Canvas tmpCanvas = new Canvas(bitmap);
+//            for (int i = 0; i < locations.size(); i++) {
+//                Location x = locations.get(i);
+//
+//                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
+//                geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
+//
+//                Point current = projection.toPixels(geoPoint, null);
+//                if (lastGeoPoint != null) {
+//                    Point last = projection.toPixels(lastGeoPoint, null);
+//                    if (last.y < maxHeight && last.x < maxWidth) {
+//                        tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
+//                    }
+//                } else {
+//                    tmpCanvas.drawPoint(current.x, current.y, paint);
+//                }
+//
+//                lastGeoPoint = geoPoint;
+//            }
+//
+//            canvas.drawBitmap(bitmap, 0, 0, null);
+//        }
 
 
         @Override
@@ -291,15 +293,18 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         }
 
 
-//        @Override
-//        protected boolean onTap(int i) {
-//            //uiHelper.showShortToast(createItem(i).getSnippet());
-//            return true;
-//        }
+        @Override
+        protected boolean onTap(int i) {
+            Location location = locations.get(i);
+            uiHelper.showShortToast(dateFormat.format(location.getTime()));
+            mSeeker.setProgress(i);
+            setCenterPoint(location, true);
+            return true;
+        }
     }
 
 
-    private void setCenterPoint(Location location) {
+    private void setCenterPoint(Location location, boolean animate) {
         GeoPoint geoPoint = new GeoPoint(
             (int) (location.getLatitude() * 1E6),
             (int) (location.getLongitude() * 1E6)
@@ -309,6 +314,14 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
 
         // @todo 自动计算默认缩放的地图界面
-        mapViewController.setCenter(geoPoint);
+        if (animate) {
+            mapViewController.animateTo(geoPoint);
+        } else {
+            mapViewController.setCenter(geoPoint);
+        }
+    }
+
+    private void setCenterPoint(Location location) {
+        setCenterPoint(location, false);
     }
 }
