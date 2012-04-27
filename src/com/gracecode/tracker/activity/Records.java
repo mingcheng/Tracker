@@ -92,6 +92,8 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         this.archives = new ArrayList<Archive>();
         this.archivesAdapter = new ArchivesAdapter(archives);
         this.listView.setAdapter(archivesAdapter);
+
+
     }
 
     @Override

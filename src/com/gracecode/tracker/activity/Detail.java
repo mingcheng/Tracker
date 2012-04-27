@@ -75,7 +75,7 @@ public class Detail extends Base implements View.OnClickListener {
         actionBar.addAction(new ActionBar.Action() {
             @Override
             public int getDrawable() {
-                return android.R.drawable.ic_input_get;
+                return R.drawable.ic_menu_delete;
             }
 
             @Override

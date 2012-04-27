@@ -290,8 +290,10 @@ public class Tracker extends Base {
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.app_name));
             actionBar.removeAllActions();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.clearHomeAction();
             actionBar.addAction(new ActionBar.IntentAction(this,
-                new Intent(this, Records.class), android.R.drawable.ic_menu_send));
+                new Intent(this, Records.class), R.drawable.ic_menu_friendslist));
         }
     }
 

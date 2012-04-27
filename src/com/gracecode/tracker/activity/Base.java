@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.view.View;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.UIHelper;
@@ -52,6 +53,18 @@ public class Base extends Activity {
         bindService(recordServerIntent, serviceConnection, BIND_AUTO_CREATE);
 
         actionBar = (ActionBar) findViewById(R.id.action_bar);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAction(new ActionBar.Action() {
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_menu_home;
+            }
+
+            @Override
+            public void performAction(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

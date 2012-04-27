@@ -18,7 +18,7 @@ public class Notifier extends Notification {
     private Intent intent;
 
     public Notifier(Context context) {
-        super(R.drawable.tray, context.getString(R.string.running), System.currentTimeMillis());
+        super(R.drawable.ic_menu_mapmode, context.getString(R.string.running), System.currentTimeMillis());
 
         this.flags |= Notification.FLAG_ONGOING_EVENT;
         this.flags |= Notification.DEFAULT_LIGHTS;

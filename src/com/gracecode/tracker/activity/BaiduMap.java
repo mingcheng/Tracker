@@ -94,7 +94,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         mapView.setBuiltInZoomControls(true);
         //mapView.setDrawOverlayWhenZooming(false);
         mapViewController = mapView.getController();
-        // mapView.setSatellite(true);
+        mapView.setSatellite(false);
 
         mSeeker = (SeekBar) findViewById(R.id.seek);
         mSatellite = (ToggleButton) findViewById(R.id.satellite);
@@ -195,7 +195,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         //float distance = firstLocation.distanceTo(lastLocation);
         // @todo 自动计算默认缩放的地图界面
         setCenterPoint(firstLocation, false);
-        mapViewController.setZoom(14);
+        mapViewController.setZoom(16);
     }
 
     @Override

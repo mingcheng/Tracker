@@ -47,6 +47,6 @@
     <style name="Status.Distance" parent="Status.Status">
     </style>
     <style name="TrackerActionBar" parent="ActionBar">
-        <item name="android:background">@color/actionbar_background</item>
+        <item name="android:background">@drawable/bg_action_bar</item>
     </style>
 </resources>
