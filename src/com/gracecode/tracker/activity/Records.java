@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-public class Records extends Base implements AdapterView.OnItemClickListener {
+public class Records extends Activity implements AdapterView.OnItemClickListener {
     private Context context;
     public static final String INTENT_ARCHIVE_FILE_NAME = "name";
 
@@ -36,7 +37,6 @@ public class Records extends Base implements AdapterView.OnItemClickListener {
         Archive archive = archives.get(i);
         Intent intent = new Intent(this, Detail.class);
         intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archive.getName());
-
         startActivity(intent);
     }
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
@@ -26,7 +27,7 @@ import com.markupartist.android.widget.ActionBar;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Tracker extends Base {
+public class Tracker extends Activity {
     private Timer timer = null;
 
     private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
@@ -147,10 +148,10 @@ public class Tracker extends Base {
                         }
                         k++;
                     }
-
-                    if (i % 50 == 0) {
-                        uiHelper.showShortToast("Connected: " + j + " / " + k + " / " + gpsStatus.getMaxSatellites());
-                    }
+//
+//                    if (i % 50 == 0) {
+//                        uiHelper.showShortToast("Connected: " + j + " / " + k + " / " + gpsStatus.getMaxSatellites());
+//                    }
                 }
 
                 switch (textView.getId()) {

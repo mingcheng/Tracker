@@ -85,7 +85,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         bMapManager = new BMapManager(getApplication());
         bMapManager.init("30183AD8A6AFE7CE8F649ED4CD258211E8DE78D7", new MyGeneralListener());
-
+//
         super.initMapActivity(bMapManager);
 
         mapView = (MapView) findViewById(R.id.bmapsView);
@@ -111,9 +111,9 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onResume() {
-        if (bMapManager != null) {
-            bMapManager.start();
-        }
+//        if (bMapManager != null) {
+//            bMapManager.start();
+//        }
 
         actionBar.removeAllActions();
 //        actionBar.addAction(new ActionBar.Action() {
@@ -124,25 +124,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 //
 //            @Override
 //            public void performAction(View view) {
-//                uiHelper.showConfirmDialog(getString(R.string.delete),
-//                    String.format(getString(R.string.sure_to_del), archiveFileName),
-//                    new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (archive.delete()) {
-//                                uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
-//                            } else {
-//                                uiHelper.showLongToast(getString(R.string.delete_error));
-//                            }
-//                            finish();
-//                        }
-//                    }, new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                        }
-//                    }
-//                );
+
 //            }
 //        });
 
@@ -200,9 +182,9 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onPause() {
-        if (bMapManager != null) {
-            bMapManager.stop();
-        }
+//        if (bMapManager != null) {
+//            bMapManager.stop();
+//        }
         super.onResume();
     }
 
@@ -214,9 +196,9 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onDestroy() {
-        if (bMapManager != null) {
-            bMapManager.destroy();
-        }
+//        if (bMapManager != null) {
+//            bMapManager.destroy();
+//        }
 
         archive.close();
         super.onDestroy();

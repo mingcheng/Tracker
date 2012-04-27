@@ -1,6 +1,5 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.activity.base;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,12 +14,12 @@ import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
 
-public class Base extends Activity {
+public abstract class Activity extends android.app.Activity {
     protected SharedPreferences sharedPreferences;
     protected UIHelper uiHelper;
     public Intent recordServerIntent;
     protected ActionBar actionBar;
-    protected Base context;
+    protected Activity context;
     protected Recorder.ServiceBinder serviceBinder = null;
 
     @Override

@@ -7,117 +7,154 @@
 
     <include layout="@layout/action_bar" />
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="archive"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/archive_name"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="start time"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/start_time"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="end time"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/end_time"
-        />
-
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="distance"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/distance"
-        />
-
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="records"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/records"
-        />
-
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="average speed"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/speed"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="max speed"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="0"
-        android:id="@+id/max_speed"
-        />
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="description"
-        />
-    <EditText
-        android:layout_height="wrap_content"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:text="de"
-        android:minLines="3"
-        android:gravity="top"
-        android:id="@+id/description"
-        />
+        android:layout_height="200dp"
+        >
 
-    <Button android:layout_height="wrap_content"
+        <com.baidu.mapapi.MapView
             android:layout_width="fill_parent"
-            android:id="@+id/update"
-            android:text="Update"
-        />
+            android:layout_height="fill_parent"
+            android:id="@+id/bmapsView"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false" />
+
+        <TextView
+            android:id="@+id/map_mask"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            />
+    </FrameLayout>
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="archive"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/archive_name"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="start time"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/start_time"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="end time"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/end_time"
+                />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="distance"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/distance"
+                />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="records"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/records"
+                />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="average speed"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/speed"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="max speed"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="0"
+                android:id="@+id/max_speed"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="description"
+                />
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:text="de"
+                android:minLines="3"
+                android:gravity="top"
+                android:id="@+id/description"
+                />
+
+            <Button android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:id="@+id/update"
+                    android:text="Update"
+                />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
+
+

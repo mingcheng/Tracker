@@ -19,6 +19,7 @@ public class Archive {
     public static final String TABLE_NAME = "records";
     private static final String NEVER_USED_LOCATION_PROVIDER = "";
 
+
     public final static class DATABASE_COLUMN {
         static final String ID = "id";
         static final String LATITUDE = "latitude";
@@ -142,6 +143,11 @@ public class Archive {
             close();
         }
         return (new File(name)).delete();
+    }
+
+
+    public boolean exists() {
+        return (new File(name)).exists();
     }
 
     public ArchiveMeta getMeta() {
