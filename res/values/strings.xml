@@ -54,4 +54,6 @@
     <string name="kmh">km/h</string>
     <string name="item_speed">SPEED</string>
     <string name="item_records">RECORDS</string>
+    <string name="item_end_time">END TIME</string>
+    <string name="item_start_time">START TIME</string>
 </resources>

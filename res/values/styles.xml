@@ -144,4 +144,18 @@
         <item name="android:layout_height">3px</item>
         <item name="android:background">@color/highlight_border</item>
     </style>
+    <style name="Item.TitleSecond.Gray" parent="Item.TitleSecond">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+    <style name="Item.Content.Small" parent="Item.Content">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/title</item>
+    </style>
+    <style name="Cell.Vertical.Time" parent="Cell">
+        <item name="android:layout_weight">2</item>
+        <item name="android:src">@drawable/to</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
 </resources>

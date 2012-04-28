@@ -13,14 +13,21 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <FrameLayout
+
+        <LinearLayout
             android:layout_alignParentBottom="true"
             android:id="@+id/status_layout"
             android:layout_width="fill_parent"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
+
+            <include
+                layout="@layout/archive_meta_time" />
+
             <include
                 layout="@layout/archive_meta_items" />
-        </FrameLayout>
+        </LinearLayout>
+
 
         <LinearLayout
             android:orientation="vertical"
