@@ -16,7 +16,6 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -50,6 +49,38 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
             super(context, R.layout.records_row, archives);
         }
 
+        protected String countTime(Date start, Date end) {
+            try {
+                long startTimeStamp = start.getTime();
+                long endTimeStamp = end.getTime();
+                long between = endTimeStamp - startTimeStamp;
+
+                long day = between / (24 * 60 * 60 * 1000);
+                long hour = (between / (60 * 60 * 1000) - day * 24);
+                long minute = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
+                long second = (between / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60);
+
+                String result = "";
+                if (day > 0) {
+                    result += day + "d";
+                }
+
+                if (hour > 0) {
+                    result += ((result.length() > 0) ? ", " : "") + hour + "h";
+                }
+                if (minute > 0) {
+                    result += ((result.length() > 0) ? ", " : "") + minute + "min";
+                }
+                if (day <= 0 && second > 0) {
+                    result += ((result.length() > 0) ? ", " : "") + second + "sec";
+                }
+
+                return result;
+            } catch (NullPointerException e) {
+                return "";
+            }
+        }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -59,21 +90,23 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.records_row, parent, false);
 
-            TextView countView = (TextView) rowView.findViewById(R.id.db_records_num);
-            TextView nameView = (TextView) rowView.findViewById(R.id.db_name);
-            TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
-            TextView betweenView = (TextView) rowView.findViewById(R.id.between);
+            TextView mDescription = (TextView) rowView.findViewById(R.id.description);
+            TextView mCostTime = (TextView) rowView.findViewById(R.id.cost_time);
+            TextView mDistance = (TextView) rowView.findViewById(R.id.distance);
 
-            File f = new File(archive.getName());
-            countView.setText(String.format("%.2fm", archiveMeta.getDistance()));
-            betweenView.setText(String.valueOf(archiveMeta.getCount()));
-            nameView.setText(f.getName());
+            mDistance.setText(String.format("%02.2f", archiveMeta.getDistance() / 1000));
+
+            Date startTime = archiveMeta.getStartTime();
+            Date endTime = archiveMeta.getEndTime();
+
+            String costTime = countTime(startTime, endTime);
+            mCostTime.setText(costTime);
 
             String description = archiveMeta.getDescription();
             if (description.length() <= 0) {
                 description = getString(R.string.no_description);
             }
-            descriptionView.setText(description);
+            mDescription.setText(description);
 
             return rowView;
         }
@@ -135,7 +168,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         while (iterator.hasNext()) {
             String name = iterator.next();
             Archive archive = new Archive(context, name);
-//            archive.getMeta().setRawDistance();
+
             if (archive.getMeta().getCount() > 0) {
                 archives.add(archive);
             }
@@ -155,27 +188,6 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         }
         archives.clear();
     }
-
-    //长按菜单响应
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-//        final int position = info.position;
-//
-//        switch (item.getItemId()) {
-//            case R.id.export:
-//                return true;
-//
-//            case R.id.description:
-//
-//                return true;
-//            case R.id.delete:
-//
-//                return true;
-//        }
-//        return false;
-//    }
-
 
     @Override
     public void onDestroy() {

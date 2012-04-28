@@ -3,6 +3,7 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
+              style="@style/LightBackground"
     >
 
     <include layout="@layout/action_bar" />
@@ -11,6 +12,9 @@
         android:id="@+id/records_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:focusable="false"
+        android:scrollingCache="false"
+        android:fadingEdge="none"
+        android:divider="@color/divider"
+        android:dividerHeight="1px"
         />
 </LinearLayout>

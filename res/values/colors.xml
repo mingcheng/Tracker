@@ -1,8 +1,11 @@
 <resources>
-    <color name="gray">#666666</color>
-    <color name="title">#a2d900</color>
-    <color name="highlight">#cccccc</color>
-    <color name="route_color">#e92525</color>
+    <color name="gray">#999999</color>
+    <color name="title">#222222</color>
+    <color name="title_second">#666666</color>
+    <color name="highlight">#d0644f</color>
+    <color name="highlight_border">#b45646</color>
+    <color name="mils">#6c928c</color>
+    <color name="divider">#ffffff</color>
 
     <!--action bar-->
     <color name="actionbar_separator">#2e3234</color>

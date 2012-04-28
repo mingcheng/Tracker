@@ -3,6 +3,11 @@
 
     </style>
 
+
+    <style name="LightBackground">
+        <item name="android:background">@drawable/background</item>
+    </style>
+
     <style name="Item.Content" parent="@android:style/TextAppearance.Large">
         <item name="android:textColor">@color/highlight</item>
         <item name="android:layout_marginRight">10dip</item>
@@ -48,5 +53,22 @@
     </style>
     <style name="TrackerActionBar" parent="ActionBar">
         <item name="android:background">@drawable/bg_action_bar</item>
+    </style>
+
+
+    <style name="BigTitle">
+        <item name="android:textColor">@color/mils</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="SecondTitle">
+        <item name="android:textColor">@color/title_second</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

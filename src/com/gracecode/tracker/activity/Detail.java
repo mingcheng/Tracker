@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.baidu.mapapi.MapView;
+import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
@@ -19,7 +19,7 @@ import com.markupartist.android.widget.ActionBar;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Detail extends MapActivity implements View.OnClickListener {
+public class Detail extends MapActivity implements View.OnClickListener, MKSearchListener {
     private String archiveFileName;
     private ActionBar actionBar;
     private Archive archive;
@@ -38,7 +38,6 @@ public class Detail extends MapActivity implements View.OnClickListener {
     private UIHelper uiHelper;
 
     private TextView mapMask;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,15 +62,10 @@ public class Detail extends MapActivity implements View.OnClickListener {
         mMaxSpeed = (TextView) findViewById(R.id.max_speed);
         mDescription = (EditText) findViewById(R.id.description);
         mButton = (Button) findViewById(R.id.update);
-
-//        mapView.setSatellite(false);
-
         mapMask = (TextView) findViewById(R.id.map_mask);
 
         formatter = new SimpleDateFormat(getString(R.string.time_format));
         uiHelper = new UIHelper(context);
-
-
     }
 
     @Override
@@ -94,9 +88,18 @@ public class Detail extends MapActivity implements View.OnClickListener {
             }
         });
 
+
+        String description = archiveMeta.getDescription().trim();
+        if (description.length() > 0) {
+            mDescription.setText(description);
+        } else {
+            MKSearch searcher = new MKSearch();
+            searcher.init(bMapManager, this);
+            searcher.reverseGeocode(getRealGeoPointFromLocation(archive.getLastRecord()));
+        }
+
         mArchiveName.setText(archive.getName());
         mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
-
         Date endTime = archiveMeta.getEndTime();
         mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
 
@@ -104,7 +107,7 @@ public class Detail extends MapActivity implements View.OnClickListener {
         mRecords.setText(String.valueOf(archiveMeta.getCount()));
         mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
         mMaxSpeed.setText(String.valueOf(archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
-        mDescription.setText(archiveMeta.getDescription());
+
 
         mButton.setOnClickListener(this);
 
@@ -162,5 +165,28 @@ public class Detail extends MapActivity implements View.OnClickListener {
         if (description.length() > 0 && archiveMeta.setDescription(description)) {
             uiHelper.showShortToast(getString(R.string.updated));
         }
+    }
+
+    @Override
+    public void onGetPoiResult(MKPoiResult mkPoiResult, int i, int i1) {
+    }
+
+    @Override
+    public void onGetTransitRouteResult(MKTransitRouteResult mkTransitRouteResult, int i) {
+    }
+
+    @Override
+    public void onGetDrivingRouteResult(MKDrivingRouteResult mkDrivingRouteResult, int i) {
+    }
+
+    @Override
+    public void onGetWalkingRouteResult(MKWalkingRouteResult mkWalkingRouteResult, int i) {
+    }
+
+    @Override
+    public void onGetAddrResult(MKAddrInfo mkAddrInfo, int i) {
+        String address = mkAddrInfo.strAddr;
+        uiHelper.showLongToast(address);
+        archiveMeta.setDescription(String.format(getString(R.string.nearby), address));
     }
 }
