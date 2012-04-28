@@ -2,110 +2,96 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
               android:orientation="vertical"
-              android:padding="10dp"
-              android:layout_height="fill_parent">
+              android:background="@drawable/bg"
+    >
 
+    <include layout="@layout/action_bar" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_marginBottom="15dp"
-        android:layout_height="wrap_content">
-
-        <TextView android:text="Time"
-                  style="@style/Item.Title"
-            />
+        android:layout_height="fill_parent"
+        >
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/status_layout"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:gravity="bottom"
             android:layout_height="wrap_content">
 
-            <TextView android:text="00:02:32"
-                      style="@style/Item.Content"
-                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
 
-            <TextView android:text="32"
-                      style="@style/Item.Title"
-                />
+                >
+                <include layout="@layout/item_distance" />
+                <ImageView style="@style/Cell.Vertical" />
+                <include layout="@layout/item_distance" />
+            </LinearLayout>
+
+            <ImageView style="@style/Cell.Horizontal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                >
+                <include layout="@layout/item_distance" />
+                <ImageView style="@style/Cell.Vertical" />
+                <include layout="@layout/item_distance" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_marginBottom="15dp"
-        android:layout_height="wrap_content">
 
-        <TextView android:text="Distance"
-                  style="@style/Item.Title"
-            />
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:gravity="bottom"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent"
+            android:layout_above="@id/status_layout"
+            android:background="@drawable/time_background"
+            >
+            <LinearLayout
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
 
-            <TextView android:text="434.32"
-                      style="@style/Item.Content"
+                <TextView
+                    style="@style/BitCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:32:33"
+                    />
+
+                <Button
+
+                    style="@style/BigStartButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="START"
+                    android:layout_marginTop="25dp"
+                    />
+
+                <Button
+                    android:visibility="gone"
+                    style="@style/BigEndButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="END"
+                    android:layout_marginTop="25dp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/time_background_border_bottom"
+                android:layout_alignParentBottom="true"
                 />
-
-            <TextView android:text="km"
-                      style="@style/Item.Title"
-                />
-        </LinearLayout>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginBottom="15dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView android:text="Speed"
-                  style="@style/Item.Title"
-            />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:gravity="bottom"
-            android:layout_height="wrap_content">
-
-            <TextView android:text="34.32"
-                      style="@style/Item.Content"
-                />
-
-            <TextView android:text="km/h"
-                      style="@style/Item.Title"
-                />
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView android:text="Max Speed"
-                  style="@style/Item.Title"
-            />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:gravity="bottom"
-            android:layout_height="wrap_content">
-
-            <TextView android:text="134.32"
-                      style="@style/Item.Content"
-                />
-
-            <TextView android:text="km/h"
-                      style="@style/Item.Title"
-                />
-        </LinearLayout>
-    </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 </LinearLayout>
