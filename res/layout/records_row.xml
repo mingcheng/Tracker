@@ -2,49 +2,72 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
-                android:padding="10dp"
+                android:padding="15dp"
                 android:layout_height="wrap_content"
-
+                android:paddingBottom="20dp"
     >
 
-    <TextView android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/db_name"
-              android:textSize="18sp"
-              android:text=""
-              android:textStyle="bold"
-              android:textColor="@color/title"
-        />
+    <LinearLayout
+        android:id="@+id/distance_layout"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:gravity="bottom"
+        >
 
-    <TextView android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/description"
-              android:textSize="14sp"
-              android:text=""
-              android:layout_marginTop="18sp"
-              android:paddingTop="10dp"
-              android:paddingBottom="30dp"
-        />
+        <TextView style="@style/BigTitle"
+                  android:text="19.9"
+                  android:id="@+id/distance"
+                  android:layout_marginRight="2dp"
+                  android:textColor="@color/mils"
+            />
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/db_records_num"
-              android:textSize="16sp"
-              android:text=""
-              android:textStyle="bold"
-              android:textColor="@color/highlight"
-              android:layout_alignParentRight="true"
-              android:layout_alignParentTop="true"
-        />
+        <TextView style="@style/SecondTitle"
+                  android:text="km"
+            />
+    </LinearLayout>
 
-    <TextView android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:textSize="14sp"
-              android:gravity="right"
-              android:id="@+id/between"
-              android:text=""
-              android:layout_alignParentBottom="true"
-              android:layout_alignParentRight="true"
-              android:textColor="@color/gray"
-        />
+    <LinearLayout
+        android:layout_toLeftOf="@id/distance_layout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_marginRight="5dp"
+        android:layout_height="wrap_content">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/description"
+                  android:textSize="18sp"
+                  android:text="On my way home"
+                  android:singleLine="true"
+                  android:textColor="@color/title"
+            />
+
+        <LinearLayout
+            android:id="@+id/cost_time_layout"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/description"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <ImageView android:src="@drawable/time"
+                       android:layout_marginRight="5dp"
+                       android:layout_height="wrap_content"
+                       android:layout_width="wrap_content"
+                />
+
+            <TextView
+                android:id="@+id/cost_time"
+                android:text="00:33:223"
+                style="@style/SecondTitle"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
