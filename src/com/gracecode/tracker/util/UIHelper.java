@@ -15,10 +15,12 @@ public class UIHelper {
     }
 
     public void showLongToast(String message) {
+
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     public void showShortToast(String message) {
+
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 

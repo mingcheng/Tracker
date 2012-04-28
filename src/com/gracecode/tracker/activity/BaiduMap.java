@@ -8,13 +8,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.ToggleButton;
-import com.baidu.mapapi.*;
+import com.baidu.mapapi.GeoPoint;
+import com.baidu.mapapi.ItemizedOverlay;
+import com.baidu.mapapi.MapView;
+import com.baidu.mapapi.OverlayItem;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
-import com.gracecode.tracker.util.UIHelper;
-import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,29 +24,22 @@ import java.util.Locale;
 
 public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeListener {
     private Archive archive;
-    private MapView mapView;
-    private MapController mapViewController;
+
     private Context context;
     private ArrayList<Location> locations;
-    private BMapManager bMapManager = null;
-    private ActionBar actionBar;
-    private UIHelper uiHelper;
+
     private String archiveFileName;
     private SeekBar mSeeker;
     private SimpleDateFormat dateFormat;
     private ToggleButton mSatellite;
 
     @Override
-    protected boolean isRouteDisplayed() {
-        return false;
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
+
     }
 
     @Override
@@ -59,23 +53,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         }
     }
 
-    // 常用事件监听，用来处理通常的网络错误，授权验证错误等
-    class MyGeneralListener implements MKGeneralListener {
-        @Override
-        public void onGetNetworkState(int iError) {
-            Toast.makeText(context, "您的网络出错啦！", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onGetPermissionState(int iError) {
-            if (iError == MKEvent.ERROR_PERMISSION_DENIED) {
-                Toast.makeText(context, "请输入正确的授权 KEY！",
-                    Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,23 +60,14 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         context = this;
 
-        bMapManager = new BMapManager(getApplication());
-        bMapManager.init("30183AD8A6AFE7CE8F649ED4CD258211E8DE78D7", new MyGeneralListener());
-//
-        super.initMapActivity(bMapManager);
-
         mapView = (MapView) findViewById(R.id.bmapsView);
-        actionBar = (ActionBar) findViewById(R.id.action_bar);
 
         mapView.setBuiltInZoomControls(true);
-        //mapView.setDrawOverlayWhenZooming(false);
-        mapViewController = mapView.getController();
         mapView.setSatellite(false);
 
         mSeeker = (SeekBar) findViewById(R.id.seek);
         mSatellite = (ToggleButton) findViewById(R.id.satellite);
 
-        uiHelper = new UIHelper(context);
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         //archiveFileName = "/mnt/sdcard/tracker/201204/1334727127367.sqlite";
 
@@ -111,23 +79,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onResume() {
-//        if (bMapManager != null) {
-//            bMapManager.start();
-//        }
-
-        actionBar.removeAllActions();
-//        actionBar.addAction(new ActionBar.Action() {
-//            @Override
-//            public int getDrawable() {
-//                return android.R.drawable.ic_delete;
-//            }
-//
-//            @Override
-//            public void performAction(View view) {
-
-//            }
-//        });
-
+//        actionBar.removeAllActions();
         super.onResume();
     }
 
@@ -139,10 +91,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         if (size <= 0) {
             return;
         }
-
-        MyLocationOverlay myLocationOverlay = new MyLocationOverlay(context, mapView);
-        myLocationOverlay.disableMyLocation();
-        myLocationOverlay.disableCompass();
 
         mSeeker.setMax(locations.size());
         mSeeker.setProgress(0);
@@ -164,12 +112,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         });
 
         Location firstLocation = locations.get(0);
-//        Location lastLocation = locations.get(size - 1);
-//        Location centerLocation = locations.get(size / 2);
-
-
-        // mapView.getOverlays().add(new RouteOverlay());
-        // mapView.getOverlays().add(myLocationOverlay);
 
         Drawable marker = getResources().getDrawable(R.drawable.mark);
         mapView.getOverlays().add(new RouteItemizedOverlay(marker, context));
@@ -182,10 +124,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onPause() {
-//        if (bMapManager != null) {
-//            bMapManager.stop();
-//        }
-        super.onResume();
+        super.onPause();
     }
 
     @Override
@@ -196,10 +135,6 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onDestroy() {
-//        if (bMapManager != null) {
-//            bMapManager.destroy();
-//        }
-
         archive.close();
         super.onDestroy();
     }
@@ -215,9 +150,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
             for (int i = 0; i < locations.size(); i++) {
                 Location x = locations.get(i);
-                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
-                geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
-
+                GeoPoint geoPoint = getRealGeoPointFromLocation(x);
                 geoPointList.add(new OverlayItem(geoPoint, x.getLatitude() + "", x.getLongitude() + ""));
             }
 
@@ -283,27 +216,5 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
             setCenterPoint(location, true);
             return true;
         }
-    }
-
-
-    private void setCenterPoint(Location location, boolean animate) {
-        GeoPoint geoPoint = new GeoPoint(
-            (int) (location.getLatitude() * 1E6),
-            (int) (location.getLongitude() * 1E6)
-        );
-
-        // 计算地图偏移
-        geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
-
-        // @todo 自动计算默认缩放的地图界面
-        if (animate) {
-            mapViewController.animateTo(geoPoint);
-        } else {
-            mapViewController.setCenter(geoPoint);
-        }
-    }
-
-    private void setCenterPoint(Location location) {
-        setCenterPoint(location, false);
     }
 }
