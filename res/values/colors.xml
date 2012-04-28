@@ -2,18 +2,17 @@
     <color name="gray">#999999</color>
     <color name="title">#222222</color>
     <color name="title_second">#666666</color>
-    <color name="highlight">#d0644f</color>
+    <color name="highlight">#d0634f</color>
     <color name="highlight_border">#b45646</color>
     <color name="mils">#6c928c</color>
     <color name="divider">#ffffff</color>
-    <color name="snowwhite">#ffffff</color>
+    <color name="snowhite">#ffffff</color>
 
     <!--action bar-->
     <color name="actionbar_separator">#2e3234</color>
     <color name="actionbar_title">#FFFFFF</color>
     <color name="actionbar_background_start">#272a2c</color>
     <color name="actionbar_background_end">#272a2c</color>
-    <color name="actionbar_background_item_pressed_start">#FF7F00</color>
-    <color name="actionbar_background_item_pressed_end">#EE7600</color>
-
+    <color name="actionbar_background_item_pressed_start">#b45646</color>
+    <color name="actionbar_background_item_pressed_end">#b45646</color>
 </resources>

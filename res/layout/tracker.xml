@@ -14,38 +14,11 @@
         android:layout_height="fill_parent"
         >
 
-        <LinearLayout
-            android:id="@+id/status_layout"
+        <FrameLayout
             android:layout_alignParentBottom="true"
-            android:padding="15dp"
-            android:orientation="vertical"
+            android:id="@+id/status_layout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-
-                >
-                <include layout="@layout/item_distance" />
-                <ImageView style="@style/Cell.Vertical" />
-                <include layout="@layout/item_distance" />
-            </LinearLayout>
-
-            <ImageView style="@style/Cell.Horizontal" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                >
-                <include layout="@layout/item_distance" />
-                <ImageView style="@style/Cell.Vertical" />
-                <include layout="@layout/item_distance" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -69,7 +42,7 @@
                     />
 
                 <Button
-
+                    android:id="@+id/btn_start"
                     style="@style/BigStartButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,6 +52,7 @@
 
                 <Button
                     android:visibility="gone"
+                    android:id="@+id/btn_end"
                     style="@style/BigEndButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

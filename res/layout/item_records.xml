@@ -7,7 +7,7 @@
               android:layout_weight="1"
               android:layout_height="wrap_content">
 
-    <TextView android:text="@string/item_distance"
+    <TextView android:text="@string/item_records"
               style="@style/Item.Title"
         />
 
@@ -17,12 +17,8 @@
         android:gravity="bottom"
         android:layout_height="wrap_content">
 
-        <TextView android:text="@string/no_records"
+        <TextView android:text="@string/no_dot_records"
                   style="@style/Item.Content"
-            />
-
-        <TextView android:text="km"
-                  style="@style/Item.TitleSecond"
             />
     </LinearLayout>
 </LinearLayout>

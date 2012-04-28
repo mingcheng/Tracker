@@ -163,7 +163,7 @@ public class Tracker extends Activity {
                         if (count > 0) {
                             stringValue = String.format(getString(R.string.records), count);
                         } else {
-                            stringValue = getString(R.string.norecords);
+                            stringValue = getString(R.string.no_records);
                         }
                         break;
                     case R.id.distance:
@@ -212,7 +212,7 @@ public class Tracker extends Activity {
                         break;
                 }
             } catch (NullPointerException e) {
-                stringValue = getString(R.string.norecords);
+                stringValue = getString(R.string.no_records);
             }
 
             if (stringValue.length() > 0) {

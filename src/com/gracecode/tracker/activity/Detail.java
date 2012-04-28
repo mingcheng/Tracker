@@ -1,9 +1,7 @@
 package com.gracecode.tracker.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +15,6 @@ import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Detail extends MapActivity implements View.OnClickListener, MKSearchListener {
     private String archiveFileName;
@@ -53,16 +50,16 @@ public class Detail extends MapActivity implements View.OnClickListener, MKSearc
         archiveMeta = archive.getMeta();
 
         actionBar = (ActionBar) findViewById(R.id.action_bar);
-        mArchiveName = (TextView) findViewById(R.id.archive_name);
-        mStartTime = (TextView) findViewById(R.id.start_time);
-        mEndTime = (TextView) findViewById(R.id.end_time);
-        mDistance = (TextView) findViewById(R.id.distance);
-        mRecords = (TextView) findViewById(R.id.records);
-        mSpeed = (TextView) findViewById(R.id.speed);
-        mMaxSpeed = (TextView) findViewById(R.id.max_speed);
-        mDescription = (EditText) findViewById(R.id.description);
-        mButton = (Button) findViewById(R.id.update);
-        mapMask = (TextView) findViewById(R.id.map_mask);
+//        mArchiveName = (TextView) findViewById(R.id.archive_name);
+//        mStartTime = (TextView) findViewById(R.id.start_time);
+//        mEndTime = (TextView) findViewById(R.id.end_time);
+//        mDistance = (TextView) findViewById(R.id.distance);
+//        mRecords = (TextView) findViewById(R.id.records);
+//        mSpeed = (TextView) findViewById(R.id.speed);
+//        mMaxSpeed = (TextView) findViewById(R.id.max_speed);
+//        mDescription = (EditText) findViewById(R.id.description);
+//        mButton = (Button) findViewById(R.id.update);
+//        mapMask = (TextView) findViewById(R.id.map_mask);
 
         formatter = new SimpleDateFormat(getString(R.string.time_format));
         uiHelper = new UIHelper(context);
@@ -75,41 +72,41 @@ public class Detail extends MapActivity implements View.OnClickListener, MKSearc
         setCenterPoint(archive.getLastRecord(), false);
         mapViewController.setZoom(14);
 
-        mapMask.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Intent intent = new Intent(context, BaiduMap.class);
-                    intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
-                    startActivity(intent);
-                }
-
-                return true;
-            }
-        });
-
-
-        String description = archiveMeta.getDescription().trim();
-        if (description.length() > 0) {
-            mDescription.setText(description);
-        } else {
-            MKSearch searcher = new MKSearch();
-            searcher.init(bMapManager, this);
-            searcher.reverseGeocode(getRealGeoPointFromLocation(archive.getLastRecord()));
-        }
-
-        mArchiveName.setText(archive.getName());
-        mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
-        Date endTime = archiveMeta.getEndTime();
-        mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
-
-        mDistance.setText(String.valueOf(archiveMeta.getDistance()));
-        mRecords.setText(String.valueOf(archiveMeta.getCount()));
-        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
-        mMaxSpeed.setText(String.valueOf(archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
+//        mapMask.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    Intent intent = new Intent(context, BaiduMap.class);
+//                    intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
+//                    startActivity(intent);
+//                }
+//
+//                return true;
+//            }
+//        });
 
 
-        mButton.setOnClickListener(this);
+//        String description = archiveMeta.getDescription().trim();
+//        if (description.length() > 0) {
+//            mDescription.setText(description);
+//        } else {
+//            MKSearch searcher = new MKSearch();
+//            searcher.init(bMapManager, this);
+//            searcher.reverseGeocode(getRealGeoPointFromLocation(archive.getLastRecord()));
+//        }
+//
+//        mArchiveName.setText(archive.getName());
+//        mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
+//        Date endTime = archiveMeta.getEndTime();
+//        mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
+//
+//        mDistance.setText(String.valueOf(archiveMeta.getDistance()));
+//        mRecords.setText(String.valueOf(archiveMeta.getCount()));
+//        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
+//        mMaxSpeed.setText(String.valueOf(archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
+
+
+//        mButton.setOnClickListener(this);
 
         actionBar.removeAllActions();
         actionBar.addAction(new ActionBar.Action() {
