@@ -37,9 +37,10 @@
 
                 <TextView
                     style="@style/BitCounter"
+                    android:id="@+id/item_cost_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:32:33"
+                    android:text="@string/none_cost_time"
                     />
 
                 <Button

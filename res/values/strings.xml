@@ -8,6 +8,7 @@
     <string name="no_description">- none description -</string>
     <string name="export_kml">Export</string>
     <string name="delete">Delete</string>
+    <string name="none_cost_time">00:00:00</string>
     <string name="has_deleted">%s has been deleted</string>
     <string name="delete_error">delete error, pls check your card</string>
     <string name="info">Info</string>
@@ -18,7 +19,9 @@
     <string name="save_kml_finished">KML file is ready.</string>
     <string name="saving">Saving. Please wait...</string>
     <string name="still_running">Tracker is still running.</string>
-    <string name="about_string">Homepage: https://github.com/feelinglucky/gps-recorder(author: @feelinglucky)</string>
+    <string name="about_string">Homepage:
+        https://github.com/feelinglucky/gps-recorder(author: @feelinglucky)
+    </string>
     <string name="initialing">Initialing</string>
     <string name="recording">Recording</string>
     <string name="idle">idle</string>

@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.ArchiveMeta;
@@ -15,6 +16,7 @@ import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +36,8 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
     public static final int MESSAGE_UPDATE_VIEW = 0x011;
     private Timer updateViewTimer;
     private static final long TIMER_PERIOD = 1000;
+    private TextView mCoseTime;
+    private static final String COST_TIME_FORMAT = "%02d:%02d:%02d";
 
 
     @Override
@@ -43,8 +47,7 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
 
         mStartButton = (Button) findViewById(R.id.btn_start);
         mEndButton = (Button) findViewById(R.id.btn_end);
-
-
+        mCoseTime = (TextView) findViewById(R.id.item_cost_time);
     }
 
     private void notifyUpdateView() {
@@ -142,6 +145,10 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
                     archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
                     fragmentTransaction.replace(R.id.status_layout, archiveMetaFragment);
 //                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+                    String costTime =
+                        getCostTimeString(archiveMeta.getStartTime(), new Date(System.currentTimeMillis()));
+                    mCoseTime.setText(costTime);
                 }
                 break;
             case FLAG_ENDED:
@@ -150,6 +157,7 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
                 if (archiveMetaFragment != null) {
                     fragmentTransaction.remove(archiveMetaFragment);
                 }
+                mCoseTime.setText(R.string.none_cost_time);
                 break;
         }
 
@@ -180,4 +188,21 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
             }
         }
     };
+
+    protected String getCostTimeString(Date start, Date end) {
+        try {
+            long startTimeStamp = start.getTime();
+            long endTimeStamp = end.getTime();
+            long between = endTimeStamp - startTimeStamp;
+
+            long day = between / (24 * 60 * 60 * 1000);
+            long hour = (between / (60 * 60 * 1000) - day * 24);
+            long minute = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
+            long second = (between / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60);
+
+            return String.format(COST_TIME_FORMAT, hour, minute, second);
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
 }

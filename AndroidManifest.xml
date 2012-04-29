@@ -25,16 +25,15 @@
                   android:launchMode="singleTask"
                   android:clearTaskOnLaunch="true"
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.Main"
                   android:theme="@style/Window"
+                  android:clearTaskOnLaunch="true"
+                  android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activity.BaiduMap"
