@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.service.Recorder;
@@ -14,13 +16,14 @@ import com.gracecode.tracker.util.UIHelper;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
 
-public abstract class Activity extends android.app.Activity {
+public abstract class Activity extends FragmentActivity {
     protected SharedPreferences sharedPreferences;
     protected UIHelper uiHelper;
     public Intent recordServerIntent;
     protected ActionBar actionBar;
     protected Activity context;
     protected Recorder.ServiceBinder serviceBinder = null;
+    protected FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public abstract class Activity extends android.app.Activity {
         context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         uiHelper = new UIHelper(this);
+        fragmentManager = getSupportFragmentManager();
 
         MobclickAgent.onError(this);
     }

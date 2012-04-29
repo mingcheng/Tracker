@@ -55,7 +55,7 @@ public class Tracker extends Activity {
                     String statusLabel = getString(R.string.ready);
 
                     switch (serviceBinder.getStatus()) {
-                        case ServiceBinder.STATUS_RUNNING:
+                        case ServiceBinder.STATUS_RECORDING:
                             statusLabel = getString(R.string.recording);
                             toggleButton.setChecked(true);
                             break;
@@ -115,7 +115,7 @@ public class Tracker extends Activity {
         if (serviceBinder == null) {
             return;
         }
-        Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING);
+        Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING);
 
         for (int i = 0; i < textViewsGroup.size(); i++) {
             double numberValue = 0;
@@ -227,7 +227,7 @@ public class Tracker extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem pauseMenuItem = menu.findItem(R.id.pause);
         MenuItem startMenuItem = menu.findItem(R.id.start);
-        Boolean isRunning = (ServiceBinder.STATUS_RUNNING == serviceBinder.getStatus());
+        Boolean isRunning = (ServiceBinder.STATUS_RECORDING == serviceBinder.getStatus());
 
         pauseMenuItem.setEnabled(isRunning ? true : false);
         startMenuItem.setEnabled(isRunning ? false : true);
@@ -269,7 +269,7 @@ public class Tracker extends Activity {
             @Override
             public void onClick(View view) {
                 if (serviceBinder != null) {
-                    if (serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+                    if (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING) {
                         long count = archiveMeta.getCount();
                         serviceBinder.stopRecord();
                         toggleButton.setChecked(false);
@@ -360,7 +360,7 @@ public class Tracker extends Activity {
 
     @Override
     public void onDestroy() {
-        if (serviceBinder != null && serviceBinder.getStatus() == ServiceBinder.STATUS_RUNNING) {
+        if (serviceBinder != null && serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING) {
             uiHelper.showLongToast(getString(R.string.still_running));
         }
 

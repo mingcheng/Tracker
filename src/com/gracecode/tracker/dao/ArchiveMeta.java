@@ -18,6 +18,7 @@ public class ArchiveMeta {
     public static final String DISTANCE = "DISTANCE";
     public static final String TABLE_NAME = "meta";
     public static final double KM_PER_HOUR_CNT = 3.597;
+    public static final int TO_KILOMETRE = 1000;
 
     protected Archive archive;
     private SQLiteDatabase database;
@@ -247,5 +248,9 @@ public class ArchiveMeta {
         }
 
         return true;
+    }
+
+    public String getName() {
+        return archive.getName();
     }
 }

@@ -16,5 +16,6 @@
         android:fadingEdge="none"
         android:divider="@color/divider"
         android:dividerHeight="1px"
+        android:cacheColorHint="@color/highlight"
         />
 </LinearLayout>

@@ -19,6 +19,7 @@
 
         <TextView android:text="@string/no_records"
                   style="@style/Item.Content"
+                  android:id="@+id/item_avg_speed"
             />
 
         <TextView android:text="@string/kmh"

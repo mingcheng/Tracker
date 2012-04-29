@@ -1,189 +1,61 @@
 package com.gracecode.tracker.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.TextView;
-import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.MapActivity;
+import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.util.UIHelper;
-import com.markupartist.android.widget.ActionBar;
+import com.gracecode.tracker.fragment.ArchiveMetaFragment;
+import com.gracecode.tracker.fragment.ArchiveMetaTimeFragment;
 
-import java.text.SimpleDateFormat;
-
-public class Detail extends MapActivity implements View.OnClickListener, MKSearchListener {
+public class Detail extends Activity {
     private String archiveFileName;
-    private ActionBar actionBar;
+
     private Archive archive;
     private ArchiveMeta archiveMeta;
-    private TextView mStartTime;
-    private TextView mEndTime;
-    private TextView mDistance;
-    private TextView mSpeed;
-    private TextView mRecords;
-    private EditText mDescription;
-    private Button mButton;
-    private SimpleDateFormat formatter;
-    private TextView mArchiveName;
-    private TextView mMaxSpeed;
-    private Context context;
-    private UIHelper uiHelper;
 
-    private TextView mapMask;
+    private ArchiveMetaFragment archiveMetaFragment;
+    private ArchiveMetaTimeFragment archiveMetaTimeFragment;
+
+    private TextView mDescription;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail);
 
-        context = this;
-
-        mapView = (MapView) findViewById(R.id.bmapsView);
-
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         archive = new Archive(context, archiveFileName, Archive.MODE_READ_WRITE);
         archiveMeta = archive.getMeta();
 
-        actionBar = (ActionBar) findViewById(R.id.action_bar);
-//        mArchiveName = (TextView) findViewById(R.id.archive_name);
-//        mStartTime = (TextView) findViewById(R.id.start_time);
-//        mEndTime = (TextView) findViewById(R.id.end_time);
-//        mDistance = (TextView) findViewById(R.id.distance);
-//        mRecords = (TextView) findViewById(R.id.records);
-//        mSpeed = (TextView) findViewById(R.id.speed);
-//        mMaxSpeed = (TextView) findViewById(R.id.max_speed);
-//        mDescription = (EditText) findViewById(R.id.description);
-//        mButton = (Button) findViewById(R.id.update);
-//        mapMask = (TextView) findViewById(R.id.map_mask);
+        mDescription = (TextView) findViewById(R.id.item_description);
 
-        formatter = new SimpleDateFormat(getString(R.string.time_format));
-        uiHelper = new UIHelper(context);
+        archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
+        archiveMetaTimeFragment = new ArchiveMetaTimeFragment(context, archiveMeta);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        setCenterPoint(archive.getLastRecord(), false);
-        mapViewController.setZoom(14);
-
-//        mapMask.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    Intent intent = new Intent(context, BaiduMap.class);
-//                    intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
-//                    startActivity(intent);
-//                }
-//
-//                return true;
-//            }
-//        });
-
-
-//        String description = archiveMeta.getDescription().trim();
-//        if (description.length() > 0) {
-//            mDescription.setText(description);
-//        } else {
-//            MKSearch searcher = new MKSearch();
-//            searcher.init(bMapManager, this);
-//            searcher.reverseGeocode(getRealGeoPointFromLocation(archive.getLastRecord()));
-//        }
-//
-//        mArchiveName.setText(archive.getName());
-//        mStartTime.setText(formatter.format(archiveMeta.getStartTime()));
-//        Date endTime = archiveMeta.getEndTime();
-//        mEndTime.setText((endTime != null) ? formatter.format(endTime) : getString(R.string.norecords));
-//
-//        mDistance.setText(String.valueOf(archiveMeta.getDistance()));
-//        mRecords.setText(String.valueOf(archiveMeta.getCount()));
-//        mSpeed.setText(String.valueOf(archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
-//        mMaxSpeed.setText(String.valueOf(archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
-
-
-//        mButton.setOnClickListener(this);
-
-        actionBar.removeAllActions();
-        actionBar.addAction(new ActionBar.Action() {
-            @Override
-            public int getDrawable() {
-                return R.drawable.ic_menu_delete;
-            }
-
-            @Override
-            public void performAction(View view) {
-                uiHelper.showConfirmDialog(getString(R.string.delete),
-                    String.format(getString(R.string.sure_to_del), archiveFileName),
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (archive.delete()) {
-                                uiHelper.showShortToast(String.format(getString(R.string.has_deleted), archiveFileName));
-                            } else {
-                                uiHelper.showLongToast(getString(R.string.delete_error));
-                            }
-                            finish();
-                        }
-                    }, new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }
-                );
-            }
-        });
+        mDescription.setText(archiveMeta.getDescription());
+        addArchiveMetaTimeFragment();
+        addArchiveMetaFragment();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!archive.exists()) {
-            finish();
-        }
+    private void addFragment(int layout, Fragment fragment) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(layout, fragment);
+        fragmentTransaction.commit();
     }
 
-    @Override
-    public void onDestroy() {
-        if (archive != null) {
-            archive.close();
-        }
-        super.onDestroy();
+    private void addArchiveMetaTimeFragment() {
+        addFragment(R.id.archive_meta_time_layout, archiveMetaTimeFragment);
     }
 
-    @Override
-    public void onClick(View view) {
-        String description = mDescription.getText().toString().trim();
-        if (description.length() > 0 && archiveMeta.setDescription(description)) {
-            uiHelper.showShortToast(getString(R.string.updated));
-        }
-    }
-
-    @Override
-    public void onGetPoiResult(MKPoiResult mkPoiResult, int i, int i1) {
-    }
-
-    @Override
-    public void onGetTransitRouteResult(MKTransitRouteResult mkTransitRouteResult, int i) {
-    }
-
-    @Override
-    public void onGetDrivingRouteResult(MKDrivingRouteResult mkDrivingRouteResult, int i) {
-    }
-
-    @Override
-    public void onGetWalkingRouteResult(MKWalkingRouteResult mkWalkingRouteResult, int i) {
-    }
-
-    @Override
-    public void onGetAddrResult(MKAddrInfo mkAddrInfo, int i) {
-        String address = mkAddrInfo.strAddr;
-        uiHelper.showLongToast(address);
-        archiveMeta.setDescription(String.format(getString(R.string.nearby), address));
+    private void addArchiveMetaFragment() {
+        addFragment(R.id.archive_meta_layout, archiveMetaFragment);
     }
 }

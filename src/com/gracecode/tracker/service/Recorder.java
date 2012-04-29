@@ -27,7 +27,7 @@ import java.util.TimerTask;
  *
  */
 interface Binder {
-    public static final int STATUS_RUNNING = 0x0000;
+    public static final int STATUS_RECORDING = 0x0000;
     public static final int STATUS_STOPPED = 0x1111;
 
     public void startRecord();
@@ -60,7 +60,6 @@ public class Recorder extends Service {
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
-        private ArchiveMeta meta = null;
         private TimerTask notifierTask;
         private Timer timer = null;
 
@@ -73,7 +72,7 @@ public class Recorder extends Service {
 
         @Override
         public void startRecord() {
-            if (status != ServiceBinder.STATUS_RUNNING) {
+            if (status != ServiceBinder.STATUS_RECORDING) {
                 // 从配置文件获取距离和精度选项
                 long minTime = Long.parseLong(sharedPreferences.getString(Preference.GPS_MINTIME,
                     Preference.DEFAULT_GPS_MINTIME));
@@ -95,11 +94,8 @@ public class Recorder extends Service {
                     archive.open(archivName, Archive.MODE_READ_WRITE);
                     nameHelper.setLastOpenedName(archivName);
 
-                    // 获取 Meta 信息
-                    meta = getMeta();
-
                     // 设置开始时间
-                    meta.setStartTime(new Date());
+                    getMeta().setStartTime(new Date());
 
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -113,8 +109,8 @@ public class Recorder extends Service {
                 notifierTask = new TimerTask() {
                     @Override
                     public void run() {
-                        float distance = meta.getDistance();
-                        long count = meta.getCount();
+                        float distance = getMeta().getDistance();
+                        long count = getMeta().getCount();
                         if (count > 0) {
                             notifier.setRecords(count);
                         }
@@ -127,7 +123,7 @@ public class Recorder extends Service {
 
                 timer = new Timer();
                 timer.schedule(notifierTask, 0, 5000);
-                status = ServiceBinder.STATUS_RUNNING;
+                status = ServiceBinder.STATUS_RECORDING;
             }
         }
 
@@ -137,7 +133,7 @@ public class Recorder extends Service {
 
         @Override
         public void stopRecord() {
-            if (status == ServiceBinder.STATUS_RUNNING) {
+            if (status == ServiceBinder.STATUS_RECORDING) {
                 locationManager.removeUpdates(listener);
                 locationManager.removeGpsStatusListener(statusListener);
 
@@ -147,7 +143,7 @@ public class Recorder extends Service {
                     uiHelper.showLongToast(getString(R.string.not_record_anything));
                 } else {
                     // 设置结束记录时间
-                    meta.setEndTime(new Date());
+                    getMeta().setEndTime(new Date());
 
                     uiHelper.showLongToast(String.format(
                         getString(R.string.result_report), String.valueOf(totalCount)

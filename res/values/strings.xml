@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tracker</string>
-    <string name="service_name">GPSRecorder Server</string>
-    <string name="menu_label_stop">Stop &amp; Exit</string>
+    <string name="service_name">Tracker Server</string>
     <string name="default_font">digital.ttf</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
@@ -24,9 +23,10 @@
     <string name="recording">Recording</string>
     <string name="idle">idle</string>
     <string name="ready">Ready for record</string>
+    <string name="not_available">--</string>
     <string name="no_records">00.00</string>
     <string name="no_dot_records">0</string>
-    <string name="records_formatter">%02.2d</string>
+    <string name="records_formatter">%02.2f</string>
     <string name="running">Tracker is running</string>
     <string name="records">%d Points</string>
     <string name="menu_about">About</string>
@@ -53,6 +53,7 @@
     <string name="item_average_speed">AVG. SPEED</string>
     <string name="kmh">km/h</string>
     <string name="item_speed">SPEED</string>
+    <string name="item_max_speed">MAX SPEED</string>
     <string name="item_records">RECORDS</string>
     <string name="item_end_time">END TIME</string>
     <string name="item_start_time">START TIME</string>
