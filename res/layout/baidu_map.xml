@@ -10,7 +10,6 @@
     <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
 
-
         <LinearLayout
             android:id="@+id/map_controller"
             android:padding="10dp"
@@ -41,8 +40,8 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_above="@id/map_controller"
-            android:clickable="true" />
+            />
     </RelativeLayout>
 
-    <include layout="@layout/action_bar" />
+    <!--<include layout="@layout/action_bar" />-->
 </FrameLayout>

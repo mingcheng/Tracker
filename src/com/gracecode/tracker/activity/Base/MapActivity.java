@@ -12,12 +12,11 @@ import com.mobclick.android.MobclickAgent;
 public abstract class MapActivity extends com.baidu.mapapi.MapActivity implements MKGeneralListener {
     protected MapView mapView = null;
     protected MapController mapViewController;
-    static protected BMapManager bMapManager;
+    protected BMapManager bMapManager;
     private static final String BAIDU_MAP_KEY = "30183AD8A6AFE7CE8F649ED4CD258211E8DE78D7";
-    private static boolean running = false;
     protected UIHelper uiHelper;
     protected Context context;
-    private ActionBar actionBar;
+    protected ActionBar actionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,19 +44,13 @@ public abstract class MapActivity extends com.baidu.mapapi.MapActivity implement
         super.initMapActivity(bMapManager);
 
         mapViewController = mapView.getController();
-        if (!running) {
-            bMapManager.start();
-            running = true;
-        }
+        bMapManager.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (running) {
-            bMapManager.stop();
-            running = false;
-        }
+        bMapManager.stop();
     }
 
     @Override

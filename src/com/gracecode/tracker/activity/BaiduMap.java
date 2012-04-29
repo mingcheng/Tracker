@@ -2,17 +2,16 @@ package com.gracecode.tracker.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
-import com.baidu.mapapi.GeoPoint;
-import com.baidu.mapapi.ItemizedOverlay;
-import com.baidu.mapapi.MapView;
-import com.baidu.mapapi.OverlayItem;
+import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
@@ -32,6 +31,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
     private SeekBar mSeeker;
     private SimpleDateFormat dateFormat;
     private ToggleButton mSatellite;
+    private View mapController;
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -61,15 +61,14 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         context = this;
 
         mapView = (MapView) findViewById(R.id.bmapsView);
+        mapController = findViewById(R.id.map_controller);
+        archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
 
-        mapView.setBuiltInZoomControls(true);
-        mapView.setSatellite(false);
+//        mapView.setBuiltInZoomControls(true);
+//        mapView.setSatellite(false);
 
         mSeeker = (SeekBar) findViewById(R.id.seek);
         mSatellite = (ToggleButton) findViewById(R.id.satellite);
-
-        archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        //archiveFileName = "/mnt/sdcard/tracker/201204/1334727127367.sqlite";
 
         dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
 
@@ -87,31 +86,32 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
     public void onStart() {
         super.onStart();
 
-        int size = locations.size();
-        if (size <= 0) {
-            return;
+        if (actionBar != null) {
+            actionBar.setVisibility(View.GONE);
         }
+        mapController.setVisibility(View.GONE);
 
-        mSeeker.setMax(locations.size());
-        mSeeker.setProgress(0);
-        mSeeker.setOnSeekBarChangeListener(this);
+//
+//        mSeeker.setMax(locations.size());
+//        mSeeker.setProgress(0);
+//        mSeeker.setOnSeekBarChangeListener(this);
 
-        mSatellite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mSatellite.isChecked()) {
-                    mapView.setSatellite(true);
-                } else {
-                    mapView.setSatellite(false);
-                }
+//        mSatellite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (mSatellite.isChecked()) {
+//                    mapView.setSatellite(true);
+//                } else {
+//                    mapView.setSatellite(false);
+//                }
+//
+//                bMapManager.stop();
+//                bMapManager.start();
+//                uiHelper.showShortToast(getString(R.string.toggle_satellite));
+//            }
+//        });
 
-                bMapManager.stop();
-                bMapManager.start();
-                uiHelper.showShortToast(getString(R.string.toggle_satellite));
-            }
-        });
-
-        Location firstLocation = locations.get(0);
+        Location firstLocation = archive.getFirstRecord();
 
         Drawable marker = getResources().getDrawable(R.drawable.mark);
         mapView.getOverlays().add(new RouteItemizedOverlay(marker, context));
@@ -119,7 +119,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         //float distance = firstLocation.distanceTo(lastLocation);
         // @todo 自动计算默认缩放的地图界面
         setCenterPoint(firstLocation, false);
-        mapViewController.setZoom(16);
+        mapViewController.setZoom(14);
     }
 
     @Override
@@ -147,54 +147,50 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         public RouteItemizedOverlay(Drawable marker, Context context) {
             super(boundCenterBottom(marker));
+//
+//            for (int i = 0; i < locations.size(); i++) {
+//                Location x = locations.get(i);
+//                GeoPoint geoPoint = getRealGeoPointFromLocation(x);
+//                geoPointList.add(new OverlayItem(geoPoint, x.getLatitude() + "", x.getLongitude() + ""));
+//            }
 
-            for (int i = 0; i < locations.size(); i++) {
-                Location x = locations.get(i);
-                GeoPoint geoPoint = getRealGeoPointFromLocation(x);
-                geoPointList.add(new OverlayItem(geoPoint, x.getLatitude() + "", x.getLongitude() + ""));
-            }
 
-
-//            paint = new Paint();
-//            paint.setAntiAlias(true);
-//            paint.setColor(Color.RED);
-//            paint.setAlpha(95);
-//            paint.setStrokeWidth(6);
-
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(getResources().getColor(R.color.highlight));
+            paint.setStrokeWidth(6);
+            paint.setAlpha(220);
             populate();
         }
 
-//        @Override
-//        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-//            Projection projection = mapView.getProjection();
-//
-//            GeoPoint lastGeoPoint = null;
-//            int maxWidth = mapView.getWidth();
-//            int maxHeight = mapView.getHeight();
-//            bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
-//
-//            Canvas tmpCanvas = new Canvas(bitmap);
-//            for (int i = 0; i < locations.size(); i++) {
-//                Location x = locations.get(i);
-//
-//                GeoPoint geoPoint = new GeoPoint((int) (x.getLatitude() * 1E6), (int) (x.getLongitude() * 1E6));
-//                geoPoint = CoordinateConvert.bundleDecode(CoordinateConvert.fromWgs84ToBaidu(geoPoint));
-//
-//                Point current = projection.toPixels(geoPoint, null);
-//                if (lastGeoPoint != null) {
-//                    Point last = projection.toPixels(lastGeoPoint, null);
-//                    if (last.y < maxHeight && last.x < maxWidth) {
-//                        tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
-//                    }
-//                } else {
-//                    tmpCanvas.drawPoint(current.x, current.y, paint);
-//                }
-//
-//                lastGeoPoint = geoPoint;
-//            }
-//
-//            canvas.drawBitmap(bitmap, 0, 0, null);
-//        }
+        @Override
+        public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+            Projection projection = mapView.getProjection();
+
+            GeoPoint lastGeoPoint = null;
+            int maxWidth = mapView.getWidth();
+            int maxHeight = mapView.getHeight();
+            bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
+
+            Canvas tmpCanvas = new Canvas(bitmap);
+            for (int i = 0; i < locations.size(); i++) {
+                GeoPoint geoPoint = getRealGeoPointFromLocation(locations.get(i));
+                Point current = projection.toPixels(geoPoint, null);
+
+                if (lastGeoPoint != null) {
+                    Point last = projection.toPixels(lastGeoPoint, null);
+                    if (last.y < maxHeight && last.x < maxWidth) {
+                        tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
+                    }
+                } else {
+                    tmpCanvas.drawPoint(current.x, current.y, paint);
+                }
+
+                lastGeoPoint = geoPoint;
+            }
+
+            canvas.drawBitmap(bitmap, 0, 0, null);
+        }
 
 
         @Override

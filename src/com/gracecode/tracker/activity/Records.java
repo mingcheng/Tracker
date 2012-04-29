@@ -35,6 +35,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Archive archive = archives.get(i);
         Intent intent = new Intent(this, Detail.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archive.getName());
         startActivity(intent);
     }

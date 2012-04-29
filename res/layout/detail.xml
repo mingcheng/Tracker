@@ -30,11 +30,6 @@
                          android:layout_height="wrap_content"
                          android:id="@+id/archive_meta_layout"
                 />
-            <!--<include-->
-            <!--layout="@layout/archive_meta_time" />-->
-
-            <!--<include-->
-            <!--layout="@layout/archive_meta_items" />-->
         </LinearLayout>
 
 
@@ -61,13 +56,16 @@
             android:layout_alignParentTop="true"
             android:layout_above="@id/description_layout"
             >
-            <!--<com.baidu.mapapi.MapView-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:id="@+id/bmapsView"-->
-            <!--android:focusable="false"-->
-            <!--android:focusableInTouchMode="false"-->
-            <!--android:clickable="false" />-->
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:focusable="false"
+                android:clickable="false"
+                />
+
+            <!-- MapView From TabHost -->
+            <include layout="@layout/tab_container" />
 
             <RelativeLayout
                 android:id="@+id/map_mask"
@@ -76,7 +74,6 @@
                 >
 
                 <ImageView
-
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/cell_description_horizontal"
                     android:layout_width="fill_parent"
