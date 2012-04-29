@@ -3,6 +3,7 @@ package com.gracecode.tracker.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
@@ -10,6 +11,7 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.fragment.ArchiveMetaTimeFragment;
+import com.markupartist.android.widget.ActionBar;
 
 public class Detail extends Activity {
     private String archiveFileName;
@@ -43,6 +45,20 @@ public class Detail extends Activity {
         mDescription.setText(archiveMeta.getDescription());
         addArchiveMetaTimeFragment();
         addArchiveMetaFragment();
+
+        actionBar.removeAllActions();
+        actionBar.addAction(new ActionBar.Action() {
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_menu_delete;
+            }
+
+            @Override
+            public void performAction(View view) {
+
+                finish();
+            }
+        });
     }
 
     private void addFragment(int layout, Fragment fragment) {

@@ -9,7 +9,7 @@
     <string name="export_kml">Export</string>
     <string name="delete">Delete</string>
     <string name="none_cost_time">00:00:00</string>
-    <string name="status_format">distance %1$02.2fkm\nspeed %2$02.2fkm/h</string>
+    <string name="status_format">%1$02.2fkm</string>
     <string name="has_deleted">%s has been deleted</string>
     <string name="delete_error">delete error, pls check your card</string>
     <string name="info">Info</string>
