@@ -154,11 +154,11 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 //                geoPointList.add(new OverlayItem(geoPoint, x.getLatitude() + "", x.getLongitude() + ""));
 //            }
 
-
             paint = new Paint();
             paint.setAntiAlias(true);
             paint.setColor(getResources().getColor(R.color.highlight));
-            paint.setStrokeWidth(6);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(5);
             paint.setAlpha(220);
             populate();
         }

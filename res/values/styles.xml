@@ -127,22 +127,29 @@
     <style name="Detail.Description">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:text">Hello, world!</item>
-        <item name="android:textColor">@color/snowhite</item>
-        <item name="android:textSize">18sp</item>
         <item name="android:background">@color/highlight</item>
         <item name="android:focusable">false</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
     </style>
     <style name="Detail.Description.Cell">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">3px</item>
+        <item name="android:layout_alignParentBottom">true</item>
         <item name="android:background">@color/highlight_border</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="Detail.Description.Text">
+        <item name="android:text">Hello, world!</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/snowhite</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="Item.TitleSecond.Gray" parent="Item.TitleSecond">
         <item name="android:textColor">@color/gray</item>

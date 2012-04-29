@@ -1,369 +1,187 @@
 package com.gracecode.tracker.activity;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
-import android.view.*;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
-import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.service.ArchiveNameHelper;
-import com.gracecode.tracker.service.Recorder.ServiceBinder;
+import com.gracecode.tracker.fragment.ArchiveMetaFragment;
+import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Tracker extends Activity {
-    private Timer timer = null;
+public class Tracker extends Activity implements View.OnClickListener, View.OnLongClickListener {
+    private Button mStartButton;
+    private Button mEndButton;
 
-    private ArrayList<TextView> textViewsGroup = new ArrayList<TextView>();
-    private Location lastLocationRecord;
-    private static final int MESSAGE_UPDATE_STATE_VIEW = 0x0001;
-    protected ArchiveMeta archiveMeta = null;
-    private Archive archive = null;
-    private long needCountDistance = 0;
-    private ToggleButton toggleButton;
+    private ArchiveMetaFragment archiveMetaFragment;
 
-    /**
-     * Handle the records_context for show the last recorded status.
-     */
-    private Handler handle = new Handler() {
-        long visible_flag = 0;
+    protected ArchiveMeta archiveMeta;
 
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_UPDATE_STATE_VIEW:
-                    if (serviceBinder == null) {
-                        return;
-                    }
+    private static final int FLAG_RECORDING = 0x001;
+    private static final int FLAG_ENDED = 0x002;
+    private static final long MINI_RECORDS = 2;
 
-                    TextView records = (TextView) findViewById(R.id.status);
-                    String statusLabel = getString(R.string.ready);
+    private boolean isRecording = false;
+    public static final int MESSAGE_UPDATE_VIEW = 0x011;
+    private Timer updateViewTimer;
+    private static final long TIMER_PERIOD = 1000;
+    private TextView mCoseTime;
 
-                    switch (serviceBinder.getStatus()) {
-                        case ServiceBinder.STATUS_RECORDING:
-                            statusLabel = getString(R.string.recording);
-                            toggleButton.setChecked(true);
-                            break;
-                        case ServiceBinder.STATUS_STOPPED:
-                            statusLabel = getString(R.string.ready);
-                            toggleButton.setChecked(false);
-                        default:
-                    }
-                    records.setText(statusLabel);
-                    records.setVisibility(++visible_flag % 2 == 0 ? View.INVISIBLE : View.VISIBLE);
-
-                    updateView();
-                    break;
-            }
-        }
-    };
-
-
-    /**
-     * 找到所有的 TextView 元素
-     *
-     * @param v
-     */
-    private void findAllTextView(ViewGroup v) {
-        for (int i = 0; i < v.getChildCount(); i++) {
-            View item = v.getChildAt(i);
-            if (item instanceof TextView) {
-                textViewsGroup.add((TextView) item);
-            } else if (item instanceof ViewGroup) {
-                findAllTextView((ViewGroup) item);
-            }
-        }
-    }
-
-    private void updateViewStatus() {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Message message = new Message();
-                message.what = MESSAGE_UPDATE_STATE_VIEW;
-                handle.sendMessage(message);
-            }
-        }, 0, 1000);
-
-        // change the font for nice look
-//        Typeface face = Typeface.createFromAsset(getAssets(),
-//            getString(R.string.default_font));
-//
-//        for (int i = 0; i < textViewsGroup.size(); i++) {
-//            TextView t = textViewsGroup.get(i);
-//            t.setTypeface(face);
-//        }
-    }
-
-    private void updateView() {
-        if (serviceBinder == null) {
-            return;
-        }
-        Boolean isRunning = (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING);
-
-        for (int i = 0; i < textViewsGroup.size(); i++) {
-            double numberValue = 0;
-            String stringValue = "";
-            TextView textView = textViewsGroup.get(i);
-            long count = 0;
-            float speed = 0;
-            float maxSpeed = 0;
-
-            try {
-                if (isRunning) {
-                    lastLocationRecord = serviceBinder.getLastRecord();
-                    archiveMeta = serviceBinder.getMeta();
-                    archive = serviceBinder.getArchive();
-                    count = archiveMeta.getCount();
-                    speed = archiveMeta.getAverageSpeed();
-                    maxSpeed = archiveMeta.getMaxSpeed();
-
-
-                    GpsStatus gpsStatus = serviceBinder.getGpsStatus();
-                    Iterator<GpsSatellite> satellites = (gpsStatus.getSatellites()).iterator();
-
-
-                    int k = 0;
-                    int j = 0;
-                    while (satellites.hasNext()) {
-                        GpsSatellite satellite = satellites.next();
-                        if (satellite.hasEphemeris()) {
-                            j++;
-                        }
-                        k++;
-                    }
-//
-//                    if (i % 50 == 0) {
-//                        uiHelper.showShortToast("Connected: " + j + " / " + k + " / " + gpsStatus.getMaxSatellites());
-//                    }
-                }
-
-                switch (textView.getId()) {
-                    case R.id.status:
-                        int stamp = (isRunning) ? R.string.recording : R.string.idle;
-                        stringValue = getString(stamp);
-                        break;
-                    case R.id.records:
-                        if (count > 0) {
-                            stringValue = String.format(getString(R.string.records), count);
-                        } else {
-                            stringValue = getString(R.string.no_records);
-                        }
-                        break;
-                    case R.id.distance:
-                        // @todo 考虑性能问题
-                        if (++needCountDistance % 5 == 0 && isRunning) {
-                            float distance = archiveMeta.getDistance();
-                            if (distance > 0) {
-                                numberValue = distance / 1000;
-                                textView.setVisibility(View.VISIBLE);
-                            } else {
-                                textView.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                        break;
-                    case R.id.time:
-                        stringValue = new SimpleDateFormat(getString(R.string.time_format)).format(
-                            new Date(isRunning ? lastLocationRecord.getTime() : System.currentTimeMillis()));
-                        break;
-                    case R.id.speed:
-                        if (speed > 0) {
-                            stringValue = String.format("%.2f(%.2f)",
-                                speed * ArchiveMeta.KM_PER_HOUR_CNT, maxSpeed * ArchiveMeta.KM_PER_HOUR_CNT);
-                        } else {
-                            throw new NullPointerException();
-                        }
-                        break;
-                    case R.id.longitude:
-                        numberValue = lastLocationRecord.getLongitude();
-                        break;
-                    case R.id.latitude:
-                        numberValue = lastLocationRecord.getLatitude();
-                        break;
-                    case R.id.bearing:
-                        numberValue = lastLocationRecord.getBearing();
-                        break;
-                    case R.id.altitude:
-                        numberValue = lastLocationRecord.getAltitude();
-                        break;
-                    case R.id.accuracy:
-//                        numberValue = lastLocationRecord.getAccuracy();
-                        stringValue = String.format("%sm/%ds",
-                            sharedPreferences.getString(Preference.GPS_MINDISTANCE,
-                                Preference.DEFAULT_GPS_MINDISTANCE),
-                            Integer.parseInt(sharedPreferences.getString(Preference.GPS_MINTIME,
-                                Preference.DEFAULT_GPS_MINTIME)) / 1000);
-                        break;
-                }
-            } catch (NullPointerException e) {
-                stringValue = getString(R.string.no_records);
-            }
-
-            if (stringValue.length() > 0) {
-                textView.setText(stringValue);
-            } else if (numberValue != 0) {
-                textView.setText(String.format("%.2f", numberValue));
-            }
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem pauseMenuItem = menu.findItem(R.id.pause);
-        MenuItem startMenuItem = menu.findItem(R.id.start);
-        Boolean isRunning = (ServiceBinder.STATUS_RECORDING == serviceBinder.getStatus());
-
-        pauseMenuItem.setEnabled(isRunning ? true : false);
-        startMenuItem.setEnabled(isRunning ? false : true);
-
-        return true;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.tracker);
 
-        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-        findAllTextView((ViewGroup) findViewById(R.id.root));
+        mStartButton = (Button) findViewById(R.id.btn_start);
+        mEndButton = (Button) findViewById(R.id.btn_end);
+        mCoseTime = (TextView) findViewById(R.id.item_cost_time);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // 判断外界条件
-        if (!ArchiveNameHelper.isExternalStoragePresent()) {
-            Logger.e("External storage not presented.");
-            Toast.makeText(this, getString(R.string.storage_not_presented), Toast.LENGTH_SHORT).show();
-            Intent myIntent = new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS);
-            startActivity(myIntent);
-        }
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Logger.e("GPS not Enabled");
-            Toast.makeText(this, getString(R.string.gps_not_presented), Toast.LENGTH_SHORT).show();
-
-            Intent myIntent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
-            startActivity(myIntent);
-        }
-
-        toggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (serviceBinder != null) {
-                    if (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING) {
-                        long count = archiveMeta.getCount();
-                        serviceBinder.stopRecord();
-                        toggleButton.setChecked(false);
-
-                        // 如果已经有记录，则显示保存信息
-                        if (count > 0) {
-                            Intent intent = new Intent(context, Detail.class);
-                            intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archive.getName());
-                            startActivity(intent);
-                        }
-                    } else {
-                        serviceBinder.startRecord();
-                        toggleButton.setChecked(true);
-                    }
-                }
-            }
-        });
-
-        if (actionBar != null) {
-            actionBar.setTitle(getString(R.string.app_name));
-            actionBar.removeAllActions();
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.clearHomeAction();
-            actionBar.addAction(new ActionBar.IntentAction(this,
-                new Intent(this, Records.class), R.drawable.ic_menu_friendslist));
-        }
+    private void notifyUpdateView() {
+        Message message = new Message();
+        message.what = MESSAGE_UPDATE_VIEW;
+        uiHandler.sendMessage(message);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateViewStatus();
+
+        updateViewTimer = new Timer();
+        updateViewTimer.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    notifyUpdateView();
+                }
+            }, 0, TIMER_PERIOD);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        if (timer != null) {
-            timer.cancel();
-        }
+        updateViewTimer.cancel();
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent t;
-
-        switch (item.getItemId()) {
-            case R.id.start:
-                serviceBinder.startRecord();
-                return true;
-
-            case R.id.pause:
-                serviceBinder.stopRecord();
-                return true;
-
-            case R.id.records:
-                t = new Intent(Tracker.this, Records.class);
-                startActivity(t);
-                return true;
-
-            case R.id.configure:
-                t = new Intent(Tracker.this, Preference.class);
-                startActivity(t);
-                return true;
-
-            case R.id.about:
-                Dialog dialog = new Dialog(this);
-                dialog.setTitle(R.string.app_name);
-                dialog.setContentView(R.layout.about);
-                dialog.show();
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
 
     @Override
     public void onDestroy() {
-        if (serviceBinder != null && serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING) {
+        super.onDestroy();
+        if (isRecording) {
             uiHelper.showLongToast(getString(R.string.still_running));
         }
-
-        super.onDestroy();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mStartButton.setOnClickListener(this);
+        mEndButton.setOnClickListener(this);
+        mEndButton.setOnLongClickListener(this);
+
+        // 设置 ActionBar 样式
+        actionBar.setTitle(getString(R.string.app_name));
+        actionBar.removeAllActions();
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.clearHomeAction();
+        actionBar.addAction(
+            new ActionBar.IntentAction(this,
+                new Intent(this, Records.class), R.drawable.ic_menu_friendslist));
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_start:
+                if (serviceBinder != null && !isRecording) {
+                    serviceBinder.startRecord();
+                    notifyUpdateView();
+                }
+                break;
+            case R.id.btn_end:
+                uiHelper.showShortToast(getString(R.string.long_press_to_stop));
+                break;
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (isRecording && serviceBinder != null) {
+            long count = archiveMeta.getCount();
+
+            serviceBinder.stopRecord();
+            notifyUpdateView();
+
+            if (count > MINI_RECORDS) {
+                Intent intent = new Intent(context, Detail.class);
+                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveMeta.getName());
+                startActivity(intent);
+            }
+        }
+        setViewStatus(FLAG_ENDED);
+        return true;
+    }
+
+    private void setViewStatus(int status) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        switch (status) {
+            case FLAG_RECORDING:
+                mStartButton.setVisibility(View.GONE);
+                mEndButton.setVisibility(View.VISIBLE);
+                if (archiveMeta != null) {
+                    archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
+                    fragmentTransaction.replace(R.id.status_layout, archiveMetaFragment);
+//                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+                    mCoseTime.setText(archiveMeta.getCostTimeStringByNow());
+                }
+                break;
+            case FLAG_ENDED:
+                mStartButton.setVisibility(View.VISIBLE);
+                mEndButton.setVisibility(View.GONE);
+                if (archiveMetaFragment != null) {
+                    fragmentTransaction.remove(archiveMetaFragment);
+                }
+                mCoseTime.setText(R.string.none_cost_time);
+                break;
+        }
+
+        fragmentTransaction.commit();
+    }
+
+    // 控制界面显示 UI
+    private Handler uiHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_UPDATE_VIEW:
+                    if (serviceBinder == null) {
+                        Logger.i(getString(R.string.not_available));
+                        return;
+                    }
+
+                    archiveMeta = serviceBinder.getMeta();
+
+                    switch (serviceBinder.getStatus()) {
+                        case Recorder.ServiceBinder.STATUS_RECORDING:
+                            setViewStatus(FLAG_RECORDING);
+                            isRecording = true;
+                            break;
+                        case Recorder.ServiceBinder.STATUS_STOPPED:
+                            setViewStatus(FLAG_ENDED);
+                            isRecording = false;
+                    }
+            }
+        }
+    };
 }

@@ -137,6 +137,6 @@ public class Detail extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        return true;
+        return false;
     }
 }

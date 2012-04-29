@@ -24,12 +24,6 @@
                  android:icon="@drawable/icon">
         <activity android:name=".activity.Tracker"
                   android:theme="@style/Window"
-                  android:launchMode="singleTask"
-                  android:clearTaskOnLaunch="true"
-            >
-        </activity>
-        <activity android:name=".activity.Main"
-                  android:theme="@style/Window"
                   android:clearTaskOnLaunch="true"
                   android:launchMode="singleTask"
             >
