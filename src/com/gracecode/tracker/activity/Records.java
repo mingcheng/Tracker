@@ -49,39 +49,6 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
             super(context, R.layout.records_row, archives);
         }
 
-        protected String countTime(Date start, Date end) {
-            try {
-                long startTimeStamp = start.getTime();
-                long endTimeStamp = end.getTime();
-                long between = endTimeStamp - startTimeStamp;
-
-                long day = between / (24 * 60 * 60 * 1000);
-                long hour = (between / (60 * 60 * 1000) - day * 24);
-                long minute = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
-                long second = (between / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60);
-
-                String result = "";
-                if (day > 0) {
-                    result += day + "d";
-                }
-
-                if (hour > 0) {
-                    result += ((result.length() > 0) ? ", " : "") + hour + "h";
-                }
-                if (minute > 0) {
-                    result += ((result.length() > 0) ? ", " : "") + minute + "min";
-                }
-                if (day <= 0 && second > 0) {
-                    result += ((result.length() > 0) ? ", " : "") + second + "sec";
-                }
-
-                return result;
-            } catch (NullPointerException e) {
-                return "";
-            }
-        }
-
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Archive archive = archives.get(position);
@@ -94,13 +61,9 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
             TextView mCostTime = (TextView) rowView.findViewById(R.id.cost_time);
             TextView mDistance = (TextView) rowView.findViewById(R.id.distance);
 
-            mDistance.setText(String.format("%02.2f", archiveMeta.getDistance() / 1000));
-
-            Date startTime = archiveMeta.getStartTime();
-            Date endTime = archiveMeta.getEndTime();
-
-            String costTime = countTime(startTime, endTime);
-            mCostTime.setText(costTime);
+            mDistance.setText(String.format(getString(R.string.records_formatter),
+                archiveMeta.getDistance() / ArchiveMeta.TO_KILOMETRE));
+            mCostTime.setText(archiveMeta.getRawCostTimeString());
 
             String description = archiveMeta.getDescription();
             if (description.length() <= 0) {

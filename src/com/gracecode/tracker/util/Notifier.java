@@ -32,12 +32,12 @@ public class Notifier extends Notification {
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void setDistance(float distance) {
-        contentView.setTextViewText(R.id.distance, String.valueOf(distance));
+    public void setStatusString(String statusString) {
+        contentView.setTextViewText(R.id.status, statusString);
     }
 
-    public void setRecords(long records) {
-        contentView.setTextViewText(R.id.records, String.valueOf(records));
+    public void setCostTimeString(String costTimeString) {
+        contentView.setTextViewText(R.id.status_cost_time, costTimeString);
     }
 
     public void setNumber(int number) {

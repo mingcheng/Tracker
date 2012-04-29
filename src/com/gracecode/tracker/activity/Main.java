@@ -16,7 +16,6 @@ import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,7 +36,6 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
     private Timer updateViewTimer;
     private static final long TIMER_PERIOD = 1000;
     private TextView mCoseTime;
-    private static final String COST_TIME_FORMAT = "%02d:%02d:%02d";
 
 
     @Override
@@ -146,9 +144,7 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
                     fragmentTransaction.replace(R.id.status_layout, archiveMetaFragment);
 //                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
-                    String costTime =
-                        getCostTimeString(archiveMeta.getStartTime(), new Date(System.currentTimeMillis()));
-                    mCoseTime.setText(costTime);
+                    mCoseTime.setText(archiveMeta.getCostTimeStringByNow());
                 }
                 break;
             case FLAG_ENDED:
@@ -188,21 +184,4 @@ public class Main extends Activity implements View.OnClickListener, View.OnLongC
             }
         }
     };
-
-    protected String getCostTimeString(Date start, Date end) {
-        try {
-            long startTimeStamp = start.getTime();
-            long endTimeStamp = end.getTime();
-            long between = endTimeStamp - startTimeStamp;
-
-            long day = between / (24 * 60 * 60 * 1000);
-            long hour = (between / (60 * 60 * 1000) - day * 24);
-            long minute = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
-            long second = (between / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60);
-
-            return String.format(COST_TIME_FORMAT, hour, minute, second);
-        } catch (NullPointerException e) {
-            return "";
-        }
-    }
 }

@@ -19,6 +19,7 @@ public class ArchiveMeta {
     public static final String TABLE_NAME = "meta";
     public static final double KM_PER_HOUR_CNT = 3.597;
     public static final int TO_KILOMETRE = 1000;
+    private static final String COST_TIME_FORMAT = "%02d:%02d:%02d";
 
     protected Archive archive;
     private SQLiteDatabase database;
@@ -109,10 +110,9 @@ public class ArchiveMeta {
         return count > 0 ? true : false;
     }
 
-
     public Date getStartTime() {
         try {
-            long startTime = Long.parseLong(get(START_TIME), 10);
+            long startTime = Long.parseLong(get(START_TIME));
             return new Date(startTime);
         } catch (NumberFormatException e) {
             return null;
@@ -121,10 +121,35 @@ public class ArchiveMeta {
 
     public Date getEndTime() {
         try {
-            long endTime = Long.parseLong(get(END_TIME), 10);
+            long endTime = Long.parseLong(get(END_TIME));
             return new Date(endTime);
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    public String getRawCostTimeString() {
+        return getBetweenTimeString(getStartTime(), getEndTime());
+    }
+
+    public String getCostTimeStringByNow() {
+        return getBetweenTimeString(getStartTime(), new Date(System.currentTimeMillis()));
+    }
+
+    private String getBetweenTimeString(Date start, Date end) {
+        try {
+            long startTimeStamp = start.getTime();
+            long endTimeStamp = end.getTime();
+            long between = endTimeStamp - startTimeStamp;
+
+            long day = between / (24 * 60 * 60 * 1000);
+            long hour = (between / (60 * 60 * 1000) - day * 24);
+            long minute = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
+            long second = (between / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60);
+
+            return String.format(COST_TIME_FORMAT, hour, minute, second);
+        } catch (NullPointerException e) {
+            return "";
         }
     }
 

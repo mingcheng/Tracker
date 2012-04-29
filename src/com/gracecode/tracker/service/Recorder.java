@@ -80,7 +80,8 @@ public class Recorder extends Service {
                     Preference.DEFAULT_GPS_MINDISTANCE));
 
                 // 判定是否上次为异常退出
-                if (nameHelper.hasResumeName()) {
+                boolean hasResumeName = nameHelper.hasResumeName();
+                if (hasResumeName) {
                     archivName = nameHelper.getResumeName();
                     uiHelper.showLongToast(
                         String.format(
@@ -92,15 +93,19 @@ public class Recorder extends Service {
 
                 try {
                     archive.open(archivName, Archive.MODE_READ_WRITE);
-                    nameHelper.setLastOpenedName(archivName);
 
-                    // 设置开始时间
-                    getMeta().setStartTime(new Date());
+                    // 设置开始时间，如果是恢复文件，则就不设置
+                    if (!hasResumeName) {
+                        getMeta().setStartTime(new Date());
+                    }
 
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, listener);
                     locationManager.addGpsStatusListener(statusListener);
+
+                    // 标记打开的文件，方便奔溃时恢复
+                    nameHelper.setLastOpenedName(archivName);
                 } catch (SQLiteException e) {
                     Logger.e(e.getMessage());
                 }
@@ -109,14 +114,15 @@ public class Recorder extends Service {
                 notifierTask = new TimerTask() {
                     @Override
                     public void run() {
-                        float distance = getMeta().getDistance();
-                        long count = getMeta().getCount();
-                        if (count > 0) {
-                            notifier.setRecords(count);
-                        }
-                        if (distance > 0) {
-                            notifier.setDistance(distance);
-                        }
+                        float distance = getMeta().getDistance() / ArchiveMeta.TO_KILOMETRE;
+                        double avgSpeed = getMeta().getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                        double maxSpeed = getMeta().getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+
+                        notifier.setStatusString(
+                            String.format(getString(R.string.status_format),
+                                distance, avgSpeed, maxSpeed)
+                        );
+                        notifier.setCostTimeString(getMeta().getCostTimeStringByNow());
                         notifier.publish();
                     }
                 };
