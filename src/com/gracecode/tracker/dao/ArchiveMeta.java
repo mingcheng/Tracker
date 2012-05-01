@@ -75,6 +75,8 @@ public class ArchiveMeta {
             Logger.e(e.getMessage());
         } catch (CursorIndexOutOfBoundsException e) {
             Logger.e(e.getMessage());
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage());
         }
 
         return result;
@@ -114,7 +116,7 @@ public class ArchiveMeta {
         try {
             long startTime = Long.parseLong(get(START_TIME));
             return new Date(startTime);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -123,7 +125,7 @@ public class ArchiveMeta {
         try {
             long endTime = Long.parseLong(get(END_TIME));
             return new Date(endTime);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return null;
         }
     }

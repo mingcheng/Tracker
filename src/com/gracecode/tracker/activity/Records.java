@@ -64,7 +64,9 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
 
             mDistance.setText(String.format(getString(R.string.records_formatter),
                 archiveMeta.getDistance() / ArchiveMeta.TO_KILOMETRE));
-            mCostTime.setText(archiveMeta.getRawCostTimeString());
+
+            String costTime = archiveMeta.getRawCostTimeString();
+            mCostTime.setText(costTime.length() > 0 ? costTime : getString(R.string.not_available));
 
             String description = archiveMeta.getDescription();
             if (description.length() <= 0) {

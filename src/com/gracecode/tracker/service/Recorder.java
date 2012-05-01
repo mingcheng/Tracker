@@ -114,16 +114,24 @@ public class Recorder extends Service {
                 notifierTask = new TimerTask() {
                     @Override
                     public void run() {
-                        float distance = getMeta().getDistance() / ArchiveMeta.TO_KILOMETRE;
-                        double avgSpeed = getMeta().getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
-                        double maxSpeed = getMeta().getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                        switch (serviceBinder.getStatus()) {
+                            case ServiceBinder.STATUS_RECORDING:
+                                float distance = getMeta().getDistance() / ArchiveMeta.TO_KILOMETRE;
+                                double avgSpeed = getMeta().getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                                double maxSpeed = getMeta().getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
 
-                        notifier.setStatusString(
-                            String.format(getString(R.string.status_format),
-                                distance, avgSpeed, maxSpeed)
-                        );
-                        notifier.setCostTimeString(getMeta().getCostTimeStringByNow());
-                        notifier.publish();
+                                notifier.setStatusString(
+                                    String.format(getString(R.string.status_format),
+                                        distance, avgSpeed, maxSpeed)
+                                );
+                                notifier.setCostTimeString(getMeta().getCostTimeStringByNow());
+                                notifier.publish();
+                                break;
+
+                            case ServiceBinder.STATUS_STOPPED:
+                                notifier.cancel();
+                                break;
+                        }
                     }
                 };
 
@@ -212,6 +220,11 @@ public class Recorder extends Service {
         super.onStart(intent, startId);
     }
 
+    @Override
+    public void onDestroy() {
+        serviceBinder.stopRecord();
+        super.onDestroy();
+    }
 
     @Override
     public IBinder onBind(Intent intent) {

@@ -43,8 +43,8 @@
 
     <TextView
         android:id="@+id/status_cost_time"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:textColor="@color/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

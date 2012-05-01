@@ -5,7 +5,7 @@
     <string name="default_font">digital.ttf</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
-    <string name="no_description">- none description -</string>
+    <string name="no_description">none description</string>
     <string name="export_kml">Export</string>
     <string name="delete">Delete</string>
     <string name="none_cost_time">00:00:00</string>

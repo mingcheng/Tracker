@@ -11,6 +11,7 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.ArchiveMeta;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class ArchiveMetaTimeFragment extends Fragment {
@@ -41,7 +42,15 @@ public class ArchiveMetaTimeFragment extends Fragment {
     }
 
     protected void updateView() {
-        mStartTime.setText(dateFormat.format(meta.getStartTime()));
-        mEndTime.setText(dateFormat.format(meta.getEndTime()));
+        Date startTime = meta.getStartTime();
+        Date endTime = meta.getEndTime();
+
+        mStartTime.setText(
+            startTime != null ?
+                dateFormat.format(startTime) : getString(R.string.not_available));
+
+        mEndTime.setText(
+            endTime != null ?
+                dateFormat.format(endTime) : getString(R.string.not_available));
     }
 }
