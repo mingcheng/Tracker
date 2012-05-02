@@ -50,7 +50,7 @@
               android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
               android:paddingLeft="9dip" android:paddingTop="10dip"
               android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
-              android:gravity="top" android:textColor="#737373" />
+              android:gravity="top" android:textColor="@color/title" />
 
     <RelativeLayout android:orientation="horizontal"
                     android:layout_width="fill_parent" android:layout_height="55dip"

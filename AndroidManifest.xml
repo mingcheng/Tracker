@@ -53,6 +53,20 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.Modify"
+                  android:windowSoftInputMode="adjustResize"
+                  android:theme="@style/Window">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.Info"
+                  android:screenOrientation="behind"
+                  android:theme="@style/Window">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.Preference"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              style="@style/LightBackground"
+    >
+
+    <include layout="@layout/action_bar" />
+
+    <EditText
+        android:layout_alignParentTop="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top"
+        android:id="@+id/description"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginBottom="5dip"
+        android:maxEms="10"
+        android:minEms="10"
+        android:layout_weight="1.0"
+        />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:paddingRight="10dip"
+        android:paddingBottom="10dip"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_alignParentRight="true"
+            style="@style/BigEndButton"
+            android:text="@string/ok"
+            android:layout_margin="0dip"
+            />
+
+    </RelativeLayout>
+</LinearLayout>
+
