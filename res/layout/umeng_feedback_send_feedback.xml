@@ -68,15 +68,14 @@
             android:layout_marginLeft="7dip" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_centerVertical="true" />
 
-        <TextView
+        <Button
             android:id="@+id/umeng_feedback_submit"
             style="@style/BigEndButton"
             android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/submit"
             android:gravity="center"
             android:layout_alignBaseline="@id/umeng_feedback_age_spinner"
-            android:layout_marginRight="15dip" />
+            android:layout_marginRight="10dip"
+            />
     </RelativeLayout>
 </LinearLayout>

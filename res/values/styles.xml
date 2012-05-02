@@ -93,7 +93,12 @@
         <item name="android:textColor">@color/snowhite</item>
         <item name="android:background">@drawable/btn_start</item>
         <item name="android:textSize">18dp</item>
+        <item name="android:layout_height">50dip</item>
+        <item name="android:layout_width">100dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">0dip</item>
     </style>
+
     <style name="BigEndButton" parent="BigButton">
         <item name="android:background">@drawable/btn_end</item>
         <item name="android:shadowColor">@color/highlight_border</item>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+    >
     <LinearLayout
+        android:layout_margin="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -37,17 +39,18 @@
                       android:orientation="horizontal"
                       android:background="@drawable/time_background">
             <Button android:id="@+id/umeng_feedback_exitBtn"
-                    android:layout_width="80dip"
                     style="@style/BigStartButton"
-                    android:textColor="#FFFFFF" android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="10dp" android:layout_height="45dp"
-                    android:layout_marginTop="10dp" android:text="@string/UMFeedbackGotIt"
-                    android:layout_weight="1" />
+                    android:textColor="#FFFFFF"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/UMFeedbackGotIt"
+                    android:layout_weight="1"
+                />
             <Button android:id="@+id/umeng_feedback_see_detail_btn"
-                    android:layout_width="80dip"
-                    android:textColor="#FFFFFF" android:layout_height="45dip"
-                    android:text="@string/UMFeedbackSeeDetail" android:layout_marginTop="10dip"
-                    android:layout_marginLeft="40dp"
+                    android:text="@string/UMFeedbackSeeDetail"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginLeft="10dp"
                     style="@style/BigEndButton"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1" />

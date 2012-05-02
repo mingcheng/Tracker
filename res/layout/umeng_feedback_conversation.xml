@@ -37,9 +37,12 @@
 
     <RelativeLayout android:id="@+id/umeng_feedback_bottom_sub"
                     android:background="@drawable/time_background"
-                    android:layout_gravity="bottom" android:gravity="center_vertical"
-                    android:layout_width="fill_parent" android:layout_height="wrap_content"
-                    android:paddingTop="5dip" android:paddingBottom="2dip"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dip"
+                    android:paddingBottom="5dip"
                     android:orientation="horizontal">
 
         <EditText
@@ -47,17 +50,18 @@
             android:layout_width="fill_parent"
             android:layout_marginLeft="8dip"
             android:layout_height="wrap_content"
-            android:maxLines="2"
+            android:maxLines="3"
+            android:gravity="top"
             android:layout_weight="1"
+            android:lines="2"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/umeng_feedback_btnSendFb" />
 
         <Button android:id="@+id/umeng_feedback_btnSendFb"
                 style="@style/BigEndButton"
-                android:layout_width="70dip"
-                android:layout_height="40dip"
-                android:layout_marginLeft="12dip"
-                android:layout_marginRight="6dip"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:text="Submit" />

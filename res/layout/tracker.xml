@@ -46,8 +46,6 @@
                 <Button
                     android:id="@+id/btn_start"
                     style="@style/BigStartButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="START"
                     android:layout_marginTop="25dp"
                     />
@@ -56,8 +54,6 @@
                     android:visibility="gone"
                     android:id="@+id/btn_end"
                     style="@style/BigEndButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="END"
                     android:layout_marginTop="25dp"
                     />
