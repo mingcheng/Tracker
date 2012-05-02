@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.Archive;
-import com.gracecode.tracker.util.UIHelper;
+import com.gracecode.tracker.util.Helper;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class GoogleMap extends MapActivity {
     private Context context;
     private Archive archive;
     private ArrayList<Location> locations;
-    private UIHelper uiHelper;
+    private Helper helper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class GoogleMap extends MapActivity {
 
         mapView = (MapView) findViewById(R.id.google_mapview);
         mapController = mapView.getController();
-        uiHelper = new UIHelper(context);
+        helper = new Helper(context);
 
         context = getApplicationContext();
         archive = new Archive(context, getIntent().getStringExtra(ARCHIVE_FILE_NAME));

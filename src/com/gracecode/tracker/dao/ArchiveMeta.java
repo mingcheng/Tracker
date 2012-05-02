@@ -247,7 +247,7 @@ public class ArchiveMeta {
             cursor.moveToFirst();
             speed = cursor.getFloat(cursor.getColumnIndex(Archive.DATABASE_COLUMN.SPEED));
             cursor.close();
-        } catch (SQLiteException e) {
+        } catch (Exception e) {
             Logger.e(e.getMessage());
         }
 

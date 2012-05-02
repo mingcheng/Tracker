@@ -14,9 +14,9 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.Preference;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.util.Helper;
 import com.gracecode.tracker.util.Logger;
 import com.gracecode.tracker.util.Notifier;
-import com.gracecode.tracker.util.UIHelper;
 import com.mobclick.android.MobclickAgent;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public class Recorder extends Service {
 
     private ArchiveNameHelper nameHelper;
     private String archivName;
-    private UIHelper uiHelper;
+    private Helper helper;
     private Context context;
     private Notifier notifier;
     private static final String RECORDER_SERVER_ID = "Tracker Service";
@@ -85,7 +85,7 @@ public class Recorder extends Service {
                 boolean hasResumeName = nameHelper.hasResumeName();
                 if (hasResumeName) {
                     archivName = nameHelper.getResumeName();
-                    uiHelper.showLongToast(
+                    helper.showLongToast(
                         String.format(
                             getString(R.string.use_resume_archive_file, archivName)
                         ));
@@ -157,12 +157,12 @@ public class Recorder extends Service {
                 long totalCount = getMeta().getCount();
                 if (totalCount <= 0) {
                     (new File(archivName)).delete();
-                    uiHelper.showLongToast(getString(R.string.not_record_anything));
+                    helper.showLongToast(getString(R.string.not_record_anything));
                 } else {
                     // 设置结束记录时间
                     getMeta().setEndTime(new Date());
 
-                    uiHelper.showLongToast(String.format(
+                    helper.showLongToast(String.format(
                         getString(R.string.result_report), String.valueOf(totalCount)
                     ));
                 }
@@ -209,7 +209,7 @@ public class Recorder extends Service {
         this.notifier = new Notifier(context);
 
         this.nameHelper = new ArchiveNameHelper(context);
-        this.uiHelper = new UIHelper(context);
+        this.helper = new Helper(context);
         if (this.serviceBinder == null) {
             this.serviceBinder = new ServiceBinder();
         }

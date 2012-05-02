@@ -5,7 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.util.UIHelper;
+import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
 
@@ -14,7 +14,7 @@ public abstract class MapActivity extends com.baidu.mapapi.MapActivity implement
     protected MapController mapViewController;
     protected BMapManager bMapManager;
     private static final String BAIDU_MAP_KEY = "30183AD8A6AFE7CE8F649ED4CD258211E8DE78D7";
-    protected UIHelper uiHelper;
+    protected Helper helper;
     protected Context context;
     protected ActionBar actionBar;
 
@@ -28,7 +28,7 @@ public abstract class MapActivity extends com.baidu.mapapi.MapActivity implement
 
         actionBar = (ActionBar) findViewById(R.id.action_bar);
 
-        uiHelper = new UIHelper(context);
+        helper = new Helper(context);
         MobclickAgent.onError(this);
     }
 

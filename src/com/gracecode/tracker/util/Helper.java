@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.Toast;
 import com.gracecode.tracker.R;
 
-public class UIHelper {
+public class Helper {
     private Context context;
 
-    public UIHelper(Context context) {
+    public Helper(Context context) {
         this.context = context;
     }
 

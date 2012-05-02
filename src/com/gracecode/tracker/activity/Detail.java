@@ -79,7 +79,7 @@ public class Detail extends Activity implements View.OnTouchListener {
             @Override
             public void performAction(View view) {
 
-                uiHelper.showConfirmDialog(
+                helper.showConfirmDialog(
                     getString(R.string.delete),
                     String.format(getString(R.string.sure_to_del), archiveMeta.getName()),
                     new Runnable() {

@@ -84,7 +84,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     public void onDestroy() {
         super.onDestroy();
         if (isRecording) {
-            uiHelper.showLongToast(getString(R.string.still_running));
+            helper.showLongToast(getString(R.string.still_running));
         }
     }
 
@@ -130,7 +130,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
                 }
                 break;
             case R.id.btn_end:
-                uiHelper.showShortToast(getString(R.string.long_press_to_stop));
+                helper.showShortToast(getString(R.string.long_press_to_stop));
                 break;
         }
     }

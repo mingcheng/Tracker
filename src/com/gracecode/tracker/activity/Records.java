@@ -1,28 +1,24 @@
 package com.gracecode.tracker.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
+import com.markupartist.android.widget.ActionBar;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.*;
 
-public class Records extends Activity implements AdapterView.OnItemClickListener {
+public class Records extends Activity implements AdapterView.OnItemClickListener, DatePickerDialog.OnDateSetListener {
     private Context context;
     public static final String INTENT_ARCHIVE_FILE_NAME = "name";
+    public static final String INTENT_SELECT_BY_MONTH = "month";
 
     private ListView listView;
     private ArrayList<String> archiveFileNames;
@@ -30,6 +26,24 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
 
     private ArchiveNameHelper archiveFileNameHelper;
     private ArchivesAdapter archivesAdapter;
+    private long selectedTime;
+
+    private class MonthPickerDialog extends DatePickerDialog {
+        public MonthPickerDialog(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+            super(context, callBack, year, monthOfYear, dayOfMonth);
+            setTitle(year, monthOfYear);
+        }
+
+        @Override
+        public void onDateChanged(DatePicker view, int year, int month, int day) {
+            super.onDateChanged(view, year, month, day);
+            setTitle(year, month);
+        }
+
+        private void setTitle(int year, int month) {
+            this.setTitle(String.format(getString(R.string.month_format), year, month + 1));
+        }
+    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -40,6 +54,17 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         startActivity(intent);
     }
 
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.set(year, month, day);
+
+        Date selectDate = new Date(selectedTime);
+        if (selectDate.getMonth() != month) {
+            Intent intent = new Intent(context, Records.class);
+            intent.putExtra(INTENT_SELECT_BY_MONTH, calendar.getTimeInMillis());
+            startActivity(intent);
+        }
+    }
 
     /**
      * ListView 的 Adapter
@@ -91,8 +116,6 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         this.archives = new ArrayList<Archive>();
         this.archivesAdapter = new ArchivesAdapter(archives);
         this.listView.setAdapter(archivesAdapter);
-
-
     }
 
     @Override
@@ -100,7 +123,23 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         super.onStart();
         listView.setOnItemClickListener(this);
 
-        getArchiveFilesByMonth(new Date());
+        actionBar.removeAllActions();
+        actionBar.addAction(
+            new ActionBar.Action() {
+                @Override
+                public int getDrawable() {
+                    return R.drawable.ic_menu_today;
+                }
+
+                @Override
+                public void performAction(View view) {
+                    showTimeSelectDialog();
+                }
+            }
+        );
+
+        selectedTime = getIntent().getLongExtra(INTENT_SELECT_BY_MONTH, System.currentTimeMillis());
+        getArchiveFilesByMonth(new Date(selectedTime));
     }
 
 
@@ -121,6 +160,40 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         super.onPause();
     }
 
+    private DatePicker findDatePicker(ViewGroup group) {
+        if (group != null) {
+            for (int i = 0, j = group.getChildCount(); i < j; i++) {
+                View child = group.getChildAt(i);
+                if (child instanceof DatePicker) {
+                    return (DatePicker) child;
+                } else if (child instanceof ViewGroup) {
+                    DatePicker result = findDatePicker((ViewGroup) child);
+                    if (result != null)
+                        return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void showTimeSelectDialog() {
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.setTime(new Date(selectedTime));
+
+        DatePickerDialog datePicker = new MonthPickerDialog(
+            Records.this, Records.this,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePicker.show();
+
+        DatePicker dp = findDatePicker((ViewGroup) datePicker.getWindow().getDecorView());
+        if (dp != null) {
+            ((ViewGroup) dp.getChildAt(0)).getChildAt(2).setVisibility(View.GONE);
+        }
+    }
+
     private void getArchiveFilesByMonth(Date date) {
         archiveFileNames = archiveFileNameHelper.getArchiveFilesNameByMonth(date);
         openArchivesFromFileNames();
@@ -139,6 +212,26 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
                 archives.add(archive);
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.records, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_calendar:
+                showTimeSelectDialog();
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 
     /**

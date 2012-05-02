@@ -12,13 +12,13 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.service.Recorder;
-import com.gracecode.tracker.util.UIHelper;
+import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
 
 public abstract class Activity extends FragmentActivity {
     protected SharedPreferences sharedPreferences;
-    protected UIHelper uiHelper;
+    protected Helper helper;
     public Intent recordServerIntent;
     protected ActionBar actionBar;
     protected Activity context;
@@ -30,7 +30,7 @@ public abstract class Activity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         context = this;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        uiHelper = new UIHelper(this);
+        helper = new Helper(this);
         fragmentManager = getSupportFragmentManager();
 
         MobclickAgent.onError(this);
