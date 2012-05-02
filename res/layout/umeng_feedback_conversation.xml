@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent" android:layout_height="fill_parent"
+              android:orientation="vertical"
+              android:background="@drawable/bg"
+    >
+
+    <RelativeLayout
+        style="@style/TrackerActionBar"
+        android:layout_width="fill_parent"
+        android:gravity="center_vertical"
+        >
+
+        <TextView android:id="@+id/umeng_feedback_conversation_title"
+                  android:layout_width="fill_parent"
+                  android:textColor="@color/snowhite"
+                  android:layout_height="fill_parent"
+                  android:layout_gravity="center_vertical"
+                  android:gravity="center_vertical"
+                  android:layout_marginLeft="14dp"
+                  android:text="@string/menu_feedback"
+                  android:textSize="16dip" />
+
+    </RelativeLayout>
+
+    <com.umeng.fb.ui.ThreadView android:id="@+id/android:list"
+                                android:layout_gravity="top" android:layout_width="fill_parent"
+                                android:layout_weight="1.0" android:layout_height="wrap_content"
+                                android:background="#EFEFEF" android:divider="#EFEFEF"
+                                android:cacheColorHint="#EEEEEE" />
+
+    <View android:layout_height="1dip" android:layout_width="fill_parent"
+          android:background="#d5d5d5" />
+
+    <View android:layout_height="3dip" android:layout_width="fill_parent"
+          android:background="@drawable/time_background_border_bottom" />
+
+    <RelativeLayout android:id="@+id/umeng_feedback_bottom_sub"
+                    android:background="@drawable/time_background"
+                    android:layout_gravity="bottom" android:gravity="center_vertical"
+                    android:layout_width="fill_parent" android:layout_height="wrap_content"
+                    android:paddingTop="5dip" android:paddingBottom="2dip"
+                    android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/umeng_feedback_editTxtFb"
+            android:layout_width="fill_parent"
+            android:layout_marginLeft="8dip"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:layout_weight="1"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/umeng_feedback_btnSendFb" />
+
+        <Button android:id="@+id/umeng_feedback_btnSendFb"
+                style="@style/BigEndButton"
+                android:layout_width="70dip"
+                android:layout_height="40dip"
+                android:layout_marginLeft="12dip"
+                android:layout_marginRight="6dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="Submit" />
+    </RelativeLayout>
+</LinearLayout>

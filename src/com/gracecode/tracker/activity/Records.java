@@ -66,9 +66,6 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         }
     }
 
-    /**
-     * ListView 的 Adapter
-     */
     public class ArchivesAdapter extends ArrayAdapter<Archive> {
 
         public ArchivesAdapter(ArrayList<Archive> archives) {

@@ -72,6 +72,9 @@
             android:enabled="true"
             >
         </service>
+        <activity android:name="com.umeng.fb.ui.SendFeedback" android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name="com.umeng.fb.ui.FeedbackConversations"></activity>
+        <activity android:name="com.umeng.fb.ui.FeedbackConversation" android:configChanges="keyboard"></activity>
         <uses-library android:name="com.google.android.maps" />
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
     </application>

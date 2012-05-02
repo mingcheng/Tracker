@@ -18,6 +18,8 @@ import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
+import com.umeng.fb.NotificationType;
+import com.umeng.fb.UMFeedbackService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,6 +54,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
 
         // Check update from umeng
         MobclickAgent.update(context);
+        UMFeedbackService.enableNewReplyNotification(context, NotificationType.AlertDialog);
     }
 
     private void notifyUpdateView() {
@@ -221,6 +224,10 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
 
             case R.id.menu_configure:
                 gotoActivity(Preference.class);
+                break;
+
+            case R.id.menu_feedback:
+                UMFeedbackService.openUmengFeedbackSDK(this);
                 break;
 
             default:

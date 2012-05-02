@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical" android:layout_width="fill_parent"
+              android:layout_height="fill_parent" android:background="#E0E0E0">
+    <RelativeLayout
+        style="@style/TrackerActionBar"
+        android:layout_width="fill_parent"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/umeng_feedback_goback_btn"
+            android:layout_width="60dip"
+            android:layout_height="35dip"
+            android:layout_alignBottom="@+id/umeng_feedback_see_list_btn"
+            android:layout_alignParentLeft="true"
+            android:text=""
+            />
+
+        <TextView android:id="@+id/umeng_feedback_um_feedbacklist_title"
+                  android:layout_width="fill_parent"
+                  android:textColor="@color/snowhite"
+                  android:layout_height="fill_parent"
+                  android:layout_gravity="center_vertical"
+                  android:gravity="center_vertical"
+                  android:layout_marginLeft="14dp"
+                  android:text="@string/menu_feedback"
+                  android:textSize="16dip" />
+
+        <ImageButton android:id="@+id/umeng_feedback_see_list_btn"
+                     android:layout_marginRight="8dip" android:layout_centerVertical="true"
+                     android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:layout_alignParentRight="true"
+                     android:background="@color/gray" />
+    </RelativeLayout>
+
+    <ListView android:id="@+id/android:list" android:layout_width="fill_parent"
+              android:layout_height="fill_parent" android:background="#E9E9E9"
+              android:divider="#E9E9E9" android:dividerHeight="0dip"
+              android:cacheColorHint="#E9E9E9" />
+</LinearLayout>
