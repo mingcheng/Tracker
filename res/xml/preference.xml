@@ -2,13 +2,31 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="User Interface">
-        <ListPreference android:key="orientation"
-                        android:title="Orientation"
-                        android:summary="The Screen Orientation"
-                        android:entries="@array/orientation"
-                        android:entryValues="@array/orientation"
-                        android:defaultValue="portrait"
+    <!--<PreferenceCategory android:title="User Interface">-->
+    <!--<ListPreference android:key="orientation"-->
+    <!--android:title="Orientation"-->
+    <!--android:summary="The Screen Orientation"-->
+    <!--android:entries="@array/orientation"-->
+    <!--android:entryValues="@array/orientation"-->
+    <!--android:defaultValue="portrait"-->
+    <!--/>-->
+    <!--</PreferenceCategory>-->
+
+    <PreferenceCategory android:title="GPS Listener">
+        <ListPreference android:key="gpsMinTime"
+                        android:title="GPS Time Interval"
+                        android:summary="The minimum time interval for GPS notifications, in milliseconds."
+                        android:entries="@array/gpsMinTimeValues"
+                        android:entryValues="@array/gpsMinTimeValues"
+                        android:defaultValue="2000"
+            />
+
+        <ListPreference android:key="gpsMinDistance"
+                        android:title="GPS Distance Interval"
+                        android:summary="The minimum distance interval for notifications, in meters."
+                        android:entries="@array/gpsMinDistanceValues"
+                        android:entryValues="@array/gpsMinDistanceValues"
+                        android:defaultValue="3"
             />
     </PreferenceCategory>
 
@@ -21,12 +39,12 @@
                             android:summaryOff="Manual start record by user"
             />
 
-        <CheckBoxPreference android:key="autoClean"
-                            android:title="Auto Clean"
-                            android:defaultValue="true"
-                            android:summary="Note! Uncheck this maybe have many empty record database"
-                            android:enabled="false"
-            />
+        <!--<CheckBoxPreference android:key="autoClean"-->
+        <!--android:title="Auto Clean"-->
+        <!--android:defaultValue="true"-->
+        <!--android:summary="Note! Uncheck this maybe have many empty record database"-->
+        <!--android:enabled="false"-->
+        <!--/>-->
 
         <ListPreference android:key="recordBy"
                         android:title="Save Record By"
@@ -55,25 +73,4 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="GPS Listener">
-        <ListPreference android:key="gpsMinTime"
-                        android:title="GPS Time Interval"
-                        android:summary="The minimum time interval for GPS notifications, in milliseconds."
-                        android:entries="@array/gpsMinTimeValues"
-                        android:entryValues="@array/gpsMinTimeValues"
-                        android:defaultValue="2000"
-            />
-
-        <ListPreference android:key="gpsMinDistance"
-                        android:title="GPS Distance Interval"
-                        android:summary="The minimum distance interval for notifications, in meters."
-                        android:entries="@array/gpsMinDistanceValues"
-                        android:entryValues="@array/gpsMinDistanceValues"
-                        android:defaultValue="3"
-            />
-    </PreferenceCategory>
-
-    <!---->
-    <!--led-->
-    <!--airport-->
 </PreferenceScreen>

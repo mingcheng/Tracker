@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Logger;
 import com.markupartist.android.widget.ActionBar;
+import com.mobclick.android.MobclickAgent;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,6 +49,9 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         mStartButton = (Button) findViewById(R.id.btn_start);
         mEndButton = (Button) findViewById(R.id.btn_end);
         mCoseTime = (TextView) findViewById(R.id.item_cost_time);
+
+        // Check update from umeng
+        MobclickAgent.update(context);
     }
 
     private void notifyUpdateView() {
@@ -95,8 +101,23 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.clearHomeAction();
         actionBar.addAction(
-            new ActionBar.IntentAction(this,
-                new Intent(this, Records.class), R.drawable.ic_menu_friendslist));
+            new ActionBar.Action() {
+                @Override
+                public int getDrawable() {
+                    return R.drawable.ic_menu_friendslist;
+                }
+
+                @Override
+                public void performAction(View view) {
+                    gotoActivity(Records.class);
+                }
+            }
+        );
+    }
+
+    private void gotoActivity(java.lang.Class cls) {
+        Intent intent = new Intent(context, cls);
+        startActivity(intent);
     }
 
     @Override
@@ -184,4 +205,28 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
             }
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.tracker, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_records:
+                gotoActivity(Records.class);
+                break;
+
+            case R.id.menu_configure:
+                gotoActivity(Preference.class);
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
 }

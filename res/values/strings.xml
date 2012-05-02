@@ -33,8 +33,8 @@
     <string name="records_formatter">%02.2f</string>
     <string name="running">Tracker is running</string>
     <string name="records">%d Points</string>
-    <string name="menu_about">About</string>
-    <string name="menu_configure">Configure</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_configure">Preference</string>
     <string name="menu_records">Records</string>
     <string name="menu_pause">Pause</string>
     <string name="menu_start">Start</string>
@@ -42,7 +42,7 @@
     <string name="result_report">Recorded %s points.</string>
     <string name="use_recovery_database_file">Use recovery database file for records</string>
     <string name="update_title">Title</string>
-    <string name="update_description">Description</string>
+    <string name="menu_modify">Modify</string>
     <string name="merge">Merge</string>
     <string name="gps_not_presented">GPS Not Presented</string>
     <string name="use_resume_archive_file">Resume from existed file</string>
@@ -61,4 +61,5 @@
     <string name="item_records">RECORDS</string>
     <string name="item_end_time">END TIME</string>
     <string name="item_start_time">START TIME</string>
+    <string name="menu_feedback">Feedback</string>
 </resources>

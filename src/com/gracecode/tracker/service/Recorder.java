@@ -17,6 +17,7 @@ import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.util.Logger;
 import com.gracecode.tracker.util.Notifier;
 import com.gracecode.tracker.util.UIHelper;
+import com.mobclick.android.MobclickAgent;
 
 import java.io.File;
 import java.util.Date;
@@ -44,7 +45,7 @@ interface Binder {
 }
 
 public class Recorder extends Service {
-    protected Recorder.ServiceBinder serviceBinder;
+    protected static Recorder.ServiceBinder serviceBinder;
     private SharedPreferences sharedPreferences;
     private Archive archive;
 
@@ -57,6 +58,7 @@ public class Recorder extends Service {
     private UIHelper uiHelper;
     private Context context;
     private Notifier notifier;
+    private static final String RECORDER_SERVER_ID = "Tracker Service";
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
@@ -138,6 +140,7 @@ public class Recorder extends Service {
                 timer = new Timer();
                 timer.schedule(notifierTask, 0, 5000);
                 status = ServiceBinder.STATUS_RECORDING;
+                MobclickAgent.onEventBegin(context, RECORDER_SERVER_ID);
             }
         }
 
@@ -171,6 +174,7 @@ public class Recorder extends Service {
                 nameHelper.clearLastOpenedName();
 
                 status = ServiceBinder.STATUS_STOPPED;
+                MobclickAgent.onEventEnd(context, RECORDER_SERVER_ID);
             }
         }
 
@@ -206,7 +210,9 @@ public class Recorder extends Service {
 
         this.nameHelper = new ArchiveNameHelper(context);
         this.uiHelper = new UIHelper(context);
-        this.serviceBinder = new ServiceBinder();
+        if (this.serviceBinder == null) {
+            this.serviceBinder = new ServiceBinder();
+        }
 
         boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
         if (autoStart) {

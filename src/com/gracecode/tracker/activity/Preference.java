@@ -25,7 +25,6 @@ public class Preference extends PreferenceActivity implements SharedPreferences.
     private SharedPreferences preferenceManager;
     public static final String DEFAULT_USER_ORIENTATION = "portrait";
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
