@@ -65,4 +65,6 @@
     <string name="menu_feedback">Feedback</string>
     <string name="submit">Submit</string>
     <string name="ok">OKay</string>
+    <string name="shit_happens">Oh~ Shit Happens!</string>
+    <string name="has_benn_saved">Has been saved</string>
 </resources>

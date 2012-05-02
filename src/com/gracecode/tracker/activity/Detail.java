@@ -17,7 +17,7 @@ import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.fragment.ArchiveMetaTimeFragment;
 import com.markupartist.android.widget.ActionBar;
 
-public class Detail extends Activity implements View.OnTouchListener {
+public class Detail extends Activity implements View.OnTouchListener, View.OnClickListener {
     private String archiveFileName;
 
     private Archive archive;
@@ -55,7 +55,11 @@ public class Detail extends Activity implements View.OnTouchListener {
     @Override
     public void onStart() {
         super.onStart();
-        mDescription.setText(archiveMeta.getDescription());
+
+        String description = archiveMeta.getDescription();
+        mDescription.setText(description.length() > 0 ? description : getString(R.string.no_description));
+        mDescription.setOnClickListener(this);
+
         addArchiveMetaTimeFragment();
         addArchiveMetaFragment();
 
@@ -66,7 +70,6 @@ public class Detail extends Activity implements View.OnTouchListener {
         TabHost.TabSpec tabSpec =
             mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
         mTabHost.addTab(tabSpec);
-
         mMapMask.setOnTouchListener(this);
 
         actionBar.removeAllActions();
@@ -138,5 +141,12 @@ public class Detail extends Activity implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(this, Modify.class);
+        intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
+        startActivity(intent);
     }
 }
