@@ -230,6 +230,10 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
                 UMFeedbackService.openUmengFeedbackSDK(this);
                 break;
 
+            case R.id.menu_help:
+                gotoActivity(Info.class);
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

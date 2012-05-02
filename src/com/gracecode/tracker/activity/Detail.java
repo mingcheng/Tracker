@@ -46,7 +46,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mMapMask = findViewById(R.id.map_mask);
         mDescription = (TextView) findViewById(R.id.item_description);
         mTabHost = (TabHost) findViewById(R.id.tabhost);
-        mTabHost.setup(localActivityManager);
 
         archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
         archiveMetaTimeFragment = new ArchiveMetaTimeFragment(context, archiveMeta);
@@ -69,6 +68,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         TabHost.TabSpec tabSpec =
             mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
+        mTabHost.setup(localActivityManager);
         mTabHost.addTab(tabSpec);
         mMapMask.setOnTouchListener(this);
 
@@ -120,6 +120,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         super.onPause();
 
         mTabHost.clearAllTabs();
+        localActivityManager.removeAllActivities();
         localActivityManager.dispatchPause(isFinishing());
     }
 

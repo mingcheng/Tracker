@@ -1,0 +1,43 @@
+* {font-size: 1em; line-height; 1.2em; margin: 0; padding: 0;}
+
+body {
+    background: #fff url(background.png) repeat;
+    font-color: #222;
+    text-align: center;
+}
+
+li,
+p {
+    line-height: 1.5em;
+}
+
+a:link, a:hover, a:visited, a {
+    color: #d0634f;
+}
+
+h1, h2 {
+    font-weight: bold;
+    line-height: 2em;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h1 img {
+    display: block;
+    max-width: 50%;
+    margin: 1em auto;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+.desp {
+    margin-bottom: 1em;
+}
+
+.not-important {
+    color: #999;
+}
