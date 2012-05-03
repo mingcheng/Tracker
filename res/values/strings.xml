@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tracker</string>
-    <string name="service_name">Tracker Server</string>
-    <string name="default_font">digital.ttf</string>
+    <string name="service_name">Track Recording Server</string>
     <string name="pls_wait">Loading, please wait</string>
     <string name="time_format">MM/dd HH:mm:ss</string>
     <string name="month_format">%1$d / %2$d</string>
@@ -67,4 +66,5 @@
     <string name="ok">OKay</string>
     <string name="shit_happens">Oh~ Shit Happens!</string>
     <string name="has_benn_saved">Has been saved</string>
+    <string name="external_storage_not_present">External storage does\'t present</string>
 </resources>

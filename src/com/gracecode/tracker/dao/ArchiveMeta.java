@@ -44,7 +44,7 @@ public class ArchiveMeta {
             } else {
                 result = database.insert(TABLE_NAME, null, values);
             }
-        } catch (SQLiteException e) {
+        } catch (Exception e) {
             Logger.e(e.getMessage());
         }
 
@@ -103,9 +103,7 @@ public class ArchiveMeta {
 
             count = cursor.getInt(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
             cursor.close();
-        } catch (SQLiteException e) {
-            Logger.e(e.getMessage());
-        } catch (CursorIndexOutOfBoundsException e) {
+        } catch (Exception e) {
             Logger.e(e.getMessage());
         }
 
@@ -186,7 +184,7 @@ public class ArchiveMeta {
 
             count = cursor.getLong(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
             cursor.close();
-        } catch (SQLiteException e) {
+        } catch (Exception e) {
             Logger.e(e.getMessage());
         }
 

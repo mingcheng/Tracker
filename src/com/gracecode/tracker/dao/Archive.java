@@ -141,12 +141,13 @@ public class Archive {
         if (databaseHelper != null) {
             close();
         }
-        return (new File(name)).delete();
+        File file = new File(name);
+        return (file == null) ? false : file.delete();
     }
 
-
     public boolean exists() {
-        return (new File(name)).exists();
+        File file = new File(name);
+        return (file == null) ? false : file.exists();
     }
 
     public ArchiveMeta getMeta() {

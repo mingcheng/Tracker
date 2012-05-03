@@ -75,6 +75,13 @@ public class Recorder extends Service {
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RECORDING) {
+
+                // 如果没有外置存储卡
+                if (!nameHelper.isExternalStoragePresent()) {
+                    helper.showLongToast(getString(R.string.external_storage_not_present));
+                    return;
+                }
+
                 // 从配置文件获取距离和精度选项
                 long minTime = Long.parseLong(sharedPreferences.getString(Preference.GPS_MINTIME,
                     Preference.DEFAULT_GPS_MINTIME));
