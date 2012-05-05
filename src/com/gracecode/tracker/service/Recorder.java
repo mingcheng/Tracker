@@ -44,7 +44,7 @@ interface Binder {
 }
 
 public class Recorder extends Service {
-    protected static Recorder.ServiceBinder serviceBinder;
+    protected Recorder.ServiceBinder serviceBinder;
     private SharedPreferences sharedPreferences;
     private Archive archive;
 
@@ -59,8 +59,8 @@ public class Recorder extends Service {
     private Notifier notifier;
 
     private static final String RECORDER_SERVER_ID = "Tracker Service";
-    private static TimerTask notifierTask;
-    private static Timer timer = null;
+    private TimerTask notifierTask;
+    private Timer timer;
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;

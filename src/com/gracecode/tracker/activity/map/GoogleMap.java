@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.activity.map;
 
 import android.content.Context;
 import android.graphics.Canvas;

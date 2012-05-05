@@ -1,18 +1,19 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.activity.map;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
-import com.baidu.mapapi.*;
+import com.baidu.mapapi.ItemizedOverlay;
+import com.baidu.mapapi.MapView;
+import com.baidu.mapapi.OverlayItem;
+import com.baidu.mapapi.Projection;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.activity.Records;
 import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
 
@@ -144,6 +145,8 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         private List<OverlayItem> geoPointList = new ArrayList<OverlayItem>();
         private Paint paint;
+        private Projection projection;
+        private Canvas canvas;
 
         public RouteItemizedOverlay(Drawable marker, Context context) {
             super(boundCenterBottom(marker));
@@ -159,46 +162,39 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
             paint.setDither(true);
 
             paint.setColor(getResources().getColor(R.color.highlight));
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.ROUND);
             paint.setStrokeCap(Paint.Cap.ROUND);
-            paint.setStrokeWidth(8);
-            paint.setAlpha(200);
+            paint.setStrokeWidth(7);
+            paint.setAlpha(188);
             populate();
         }
 
         @Override
         public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-            Projection projection = mapView.getProjection();
-            GeoPoint lastGeoPoint = null;
-            int maxWidth = mapView.getWidth();
-            int maxHeight = mapView.getHeight();
-            bitmap = Bitmap.createBitmap(maxWidth, maxHeight, Bitmap.Config.ARGB_8888);
+            this.projection = mapView.getProjection();
+            this.canvas = canvas;
+            if (!shadow) {
+                synchronized (canvas) {
+                    int maxWidth = mapView.getWidth();
+                    int maxHeight = mapView.getHeight();
 
-            Canvas tmpCanvas = new Canvas(bitmap);
-            for (int i = 0; i < locations.size(); i++) {
-                GeoPoint geoPoint = getRealGeoPointFromLocation(locations.get(i));
-                Point current = projection.toPixels(geoPoint, null);
-
-                if (lastGeoPoint != null) {
-                    Point last = projection.toPixels(lastGeoPoint, null);
-                    if (last.y < maxHeight && last.x < maxWidth) {
-                        tmpCanvas.drawLine(last.x, last.y, current.x, current.y, paint);
+                    Path path = new Path();
+                    Point lastGeoPoint = null;
+                    for (Location location : locations) {
+                        Point current = projection.toPixels(getRealGeoPointFromLocation(location), null);
+                        if (lastGeoPoint != null && (lastGeoPoint.y < maxHeight && lastGeoPoint.x < maxWidth)) {
+                            path.lineTo(current.x, current.y);
+                        } else {
+                            path.moveTo(current.x, current.y);
+                        }
+                        lastGeoPoint = current;
                     }
-                } else {
-                    tmpCanvas.drawPoint(current.x, current.y, paint);
+
+                    canvas.drawPath(path, paint);
                 }
-
-                lastGeoPoint = geoPoint;
             }
-
-            if (shadow == false) {
-                canvas.drawBitmap(bitmap, 0, 0, null);
-            }
-
-            super.draw(canvas, mapView, shadow);
         }
-
 
         @Override
         protected OverlayItem createItem(int i) {

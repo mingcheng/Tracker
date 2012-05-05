@@ -68,7 +68,6 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     @Override
     public void onResume() {
         super.onResume();
-
         if (helper.isGPSProvided()) {
             updateViewTimer = new Timer();
             updateViewTimer.schedule(
@@ -109,9 +108,9 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         if (!helper.isGPSProvided()) {
             mStartButton.setVisibility(View.GONE);
             mEndButton.setVisibility(View.GONE);
-            helper.showLongToast(getString(R.string.gps_not_presented));
-
             mDisabledButton.setVisibility(View.VISIBLE);
+
+            helper.showLongToast(getString(R.string.gps_not_presented));
         } else {
             mDisabledButton.setVisibility(View.GONE);
         }

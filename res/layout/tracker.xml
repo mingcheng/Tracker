@@ -44,7 +44,6 @@
                     />
 
                 <Button
-                    android:visibility="gone"
                     android:id="@+id/btn_start"
                     style="@style/BigStartButton"
                     android:text="@string/btn_start"

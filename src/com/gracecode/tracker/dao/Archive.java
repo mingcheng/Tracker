@@ -154,7 +154,7 @@ public class Archive {
         return meta;
     }
 
-    public boolean add(Location point) {
+    synchronized public boolean add(Location point) {
         ContentValues values = new ContentValues();
 
         values.put(DATABASE_COLUMN.LATITUDE, point.getLatitude());

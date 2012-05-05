@@ -11,6 +11,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
+import com.gracecode.tracker.activity.map.BaiduMap;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.fragment.ArchiveMetaFragment;
