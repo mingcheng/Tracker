@@ -15,7 +15,6 @@ import com.gracecode.tracker.activity.Preference;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.util.Helper;
-import com.gracecode.tracker.util.Logger;
 import com.gracecode.tracker.util.Notifier;
 import com.mobclick.android.MobclickAgent;
 
@@ -58,12 +57,13 @@ public class Recorder extends Service {
     private Helper helper;
     private Context context;
     private Notifier notifier;
+
     private static final String RECORDER_SERVER_ID = "Tracker Service";
+    private static TimerTask notifierTask;
+    private static Timer timer = null;
 
     public class ServiceBinder extends android.os.Binder implements Binder {
         private int status = ServiceBinder.STATUS_STOPPED;
-        private TimerTask notifierTask;
-        private Timer timer = null;
 
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -116,7 +116,7 @@ public class Recorder extends Service {
                     // 标记打开的文件，方便奔溃时恢复
                     nameHelper.setLastOpenedName(archivName);
                 } catch (SQLiteException e) {
-                    Logger.e(e.getMessage());
+                    Helper.Logger.e(e.getMessage());
                 }
 
                 // 另开个线程展示通知信息

@@ -44,9 +44,18 @@
                     />
 
                 <Button
+                    android:visibility="gone"
                     android:id="@+id/btn_start"
                     style="@style/BigStartButton"
-                    android:text="START"
+                    android:text="@string/btn_start"
+                    android:layout_marginTop="25dp"
+                    />
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/btn_disabled"
+                    style="@style/BigGrayButton"
+                    android:text="@string/btn_disabled"
                     android:layout_marginTop="25dp"
                     />
 
@@ -54,7 +63,7 @@
                     android:visibility="gone"
                     android:id="@+id/btn_end"
                     style="@style/BigEndButton"
-                    android:text="END"
+                    android:text="@string/btn_end"
                     android:layout_marginTop="25dp"
                     />
             </LinearLayout>

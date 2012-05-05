@@ -40,7 +40,7 @@ public class AirPlaneMode {
         try {
             return Settings.System.getInt(contentResolver, Settings.System.AIRPLANE_MODE_ON);
         } catch (Settings.SettingNotFoundException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
         return 0;
     }

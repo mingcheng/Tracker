@@ -6,7 +6,7 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Helper;
 
 import java.math.BigDecimal;
 
@@ -47,7 +47,7 @@ public class Listener implements LocationListener {
     public void onLocationChanged(Location location) {
         if (filter(location) && archive.add(location)) {
             this.meta = archive.getMeta();
-            Logger.i(String.format(
+            Helper.Logger.i(String.format(
                 "Location(%f, %f) has been saved into database.", lastLatitude, lastLongitude
             ));
 

@@ -1,4 +1,4 @@
-package com.gracecode.tracker.util;
+package com.gracecode.tracker.dao;
 
 import android.database.Cursor;
 

@@ -15,7 +15,7 @@ import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.service.Recorder;
-import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
 import com.mobclick.android.MobclickAgent;
 import com.umeng.fb.NotificationType;
@@ -41,6 +41,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     private Timer updateViewTimer;
     private static final long TIMER_PERIOD = 1000;
     private TextView mCoseTime;
+    private Button mDisabledButton;
 
 
     @Override
@@ -50,9 +51,10 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
 
         mStartButton = (Button) findViewById(R.id.btn_start);
         mEndButton = (Button) findViewById(R.id.btn_end);
+        mDisabledButton = (Button) findViewById(R.id.btn_disabled);
+
         mCoseTime = (TextView) findViewById(R.id.item_cost_time);
 
-        // Check update from umeng
         MobclickAgent.update(context);
         UMFeedbackService.enableNewReplyNotification(context, NotificationType.AlertDialog);
     }
@@ -67,20 +69,24 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     public void onResume() {
         super.onResume();
 
-        updateViewTimer = new Timer();
-        updateViewTimer.schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    notifyUpdateView();
-                }
-            }, 0, TIMER_PERIOD);
+        if (helper.isGPSProvided()) {
+            updateViewTimer = new Timer();
+            updateViewTimer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        notifyUpdateView();
+                    }
+                }, 0, TIMER_PERIOD);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        updateViewTimer.cancel();
+        if (updateViewTimer != null) {
+            updateViewTimer.cancel();
+        }
     }
 
     @Override
@@ -96,7 +102,19 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         super.onStart();
         mStartButton.setOnClickListener(this);
         mEndButton.setOnClickListener(this);
+        mDisabledButton.setOnClickListener(this);
+
         mEndButton.setOnLongClickListener(this);
+
+        if (!helper.isGPSProvided()) {
+            mStartButton.setVisibility(View.GONE);
+            mEndButton.setVisibility(View.GONE);
+            helper.showLongToast(getString(R.string.gps_not_presented));
+
+            mDisabledButton.setVisibility(View.VISIBLE);
+        } else {
+            mDisabledButton.setVisibility(View.GONE);
+        }
 
         // 设置 ActionBar 样式
         actionBar.setTitle(getString(R.string.app_name));
@@ -134,6 +152,12 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
                 break;
             case R.id.btn_end:
                 helper.showShortToast(getString(R.string.long_press_to_stop));
+                break;
+
+            case R.id.btn_disabled:
+                Intent intent = new Intent(
+                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
                 break;
         }
     }
@@ -189,8 +213,9 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_UPDATE_VIEW:
+
                     if (serviceBinder == null) {
-                        Logger.i(getString(R.string.not_available));
+                        Helper.Logger.i(getString(R.string.not_available));
                         return;
                     }
 

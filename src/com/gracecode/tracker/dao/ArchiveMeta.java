@@ -6,7 +6,7 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
-import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Helper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,7 @@ public class ArchiveMeta {
                 result = database.insert(TABLE_NAME, null, values);
             }
         } catch (Exception e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         // 自动返回最后更新的数据更新时间
@@ -72,11 +72,11 @@ public class ArchiveMeta {
             result = cursor.getString(cursor.getColumnIndex(Archive.DATABASE_COLUMN.META_VALUE));
             cursor.close();
         } catch (SQLiteException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         } catch (CursorIndexOutOfBoundsException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         } catch (IllegalStateException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return result;
@@ -104,7 +104,7 @@ public class ArchiveMeta {
             count = cursor.getInt(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
             cursor.close();
         } catch (Exception e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return count > 0 ? true : false;
@@ -185,7 +185,7 @@ public class ArchiveMeta {
             count = cursor.getLong(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
             cursor.close();
         } catch (Exception e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return count;
@@ -246,7 +246,7 @@ public class ArchiveMeta {
             speed = cursor.getFloat(cursor.getColumnIndex(Archive.DATABASE_COLUMN.SPEED));
             cursor.close();
         } catch (Exception e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return speed;

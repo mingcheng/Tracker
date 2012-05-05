@@ -107,7 +107,10 @@
         <item name="android:background">@drawable/btn_start</item>
         <item name="android:shadowColor">@color/mils</item>
     </style>
-
+    <style name="BigGrayButton" parent="BigButton">
+        <item name="android:background">@drawable/btn_gray</item>
+        <item name="android:shadowColor">@color/title_second</item>
+    </style>
     <style name="Cell">
         <item name="android:layout_gravity">center</item>
     </style>

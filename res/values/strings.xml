@@ -45,6 +45,7 @@
     <string name="menu_modify">Modify</string>
     <string name="merge">Merge</string>
     <string name="gps_not_presented">GPS Not Presented</string>
+    <string name="only_agps_presented">Only AGPS Presented, Pls Turn On</string>
     <string name="use_resume_archive_file">Resume from existed file</string>
     <string name="storage_not_presented">Storage Not Presented</string>
     <string name="menu_calendar">Select Month</string>
@@ -67,4 +68,7 @@
     <string name="shit_happens">Oh~ Shit Happens!</string>
     <string name="has_benn_saved">Has been saved</string>
     <string name="external_storage_not_present">External storage does\'t present</string>
+    <string name="btn_start">START</string>
+    <string name="btn_end">END</string>
+    <string name="btn_disabled">DISABLED</string>
 </resources>

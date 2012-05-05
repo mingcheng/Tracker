@@ -3,6 +3,8 @@ package com.gracecode.tracker.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.gracecode.tracker.R;
@@ -14,13 +16,16 @@ public class Helper {
         this.context = context;
     }
 
-    public void showLongToast(String message) {
+    public boolean isGPSProvided() {
+        String provider = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        return provider.equals("") ? false : true;
+    }
 
+    public void showLongToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     public void showShortToast(String message) {
-
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -59,5 +64,17 @@ public class Helper {
                                   final Runnable runOnPositiveButtonSelected,
                                   final Runnable runOnNegativeButtonSelected) {
         showModalDialog(title, message, null, runOnPositiveButtonSelected, runOnNegativeButtonSelected);
+    }
+
+    public static class Logger {
+        protected static final String TAG = "Tracker";
+
+        public static void i(String message) {
+            Log.i(TAG, message);
+        }
+
+        public static void e(String message) {
+            Log.e(TAG, message);
+        }
     }
 }

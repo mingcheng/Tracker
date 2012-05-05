@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Helper;
 
 public class ArchiveMetaFragment extends Fragment {
     public ArchiveMeta meta;
@@ -51,7 +51,7 @@ public class ArchiveMetaFragment extends Fragment {
             mAvgSpeed.setText(String.format(formatter, meta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT));
             mRecords.setText(String.valueOf(meta.getCount()));
         } catch (Exception e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
     }
 

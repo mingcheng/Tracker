@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
-import com.gracecode.tracker.util.Logger;
+import com.gracecode.tracker.util.Helper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class Archive {
                 database.execSQL(SQL_CREATE_META_TABLE);
                 database.execSQL(SQL_CREATE_LOCATION_TABLE);
             } catch (SQLException e) {
-                Logger.e(e.getMessage());
+                Helper.Logger.e(e.getMessage());
             }
         }
 
@@ -168,7 +168,7 @@ public class Archive {
         try {
             return database.insert(TABLE_NAME, null, values) > 0 ? true : false;
         } catch (SQLException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return false;
@@ -190,7 +190,7 @@ public class Archive {
             }
             cursor.close();
         } catch (SQLiteException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return null;
@@ -207,7 +207,7 @@ public class Archive {
             }
             cursor.close();
         } catch (SQLiteException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return null;
@@ -239,9 +239,9 @@ public class Archive {
 
             cursor.close();
         } catch (SQLiteException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         } catch (IllegalStateException e) {
-            Logger.e(e.getMessage());
+            Helper.Logger.e(e.getMessage());
         }
 
         return locations;

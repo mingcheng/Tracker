@@ -156,17 +156,20 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
             paint = new Paint();
             paint.setAntiAlias(true);
+            paint.setDither(true);
+
             paint.setColor(getResources().getColor(R.color.highlight));
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
-            paint.setAlpha(220);
+            paint.setStyle(Paint.Style.FILL_AND_STROKE);
+            paint.setStrokeJoin(Paint.Join.ROUND);
+            paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setStrokeWidth(8);
+            paint.setAlpha(200);
             populate();
         }
 
         @Override
         public void draw(Canvas canvas, MapView mapView, boolean shadow) {
             Projection projection = mapView.getProjection();
-
             GeoPoint lastGeoPoint = null;
             int maxWidth = mapView.getWidth();
             int maxHeight = mapView.getHeight();
@@ -189,7 +192,11 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
                 lastGeoPoint = geoPoint;
             }
 
-            canvas.drawBitmap(bitmap, 0, 0, null);
+            if (shadow == false) {
+                canvas.drawBitmap(bitmap, 0, 0, null);
+            }
+
+            super.draw(canvas, mapView, shadow);
         }
 
 
