@@ -75,6 +75,8 @@ public class Recorder extends Service {
         @Override
         public void startRecord() {
             if (status != ServiceBinder.STATUS_RECORDING) {
+                // 设置启动时更新配置
+                notifier = new Notifier(context);
 
                 // 如果没有外置存储卡
                 if (!nameHelper.isExternalStoragePresent()) {
@@ -213,7 +215,6 @@ public class Recorder extends Service {
 
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        this.notifier = new Notifier(context);
 
         this.nameHelper = new ArchiveNameHelper(context);
         this.helper = new Helper(context);

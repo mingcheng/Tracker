@@ -67,7 +67,7 @@
         <CheckBoxPreference android:key="lightLed"
                             android:title="Lightning LED"
                             android:summary="Turn on Lightning LED(if have) while recording"
-                            android:defaultValue="false"
+                            android:defaultValue="true"
             />
 
     </PreferenceCategory>

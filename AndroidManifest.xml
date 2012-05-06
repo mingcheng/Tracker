@@ -33,14 +33,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.map.BaiduMap"
+        <activity android:name=".activity.maps.BaiduMap"
                   android:theme="@style/Window"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.map.GoogleMap"
+        <activity android:name=".activity.maps.GoogleMap"
                   android:theme="@style/Window"
             >
             <intent-filter>

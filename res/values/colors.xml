@@ -7,6 +7,9 @@
     <color name="mils">#6c928c</color>
     <color name="divider">#ffffff</color>
     <color name="snowhite">#ffffff</color>
+    <color name="green">#00ff00</color>
+    <color name="red">#ff0000</color>
+    <color name="blue">#0000ff</color>
 
     <!--action bar-->
     <color name="actionbar_separator">#2e3234</color>

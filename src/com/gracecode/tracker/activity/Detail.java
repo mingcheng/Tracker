@@ -11,7 +11,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.base.Activity;
-import com.gracecode.tracker.activity.map.BaiduMap;
+import com.gracecode.tracker.activity.maps.BaiduMap;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.fragment.ArchiveMetaFragment;
@@ -63,16 +63,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         addArchiveMetaTimeFragment();
         addArchiveMetaFragment();
 
-        Intent mapIntent = new Intent(this, BaiduMap.class);
-        String name = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        mapIntent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, name);
-
-        TabHost.TabSpec tabSpec =
-            mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
-        mTabHost.setup(localActivityManager);
-        mTabHost.addTab(tabSpec);
-        mMapMask.setOnTouchListener(this);
-
         actionBar.removeAllActions();
         actionBar.addAction(new ActionBar.Action() {
             @Override
@@ -109,8 +99,18 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     @Override
     public void onResume() {
         super.onResume();
-
         localActivityManager.dispatchResume();
+
+        Intent mapIntent = new Intent(this, BaiduMap.class);
+        String name = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
+        mapIntent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, name);
+
+        TabHost.TabSpec tabSpec =
+            mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
+        mTabHost.setup(localActivityManager);
+        mTabHost.addTab(tabSpec);
+        mMapMask.setOnTouchListener(this);
+
         if (!archive.exists()) {
             finish();
         }
