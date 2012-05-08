@@ -41,6 +41,8 @@ public class Modify extends Activity implements View.OnClickListener {
         }
         archiveMeta = archive.getMeta();
 
+        actionBar.setTitle(getString(R.string.title_modify));
+
         mDescription.setText(archiveMeta.getDescription());
         mBtnConfirm.setOnClickListener(this);
     }

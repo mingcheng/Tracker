@@ -13,6 +13,7 @@ import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 import com.markupartist.android.widget.ActionBar;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Records extends Activity implements AdapterView.OnItemClickListener, DatePickerDialog.OnDateSetListener {
@@ -119,6 +120,15 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         );
 
         selectedTime = getIntent().getLongExtra(INTENT_SELECT_BY_MONTH, System.currentTimeMillis());
+
+        // setAction title as month string if there is not current month
+        actionBar.setTitle(getString(R.string.title_records));
+        SimpleDateFormat formatter = new SimpleDateFormat(getString(R.string.time_month_format));
+        String selectedTitle = formatter.format(new Date(selectedTime));
+        if (!selectedTitle.equals(formatter.format(new Date()))) {
+            actionBar.setTitle(selectedTitle);
+        }
+
         getArchiveFilesByMonth(new Date(selectedTime));
     }
 

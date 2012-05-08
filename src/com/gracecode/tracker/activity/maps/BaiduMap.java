@@ -16,6 +16,7 @@ import com.gracecode.tracker.R;
 import com.gracecode.tracker.activity.Records;
 import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.util.Helper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -178,6 +179,10 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
                 synchronized (canvas) {
                     int maxWidth = mapView.getWidth();
                     int maxHeight = mapView.getHeight();
+
+                    Helper.Logger.e("Latitude Span: " + mapView.getLatitudeSpan());
+                    Helper.Logger.e("Longitude Span: " + mapView.getLongitudeSpan());
+                    Helper.Logger.e("Zoom Level: " + mapView.getZoomLevel());
 
                     Path path = new Path();
                     Point lastGeoPoint = null;

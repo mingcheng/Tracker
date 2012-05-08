@@ -3,7 +3,7 @@ package com.gracecode.tracker.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.provider.Settings;
+import android.location.LocationManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,8 +17,8 @@ public class Helper {
     }
 
     public boolean isGPSProvided() {
-        String provider = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        return provider.equals("") ? false : true;
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ? true : false;
     }
 
     public void showLongToast(String message) {

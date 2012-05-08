@@ -63,6 +63,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         addArchiveMetaTimeFragment();
         addArchiveMetaFragment();
 
+        actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
         actionBar.addAction(new ActionBar.Action() {
             @Override

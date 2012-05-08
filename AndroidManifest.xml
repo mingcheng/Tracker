@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120502"
-          android:versionName="1.3.3">
+          android:versionCode="20120506"
+          android:versionName="1.3.5">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <supports-screens android:resizeable="true"
                       android:largeScreens="true" />
@@ -90,7 +89,7 @@
         <activity android:name="com.umeng.fb.ui.SendFeedback" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name="com.umeng.fb.ui.FeedbackConversations"></activity>
         <activity android:name="com.umeng.fb.ui.FeedbackConversation" android:configChanges="keyboard"></activity>
-        <uses-library android:name="com.google.android.maps" />
+        <!--<uses-library android:name="com.google.android.maps" />-->
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
     </application>
 </manifest>
