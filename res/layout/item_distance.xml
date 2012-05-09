@@ -22,7 +22,7 @@
                   android:id="@+id/item_distance"
             />
 
-        <TextView android:text="km"
+        <TextView android:text="@string/km"
                   style="@style/Item.TitleSecond"
             />
     </LinearLayout>

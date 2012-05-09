@@ -56,8 +56,13 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     public void onStart() {
         super.onStart();
 
-        String description = archiveMeta.getDescription();
-        mDescription.setText(description.length() > 0 ? description : getString(R.string.no_description));
+        String description = archiveMeta.getDescription().trim();
+        if (description.length() > 0) {
+            mDescription.setText(description);
+        } else {
+            mDescription.setTextColor(getResources().getColor(R.color.gray));
+            mDescription.setText(getString(R.string.no_description));
+        }
         mDescription.setOnClickListener(this);
 
         addArchiveMetaTimeFragment();

@@ -77,6 +77,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
             String description = archiveMeta.getDescription();
             if (description.length() <= 0) {
                 description = getString(R.string.no_description);
+                mDescription.setTextColor(getResources().getColor(R.color.gray));
             }
             mDescription.setText(description);
 
