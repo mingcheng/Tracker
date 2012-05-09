@@ -143,7 +143,11 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        return false;
+//        Intent intent = new Intent(this, BaiduMap.class);
+//        intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+        return true;
     }
 
     @Override
