@@ -181,12 +181,12 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
                         Point current = projection.toPixels(getRealGeoPointFromLocation(location), null);
 
                         if (lastGeoPoint != null && (lastGeoPoint.y < maxHeight && lastGeoPoint.x < maxWidth)) {
-                            if (Math.abs(current.x - lastGeoPoint.x) < MIN_POINT_SPAN
+/*                            if (Math.abs(current.x - lastGeoPoint.x) < MIN_POINT_SPAN
                                 || Math.abs(current.y - lastGeoPoint.y) < MIN_POINT_SPAN) {
                                 continue;
-                            } else {
-                                path.lineTo(current.x, current.y);
-                            }
+                            } else {*/
+                            path.lineTo(current.x, current.y);
+                            /*                   }*/
                         } else {
                             path.moveTo(current.x, current.y);
                         }

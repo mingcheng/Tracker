@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120510"
-          android:versionName="1.4.1">
+          android:versionCode="20120511"
+          android:versionName="1.4.2">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

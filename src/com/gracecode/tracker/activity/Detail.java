@@ -58,6 +58,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         String description = archiveMeta.getDescription().trim();
         if (description.length() > 0) {
+            mDescription.setTextColor(getResources().getColor(R.color.snowhite));
             mDescription.setText(description);
         } else {
             mDescription.setTextColor(getResources().getColor(R.color.gray));
@@ -131,7 +132,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         localActivityManager.dispatchPause(isFinishing());
     }
 
-
     private void addFragment(int layout, Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(layout, fragment);
@@ -147,11 +147,13 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-//        Intent intent = new Intent(this, BaiduMap.class);
-//        intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
+    public boolean onTouch(View view, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            Intent intent = new Intent(this, BaiduMap.class);
+            intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
         return true;
     }
 
