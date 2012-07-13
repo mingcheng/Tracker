@@ -27,8 +27,13 @@
                      android:background="@color/gray" />
     </RelativeLayout>
 
-    <ListView android:id="@+id/android:list" android:layout_width="fill_parent"
-              android:layout_height="fill_parent" android:background="#E9E9E9"
-              android:divider="#E9E9E9" android:dividerHeight="0dip"
-              android:cacheColorHint="#E9E9E9" />
+    <ListView android:id="@+id/android:list"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:scrollingCache="false"
+              android:fadingEdge="none"
+              android:divider="@color/divider"
+              android:dividerHeight="1px"
+              android:cacheColorHint="@color/highlight"
+        />
 </LinearLayout>

@@ -251,7 +251,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
                 break;
 
             case R.id.menu_feedback:
-                UMFeedbackService.openUmengFeedbackSDK(this);
+                UMFeedbackService.openUmengFeedbackSDK(context);
                 break;
 
             case R.id.menu_help:

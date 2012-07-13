@@ -96,6 +96,12 @@
                 <data android:scheme="schema…" />
             </intent-filter>
         </activity>
+        <activity android:name="com.umeng.fb.ui.SendFeedback"
+                  android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.umeng.fb.ui.FeedbackConversations" />
+        <activity android:name="com.umeng.fb.ui.FeedbackConversation"
+                  android:configChanges="keyboard" />
+
         <service
             android:name=".service.Recorder"
             android:label="@string/service_name"
@@ -107,9 +113,6 @@
             android:exported="true"
             android:process=":DownloadingService">
         </service>
-        <activity android:name="com.umeng.fb.ui.SendFeedback" android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name="com.umeng.fb.ui.FeedbackConversations"></activity>
-        <activity android:name="com.umeng.fb.ui.FeedbackConversation" android:configChanges="keyboard"></activity>
         <!--<uses-library android:name="com.google.android.maps" />-->
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
     </application>

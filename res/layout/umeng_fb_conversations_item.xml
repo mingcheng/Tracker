@@ -1,35 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent" android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="80dip"
     >
 
     <ImageView android:id="@+id/umeng_fb_new_reply_notifier"
                android:layout_centerVertical="true" android:layout_width="7dip"
-               android:layout_marginLeft="9dip" android:layout_height="7dip" />
+               android:layout_height="7dip" />
 
     <LinearLayout android:layout_width="fill_parent"
-                  android:layout_height="wrap_content" android:minHeight="50dip"
-                  android:orientation="vertical" android:layout_marginLeft="20dip"
-                  android:layout_marginRight="8dip" android:layout_marginTop="5dip"
-                  android:layout_marginBottom="5dip" android:paddingTop="11dip"
-                  android:paddingBottom="5dip" android:paddingLeft="16dip"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingTop="11dip"
+                  android:paddingBottom="10dip"
+                  android:paddingLeft="16dip"
                   android:paddingRight="10dip"
         >
         <TextView android:id="@+id/umeng_fb_feedbackpreview"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:textColor="@color/highlight" android:maxLines="2" android:gravity="center_vertical"
-                  android:textSize="18dip" android:text="This is the preview blabalbablabalablaabalabl"
+                  android:textSize="18sp" android:text="This is the preview blabalbablabalablaabalabl"
                   android:ellipsize="end" />
         <TextView android:id="@+id/umeng_fb_dev_reply"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:layout_marginTop="7dip" android:textColor="@color/highlight_border"
+                  android:layout_marginTop="7dip" android:textColor="@color/title_second"
                   android:maxLines="2" android:gravity="center_vertical"
-                  android:textSize="18dip" android:text="Reply:Hi,We are working on it."
+                  android:textSize="18sp" android:text="Reply:Hi,We are working on it."
                   android:ellipsize="end" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/cost_time_layout"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:paddingRight="10dip"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+
+        <ImageView android:src="@drawable/time"
+                   android:layout_marginRight="5dp"
+                   android:layout_height="wrap_content"
+                   android:layout_width="wrap_content"
+            />
+
         <TextView android:id="@+id/umeng_fb_state_or_date"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:layout_marginTop="10dip" android:gravity="center_vertical"
+                  android:gravity="center_vertical"
                   android:textSize="12dip" android:text="stateORdate"
-                  android:textColor="@color/title_second" />
+                  style="@style/SecondTitle"
+            />
+
     </LinearLayout>
 </RelativeLayout>
