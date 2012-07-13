@@ -2,6 +2,7 @@ package com.gracecode.tracker.activity;
 
 import android.app.LocalActivityManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -79,7 +80,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
             @Override
             public void performAction(View view) {
-
                 helper.showConfirmDialog(
                     getString(R.string.delete),
                     String.format(getString(R.string.sure_to_del), archiveMeta.getName()),
@@ -98,9 +98,22 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
                         }
                     }
                 );
-
             }
         });
+    }
+
+
+    /**
+     * Take screenshot from tabhost for sharing
+     *
+     * @return
+     */
+    private Bitmap getRouteBitmap() {
+        View view = mTabHost.getCurrentView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        view.destroyDrawingCache();
+        return Bitmap.createBitmap(view.getDrawingCache());
     }
 
     @Override
