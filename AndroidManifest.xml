@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120511"
-          android:versionName="1.4.2">
+          android:versionCode="20120713"
+          android:versionName="1.5.0">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -80,11 +80,32 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name="com.umeng.api.activity.OauthActivity"
+                  android:screenOrientation="unspecified"
+                  android:windowSoftInputMode="adjustResize"
+                  android:configChanges="orientation|keyboardHidden">
+        </activity>
+        <activity android:name="com.umeng.api.activity.UpdateStatusActivity"
+                  android:windowSoftInputMode="stateVisible|adjustResize"
+                  android:screenOrientation="unspecified"
+                  android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="schema…" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.Recorder"
             android:label="@string/service_name"
             android:enabled="true"
             >
+        </service>
+        <service
+            android:name="com.umeng.common.net.DownloadingService"
+            android:exported="true"
+            android:process=":DownloadingService">
         </service>
         <activity android:name="com.umeng.fb.ui.SendFeedback" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name="com.umeng.fb.ui.FeedbackConversations"></activity>

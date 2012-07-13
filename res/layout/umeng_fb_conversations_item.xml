@@ -3,7 +3,7 @@
                 android:layout_width="fill_parent" android:layout_height="fill_parent"
     >
 
-    <ImageView android:id="@+id/umeng_feedback_new_reply_notifier"
+    <ImageView android:id="@+id/umeng_fb_new_reply_notifier"
                android:layout_centerVertical="true" android:layout_width="7dip"
                android:layout_marginLeft="9dip" android:layout_height="7dip" />
 
@@ -15,18 +15,18 @@
                   android:paddingBottom="5dip" android:paddingLeft="16dip"
                   android:paddingRight="10dip"
         >
-        <TextView android:id="@+id/umeng_feedback_feedbackpreview"
+        <TextView android:id="@+id/umeng_fb_feedbackpreview"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:textColor="@color/highlight" android:maxLines="2" android:gravity="center_vertical"
                   android:textSize="18dip" android:text="This is the preview blabalbablabalablaabalabl"
                   android:ellipsize="end" />
-        <TextView android:id="@+id/umeng_feedback_dev_reply"
+        <TextView android:id="@+id/umeng_fb_dev_reply"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:layout_marginTop="7dip" android:textColor="@color/highlight_border"
                   android:maxLines="2" android:gravity="center_vertical"
                   android:textSize="18dip" android:text="Reply:Hi,We are working on it."
                   android:ellipsize="end" />
-        <TextView android:id="@+id/umeng_feedback_state_or_date"
+        <TextView android:id="@+id/umeng_fb_state_or_date"
                   android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:layout_marginTop="10dip" android:gravity="center_vertical"
                   android:textSize="12dip" android:text="stateORdate"

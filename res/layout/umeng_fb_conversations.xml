@@ -8,17 +8,7 @@
         android:gravity="center_vertical"
         >
 
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/umeng_feedback_goback_btn"
-            android:layout_width="60dip"
-            android:layout_height="35dip"
-            android:layout_alignBottom="@+id/umeng_feedback_see_list_btn"
-            android:layout_alignParentLeft="true"
-            android:text=""
-            />
-
-        <TextView android:id="@+id/umeng_feedback_um_feedbacklist_title"
+        <TextView android:id="@+id/umeng_fb_conversation_title"
                   android:layout_width="fill_parent"
                   android:textColor="@color/snowhite"
                   android:layout_height="fill_parent"
@@ -28,9 +18,11 @@
                   android:text="@string/menu_feedback"
                   android:textSize="16dip" />
 
-        <ImageButton android:id="@+id/umeng_feedback_see_list_btn"
-                     android:layout_marginRight="8dip" android:layout_centerVertical="true"
-                     android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <ImageButton android:id="@+id/umeng_fb_imgBtn_submitFb"
+                     android:layout_marginRight="8dip"
+                     android:layout_centerVertical="true"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
                      android:layout_alignParentRight="true"
                      android:background="@color/gray" />
     </RelativeLayout>

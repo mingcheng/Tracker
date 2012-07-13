@@ -17,9 +17,9 @@ import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.service.Recorder;
 import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
-import com.mobclick.android.MobclickAgent;
 import com.umeng.fb.NotificationType;
 import com.umeng.fb.UMFeedbackService;
+import com.umeng.update.UmengUpdateAgent;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,7 +55,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
 
         mCoseTime = (TextView) findViewById(R.id.item_cost_time);
 
-        MobclickAgent.update(context);
+        UmengUpdateAgent.update(context);
         UMFeedbackService.enableNewReplyNotification(context, NotificationType.AlertDialog);
     }
 

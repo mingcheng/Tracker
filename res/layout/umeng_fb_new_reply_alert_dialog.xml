@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:background="@color/snowhite"
         >
-        <TextView android:id="@+id/umeng_feedback_new_reply_alert_title"
+        <TextView android:id="@+id/umeng_fb_new_reply_alert_title"
                   android:text="您的反馈收到了回复"
                   style="@style/TrackerActionBar"
                   android:textColor="@color/snowhite"
@@ -19,7 +19,7 @@
                   android:paddingLeft="15dp"
                   android:textSize="14sp"
             />
-        <TextView android:id="@+id/umeng_feedback_new_dev_reply_box"
+        <TextView android:id="@+id/umeng_fb_new_dev_reply_box"
                   android:gravity="center"
                   android:text="This is the reply from dev" android:layout_marginTop="10dip"
                   android:textSize="18dip" android:textColor="@color/highlight"
@@ -38,7 +38,7 @@
                       android:layout_height="wrap_content" android:layout_gravity="bottom"
                       android:orientation="horizontal"
                       android:background="@drawable/time_background">
-            <Button android:id="@+id/umeng_feedback_exitBtn"
+            <Button android:id="@+id/umeng_fb_exitBtn"
                     style="@style/BigStartButton"
                     android:textColor="#FFFFFF"
                     android:layout_marginLeft="10dp"
@@ -47,7 +47,7 @@
                     android:text="@string/UMFeedbackGotIt"
                     android:layout_weight="1"
                 />
-            <Button android:id="@+id/umeng_feedback_see_detail_btn"
+            <Button android:id="@+id/umeng_fb_see_detail_btn"
                     android:text="@string/UMFeedbackSeeDetail"
                     android:layout_marginTop="10dip"
                     android:layout_marginLeft="10dp"

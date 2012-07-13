@@ -7,7 +7,7 @@ import com.baidu.mapapi.*;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
-import com.mobclick.android.MobclickAgent;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 

@@ -16,7 +16,7 @@ import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.util.Helper;
 import com.gracecode.tracker.util.Notifier;
-import com.mobclick.android.MobclickAgent;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.Date;

@@ -3,7 +3,7 @@
               xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:id="@+id/umeng_feedback_rootId"
+              android:id="@+id/umeng_fb_rootId"
               android:background="@drawable/bg">
 
     <RelativeLayout
@@ -14,15 +14,15 @@
 
         <TextView
             android:visibility="gone"
-            android:id="@+id/umeng_feedback_goback_btn"
+            android:id="@+id/umeng_fb_goback_btn"
             android:layout_width="60dip"
             android:layout_height="35dip"
-            android:layout_alignBottom="@+id/umeng_feedback_see_list_btn"
+            android:layout_alignBottom="@+id/umeng_fb_see_list_btn"
             android:layout_alignParentLeft="true"
             android:text=""
             />
 
-        <TextView android:id="@+id/umeng_feedback_conversation_title"
+        <TextView android:id="@+id/umeng_fb_conversation_title"
                   android:layout_width="fill_parent"
                   android:textColor="@color/snowhite"
                   android:layout_height="fill_parent"
@@ -32,7 +32,7 @@
                   android:text="@string/menu_feedback"
                   android:textSize="16dip" />
 
-        <ImageButton android:id="@+id/umeng_feedback_see_list_btn"
+        <ImageButton android:id="@+id/umeng_fb_see_list_btn"
                      android:layout_marginRight="5dip"
                      android:layout_centerVertical="true"
                      android:adjustViewBounds="true"
@@ -44,7 +44,7 @@
             />
     </RelativeLayout>
 
-    <EditText android:id="@+id/umeng_feedback_content"
+    <EditText android:id="@+id/umeng_fb_content"
               android:layout_width="fill_parent" android:layout_height="fill_parent"
               android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
               android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
@@ -57,24 +57,24 @@
                     android:layout_marginTop="2dip">
         <Spinner
             android:visibility="gone"
-            android:id="@+id/umeng_feedback_age_spinner"
+            android:id="@+id/umeng_fb_age_spinner"
             android:layout_alignParentLeft="true" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_marginLeft="8dip"
             android:layout_centerVertical="true" />
         <Spinner
-            android:id="@+id/umeng_feedback_gender_spinner"
+            android:id="@+id/umeng_fb_gender_spinner"
             android:visibility="gone"
-            android:layout_toRightOf="@id/umeng_feedback_age_spinner"
+            android:layout_toRightOf="@id/umeng_fb_age_spinner"
             android:layout_marginLeft="7dip" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_centerVertical="true" />
 
         <Button
-            android:id="@+id/umeng_feedback_submit"
+            android:id="@+id/umeng_fb_submit"
             style="@style/BigEndButton"
             android:layout_alignParentRight="true"
             android:text="@string/submit"
             android:gravity="center"
-            android:layout_alignBaseline="@id/umeng_feedback_age_spinner"
+            android:layout_alignBaseline="@id/umeng_fb_age_spinner"
             android:layout_marginRight="10dip"
             />
     </RelativeLayout>
