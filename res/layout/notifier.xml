@@ -5,6 +5,7 @@
     android:padding="5dp"
     android:layout_width="fill_parent"
     android:orientation="vertical"
+    android:background="@color/background_dark"
     android:gravity="center_horizontal"
     android:layout_height="fill_parent">
 
@@ -29,11 +30,11 @@
             android:layout_height="wrap_content"
             android:text="@string/recording"
             android:textStyle="bold"
-            android:textColor="@color/title"
+            android:textColor="@color/title_notifier"
             />
 
         <TextView
-            android:textColor="@color/title_second"
+            android:textColor="@color/title_notifier_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/status"
@@ -45,7 +46,7 @@
         android:id="@+id/status_cost_time"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/title"
+        android:textColor="@color/title_notifier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/none_cost_time"

@@ -18,4 +18,7 @@
     <color name="actionbar_background_end">#272a2c</color>
     <color name="actionbar_background_item_pressed_start">#b45646</color>
     <color name="actionbar_background_item_pressed_end">#b45646</color>
+    <color name="title_notifier">#ffffff</color>
+    <color name="title_notifier_second">#eaeaea</color>
+    <color name="background_dark">#000000</color>
 </resources>
