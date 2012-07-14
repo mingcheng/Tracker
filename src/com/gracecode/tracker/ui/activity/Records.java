@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.ArchiveNameHelper;
+import com.gracecode.tracker.ui.activity.base.Activity;
 import com.markupartist.android.widget.ActionBar;
 
 import java.text.SimpleDateFormat;

@@ -69,4 +69,9 @@
     <string name="title_modify">Modify</string>
     <string name="title_records">Records</string>
     <string name="km">km</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_share">Share</string>
+    <string name="share_report_formatter" formatted="false">Just finished a trip%s which total distance about %s km(from
+        %s to %s , during %s), and max speed is %s km/h and average speed is %s km/h - Record by Tracker
+    </string>
 </resources>

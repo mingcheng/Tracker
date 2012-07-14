@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

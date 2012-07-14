@@ -21,7 +21,7 @@
 
     <application android:label="@string/app_name"
                  android:icon="@drawable/icon">
-        <activity android:name=".activity.Tracker"
+        <activity android:name=".ui.activity.Tracker"
                   android:theme="@style/Window"
                   android:clearTaskOnLaunch="true"
                   android:launchMode="singleTask"
@@ -32,49 +32,49 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.maps.BaiduMap"
+        <activity android:name=".ui.activity.maps.BaiduMap"
                   android:theme="@style/Window"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.maps.GoogleMap"
+        <activity android:name=".ui.activity.maps.GoogleMap"
                   android:theme="@style/Window"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Records"
+        <activity android:name=".ui.activity.Records"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Modify"
+        <activity android:name=".ui.activity.Modify"
                   android:windowSoftInputMode="adjustResize"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Info"
+        <activity android:name=".ui.activity.Info"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Preference"
+        <activity android:name=".ui.activity.Preference"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Detail"
+        <activity android:name=".ui.activity.Detail"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.gracecode.tracker.fragment;
+package com.gracecode.tracker.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;

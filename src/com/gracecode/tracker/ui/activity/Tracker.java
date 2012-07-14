@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.service.Recorder;
+import com.gracecode.tracker.ui.activity.base.Activity;
+import com.gracecode.tracker.ui.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.util.Helper;
 import com.markupartist.android.widget.ActionBar;
 import com.umeng.fb.NotificationType;

@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity.base;
+package com.gracecode.tracker.ui.activity.base;
 
 import android.content.Context;
 import android.location.Location;

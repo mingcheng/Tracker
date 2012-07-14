@@ -1,9 +1,9 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.os.Bundle;
 import android.webkit.WebView;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.Activity;
+import com.gracecode.tracker.ui.activity.base.Activity;
 
 public class Info extends Activity {
     private WebView mWebView;

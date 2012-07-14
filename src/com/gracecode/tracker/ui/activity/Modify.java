@@ -1,13 +1,13 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.Activity;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.ui.activity.base.Activity;
 
 public class Modify extends Activity implements View.OnClickListener {
 

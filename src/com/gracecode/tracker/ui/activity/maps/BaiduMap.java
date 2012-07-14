@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity.maps;
+package com.gracecode.tracker.ui.activity.maps;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,9 +14,9 @@ import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.Overlay;
 import com.baidu.mapapi.Projection;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.Records;
-import com.gracecode.tracker.activity.base.MapActivity;
 import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.ui.activity.Records;
+import com.gracecode.tracker.ui.activity.base.MapActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

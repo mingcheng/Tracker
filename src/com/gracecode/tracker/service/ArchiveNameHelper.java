@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import com.gracecode.tracker.activity.Preference;
+import com.gracecode.tracker.ui.activity.Preference;
 
 import java.io.File;
 import java.io.FilenameFilter;

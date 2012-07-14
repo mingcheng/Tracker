@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity.maps;
+package com.gracecode.tracker.ui.activity.maps;
 
 import android.content.Context;
 import android.graphics.Bitmap;

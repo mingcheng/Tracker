@@ -9,8 +9,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.Preference;
-import com.gracecode.tracker.activity.Tracker;
+import com.gracecode.tracker.ui.activity.Preference;
+import com.gracecode.tracker.ui.activity.Tracker;
 
 public class Notifier extends Notification {
     private NotificationManager notificationManager;

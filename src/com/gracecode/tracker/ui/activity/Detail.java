@@ -1,4 +1,4 @@
-package com.gracecode.tracker.activity;
+package com.gracecode.tracker.ui.activity;
 
 import android.app.LocalActivityManager;
 import android.content.Intent;
@@ -6,18 +6,25 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.activity.base.Activity;
-import com.gracecode.tracker.activity.maps.BaiduMap;
 import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.fragment.ArchiveMetaFragment;
-import com.gracecode.tracker.fragment.ArchiveMetaTimeFragment;
+import com.gracecode.tracker.ui.activity.base.Activity;
+import com.gracecode.tracker.ui.activity.maps.BaiduMap;
+import com.gracecode.tracker.ui.fragment.ArchiveMetaFragment;
+import com.gracecode.tracker.ui.fragment.ArchiveMetaTimeFragment;
 import com.markupartist.android.widget.ActionBar;
+import com.umeng.api.sns.UMSnsService;
+
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class Detail extends Activity implements View.OnTouchListener, View.OnClickListener {
     private String archiveFileName;
@@ -75,33 +82,79 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         actionBar.addAction(new ActionBar.Action() {
             @Override
             public int getDrawable() {
-                return R.drawable.ic_menu_delete;
+                return R.drawable.ic_menu_share;
             }
 
             @Override
             public void performAction(View view) {
-                helper.showConfirmDialog(
-                    getString(R.string.delete),
-                    String.format(getString(R.string.sure_to_del), archiveMeta.getName()),
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (archive.delete()) {
-                                finish();
-                            }
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }
-                );
+                shareToSina();
             }
         });
     }
 
+
+    private void shareToSina() {
+        byte[] bitmap = convertBitmapToByteArray(getRouteBitmap());
+        String recordsFormatter = getString(R.string.records_formatter);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
+
+        // Build string for share by microblog etc.
+        String message = String.format(getString(R.string.share_report_formatter),
+            archiveMeta.getDescription().length() > 0 ? "(" + archiveMeta.getDescription() + ")" : "",
+            String.format(recordsFormatter, archiveMeta.getDistance() / ArchiveMeta.TO_KILOMETRE),
+            dateFormatter.format(archiveMeta.getStartTime()),
+            dateFormatter.format(archiveMeta.getEndTime()),
+            archiveMeta.getRawCostTimeString(),
+            String.format(recordsFormatter, archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT),
+            String.format(recordsFormatter, archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT)
+        );
+        UMSnsService.shareToSina(context, bitmap, message, null);
+    }
+
+    private void confirmDelete() {
+        helper.showConfirmDialog(
+            getString(R.string.delete),
+            String.format(getString(R.string.sure_to_del), archiveMeta.getName()),
+            new Runnable() {
+                @Override
+                public void run() {
+                    if (archive.delete()) {
+                        finish();
+                    }
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    // ...
+                }
+            }
+        );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_share:
+                shareToSina();
+                break;
+
+            case R.id.menu_delete:
+                confirmDelete();
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
 
     /**
      * Take screenshot from tabhost for sharing
@@ -114,6 +167,12 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         view.buildDrawingCache();
         view.destroyDrawingCache();
         return Bitmap.createBitmap(view.getDrawingCache());
+    }
+
+    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 
     @Override
