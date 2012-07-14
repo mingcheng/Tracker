@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:background="@drawable/bg"
+                android:layout_width="fill_parent"
+                android:id="@+id/background"
+                android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_alignParentTop="true"
+        style="@style/TrackerActionBar"
+        >
+
+        <TextView android:id="@+id/title"
+                  android:layout_width="fill_parent"
+                  android:textColor="@color/snowhite"
+                  android:layout_height="fill_parent"
+                  android:layout_gravity="center_vertical"
+                  android:gravity="center_vertical"
+                  android:layout_marginLeft="14dp"
+                  android:text="@string/menu_share"
+                  android:textSize="16dip" />
+
+        <TextView android:id="@+id/wordCount"
+                  android:layout_alignParentRight="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/title_second"
+                  android:text="140"
+                  android:gravity="center"
+                  android:paddingRight="15dip"
+                  android:layout_centerVertical="true"
+                  android:textSize="16sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="0dp"
+        android:id="@+id/main"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title_bar"
+        android:layout_above="@+id/bottom"
+        >
+
+        <EditText
+            android:id="@+id/edit"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:gravity="top"
+            android:linksClickable="false"
+            android:layout_above="@+id/image"
+            android:scrollbars="vertical"
+            android:textColor="@color/title" />
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dip"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dip"
+                android:id="@+id/nickName"
+                android:textColor="@color/highlight"
+                android:layout_alignParentBottom="true"
+                />
+
+            <ImageView
+                android:layout_gravity="right"
+                android:adjustViewBounds="true"
+                android:layout_width="60dip"
+                android:layout_height="40dip"
+                android:maxHeight="40dip"
+                android:id="@+id/image"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                />
+
+            <GridView android:id="@+id/gridView"
+                      android:layout_width="fill_parent"
+                      android:layout_height="120dip"
+                      android:visibility="gone"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingRight="10dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        >
+
+        <Button android:layout_width="38dip" android:layout_height="34dip"
+                android:visibility="gone" android:id="@+id/btnFaces" />
+
+        <Button android:layout_width="38dip" android:layout_height="34dip"
+                android:visibility="gone" android:id="@+id/btnTopic" />
+
+        <Button android:layout_width="38dip" android:layout_height="34dip"
+                android:visibility="gone" android:id="@+id/btnFrom" />
+
+        <Button
+            style="@style/BigEndButton"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="@string/menu_share"
+            android:id="@+id/btnSend" />
+    </RelativeLayout>
+
+</RelativeLayout>

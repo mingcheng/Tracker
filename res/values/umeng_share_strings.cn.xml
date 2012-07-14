@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="umeng_share_shareto_top">选择分享方式</string>
+    <string name="umeng_share_shareto_renr">人人网</string>
+    <string name="umeng_share_shareto_sina">新浪微博</string>
+    <string name="umeng_share_shareto_tenc">腾讯微博</string>
+
+    <string name="umeng_share_update_edittext_hint">说点什么...</string>
+    <string name="umeng_share_update_send">发布</string>
+    <string name="umeng_share_update_imgLoadFailed">抱歉，图片文件加载失败！</string>
+    <string name="umeng_share_update_contentEmpty">抱歉，分享内容不能为空！</string>
+    <string name="umeng_share_update_uneditTopic">抱歉，尚未编辑话题！</string>
+    <string name="umeng_share_update_updated">发布成功！</string>
+    <string name="umeng_share_update_repeated">抱歉，重复发布！</string>
+    <string name="umeng_share_update_fileToLarge">抱歉，图片大小超过限制！</string>
+    <string name="umeng_share_update_fileNotExist">抱歉，文件不存在！</string>
+    <string name="umeng_share_update_msgLengthExtendsLimit">抱歉，字数超过限制！</string>
+    <string name="umeng_share_update_networkUnavailable">抱歉，网络原因请稍后再试！</string>
+    <string name="umeng_share_update_extendsSendLimit">抱歉，已超过一小时内的最大发送限制，请稍后重试！</string>
+    <string name="umeng_share_update_uidNotExist">尚未绑定账号或有效期已过，请重新绑定</string>
+    <string name="umeng_share_update_appBlocked">抱歉，该分享功能已被停用！</string>
+
+    <string name="umeng_share_oauth_linkserver">正在加载授权页面，请稍等...</string>
+
+    <string name="umeng_share_snsservice_linkServer">正在连接服务器，请稍等</string>
+    <string name="umeng_share_snsservice_oauthSuccessed">授权成功！</string>
+    <string name="umeng_share_snsservice_oauthFailed">抱歉，授权失败！</string>
+    <string name="umeng_share_snsservice_noNetwork">抱歉，无网络服务！</string>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+
+    <style name="InfoPopAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/umeng_share_popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/umeng_share_popup_exit</item>
+    </style>
+
+    <style name="Theme.IOSched" parent="android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+</resources>
