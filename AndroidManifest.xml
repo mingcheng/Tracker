@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120713"
+          android:versionCode="20120715"
           android:versionName="1.5.0">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
