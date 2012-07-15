@@ -120,7 +120,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         // @todo 自动计算默认缩放的地图界面
         mapViewController.setCenter(mapCenterPoint);
-        mapViewController.setZoom(getFixedZoomLevel() - 1);
+        mapViewController.setZoom(getFixedZoomLevel());
     }
 
 

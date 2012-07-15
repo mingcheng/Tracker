@@ -44,6 +44,13 @@
             />
     </RelativeLayout>
 
+    <EditText android:id="@+id/umeng_fb_content"
+              android:layout_width="fill_parent" android:layout_height="fill_parent"
+              android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
+              android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
+              android:paddingLeft="9dip" android:paddingTop="10dip"
+              android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
+              android:gravity="top" android:textColor="@color/title" />
 
     <RelativeLayout android:orientation="horizontal"
                     android:layout_width="fill_parent" android:layout_height="55dip"
@@ -63,6 +70,7 @@
 
         <Button
             android:id="@+id/umeng_fb_submit"
+            style="@style/BigEndButton"
             android:layout_alignParentRight="true"
             android:text="@string/submit"
             android:gravity="center"
