@@ -1,10 +1,7 @@
 package com.gracecode.tracker.ui.activity.maps;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
+import android.graphics.*;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -117,8 +114,9 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 //            }
 //        });
 
-
         mapView.getOverlays().add(new PathOverlay());
+        mapView.getOverlays().add(new PointMarkLayout(archive.getFirstRecord(), R.drawable.point_start));
+        mapView.getOverlays().add(new PointMarkLayout(archive.getLastRecord(), R.drawable.point_end));
 
         // @todo 自动计算默认缩放的地图界面
         mapViewController.setCenter(mapCenterPoint);
@@ -143,7 +141,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         super.onDestroy();
     }
 
-    class PathOverlay extends Overlay {
+    private class PathOverlay extends Overlay {
         private Paint paint;
         private Projection projection;
         private static final int MIN_POINT_SPAN = 5;
@@ -161,7 +159,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.ROUND);
             paint.setStrokeCap(Paint.Cap.ROUND);
-            paint.setStrokeWidth(7);
+            paint.setStrokeWidth(5);
             paint.setAlpha(188);
         }
 
@@ -196,6 +194,34 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
                     canvas.drawPath(path, paint);
                 }
             }
+        }
+    }
+
+    private class PointMarkLayout extends Overlay {
+        private Location location;
+        private int drawable;
+        private Projection projection;
+
+        PointMarkLayout(Location location, int drawable) {
+            this.location = location;
+            this.drawable = drawable;
+        }
+
+        @Override
+        public void draw(final Canvas canvas, final MapView mapView, boolean shadow) {
+            super.draw(canvas, mapView, shadow);
+
+            this.projection = mapView.getProjection();
+            Point point = projection.toPixels(getRealGeoPointFromLocation(location), null);
+
+            Bitmap markerImage = BitmapFactory.decodeResource(getResources(), drawable);
+
+            // 根据实际的条目而定偏移位置
+            canvas.drawBitmap(markerImage,
+                point.x - Math.round(markerImage.getWidth() * 0.4),
+                point.y - Math.round(markerImage.getHeight() * 0.9), null);
+
+            return;
         }
     }
 }
