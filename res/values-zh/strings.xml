@@ -39,7 +39,7 @@
     <string name="toggle_satellite">切换（关闭）卫星模式</string>
     <string name="nearby">在 %s 附近</string>
     <string name="long_press_to_stop">长按停止</string>
-    <string name="item_distance">距离</string>
+    <string name="item_distance">里程</string>
     <string name="item_average_speed">平均时速</string>
     <string name="kmh">公里/时</string>
     <string name="km">公里</string>

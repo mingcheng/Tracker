@@ -1,6 +1,9 @@
 # Tracker
 
-使用 Android 设备的 GPS 记录轨迹并共享，根据大陆国情，使用百度地图、新浪微博组件。
+![Tracker Screen Shot](http://files.gracecode.com/2012_07_16/1342425568.png)
+
+使用 Android 设备的 GPS 记录轨迹并共享，根据大陆国情，使用百度地图、新浪微博组件
+。Tracker 是开放源代码项目，所有的代码可以从这里获得 https://github.com/feelinglucky/tracker
 
 ## FAQ
 
