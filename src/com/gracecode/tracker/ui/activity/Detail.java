@@ -162,7 +162,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
      * @return
      */
     private Bitmap getRouteBitmap() {
-        View view = mTabHost.getCurrentView();
+        View view = findViewById(R.id.detail_layout);
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         view.destroyDrawingCache();

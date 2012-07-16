@@ -18,7 +18,7 @@
             android:layout_alignParentBottom="true"
             android:id="@+id/status_layout"
             android:layout_width="fill_parent"
-            android:padding="10dp"
+            android:padding="5dp"
             android:layout_height="wrap_content" />
 
         <RelativeLayout

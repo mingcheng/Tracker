@@ -10,6 +10,7 @@
 
     <RelativeLayout
         android:orientation="vertical"
+        android:id="@+id/detail_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
