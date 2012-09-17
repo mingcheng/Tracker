@@ -11,7 +11,7 @@ import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.Overlay;
 import com.baidu.mapapi.Projection;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.dao.Archive;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.ui.activity.Records;
 import com.gracecode.tracker.ui.activity.base.MapActivity;
 
@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeListener {
-    private Archive archive;
+    private Archiver archive;
 
     private Context context;
 
@@ -71,7 +71,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
         dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
 
-        archive = new Archive(getApplicationContext(), archiveFileName);
+        archive = new Archiver(getApplicationContext(), archiveFileName);
         locations = archive.fetchAll();
 
         // 计算边界

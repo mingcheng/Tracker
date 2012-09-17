@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.service.ArchiveNameHelper;
 import com.gracecode.tracker.ui.activity.base.Activity;
 import com.markupartist.android.widget.ActionBar;
@@ -23,7 +23,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
 
     private ListView listView;
     private ArrayList<String> archiveFileNames;
-    private ArrayList<Archive> archives;
+    private ArrayList<Archiver> archives;
 
     private ArchiveNameHelper archiveFileNameHelper;
     private ArchivesAdapter archivesAdapter;
@@ -31,7 +31,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Archive archive = archives.get(i);
+        Archiver archive = archives.get(i);
         Intent intent = new Intent(this, Detail.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archive.getName());
@@ -50,15 +50,15 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         }
     }
 
-    public class ArchivesAdapter extends ArrayAdapter<Archive> {
+    public class ArchivesAdapter extends ArrayAdapter<Archiver> {
 
-        public ArchivesAdapter(ArrayList<Archive> archives) {
+        public ArchivesAdapter(ArrayList<Archiver> archives) {
             super(context, R.layout.records_row, archives);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Archive archive = archives.get(position);
+            Archiver archive = archives.get(position);
             ArchiveMeta archiveMeta = archive.getMeta();
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -95,7 +95,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         this.listView = (ListView) findViewById(R.id.records_list);
         this.archiveFileNameHelper = new ArchiveNameHelper(context);
 
-        this.archives = new ArrayList<Archive>();
+        this.archives = new ArrayList<Archiver>();
         this.archivesAdapter = new ArchivesAdapter(archives);
         this.listView.setAdapter(archivesAdapter);
     }
@@ -192,7 +192,7 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         Iterator<String> iterator = archiveFileNames.iterator();
         while (iterator.hasNext()) {
             String name = iterator.next();
-            Archive archive = new Archive(context, name);
+            Archiver archive = new Archiver(context, name);
 
             if (archive.getMeta().getCount() > 0) {
                 archives.add(archive);
@@ -224,9 +224,9 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
      * 清除列表
      */
     private void closeArchives() {
-        Iterator<Archive> iterator = archives.iterator();
+        Iterator<Archiver> iterator = archives.iterator();
         while (iterator.hasNext()) {
-            Archive archive = (Archive) iterator.next();
+            Archiver archive = (Archiver) iterator.next();
             if (archive != null) {
                 archive.close();
             }

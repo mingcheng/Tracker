@@ -21,26 +21,26 @@ public class ArchiveMeta {
     public static final int TO_KILOMETRE = 1000;
     private static final String COST_TIME_FORMAT = "%02d:%02d:%02d";
 
-    protected Archive archive;
+    protected Archiver archive;
     private SQLiteDatabase database;
     private static final int FUNC_AVG = 0x1;
     private static final int FUNC_MAX = 0x2;
 
-    public ArchiveMeta(Archive archive) {
+    public ArchiveMeta(Archiver archive) {
         this.archive = archive;
         this.database = archive.database;
     }
 
     protected boolean set(String name, String value) {
         ContentValues values = new ContentValues();
-        values.put(Archive.DATABASE_COLUMN.META_NAME, name);
-        values.put(Archive.DATABASE_COLUMN.META_VALUE, value);
+        values.put(Archiver.DATABASE_COLUMN.META_NAME, name);
+        values.put(Archiver.DATABASE_COLUMN.META_VALUE, value);
 
         long result = 0;
         try {
             if (isExists(name)) {
                 result = database.update(TABLE_NAME, values,
-                    Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
+                    Archiver.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
             } else {
                 result = database.insert(TABLE_NAME, null, values);
             }
@@ -61,15 +61,15 @@ public class ArchiveMeta {
         Cursor cursor;
         String result = "";
         try {
-            String sql = "SELECT " + Archive.DATABASE_COLUMN.META_VALUE
+            String sql = "SELECT " + Archiver.DATABASE_COLUMN.META_VALUE
                 + " FROM " + TABLE_NAME
-                + " WHERE " + Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'"
+                + " WHERE " + Archiver.DATABASE_COLUMN.META_NAME + "='" + name + "'"
                 + " LIMIT 1";
 
             cursor = database.rawQuery(sql, null);
             cursor.moveToFirst();
 
-            result = cursor.getString(cursor.getColumnIndex(Archive.DATABASE_COLUMN.META_VALUE));
+            result = cursor.getString(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.META_VALUE));
             cursor.close();
         } catch (SQLiteException e) {
             Helper.Logger.e(e.getMessage());
@@ -98,10 +98,10 @@ public class ArchiveMeta {
             cursor = database.rawQuery(
                 "SELECT count(id) AS count"
                     + " FROM " + TABLE_NAME
-                    + " WHERE " + Archive.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
+                    + " WHERE " + Archiver.DATABASE_COLUMN.META_NAME + "='" + name + "'", null);
             cursor.moveToFirst();
 
-            count = cursor.getInt(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
+            count = cursor.getInt(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.COUNT));
             cursor.close();
         } catch (Exception e) {
             Helper.Logger.e(e.getMessage());
@@ -178,11 +178,11 @@ public class ArchiveMeta {
         try {
             cursor = database.rawQuery(
                 "SELECT count(id) AS count FROM "
-                    + Archive.TABLE_NAME
+                    + Archiver.TABLE_NAME
                     + " LIMIT 1", null);
             cursor.moveToFirst();
 
-            count = cursor.getLong(cursor.getColumnIndex(Archive.DATABASE_COLUMN.COUNT));
+            count = cursor.getLong(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.COUNT));
             cursor.close();
         } catch (Exception e) {
             Helper.Logger.e(e.getMessage());
@@ -234,16 +234,16 @@ public class ArchiveMeta {
                 break;
         }
 
-        String sql = "SELECT " + func + "(" + Archive.DATABASE_COLUMN.SPEED
-            + ") AS " + Archive.DATABASE_COLUMN.SPEED
-            + " FROM " + Archive.TABLE_NAME + " LIMIT 1";
+        String sql = "SELECT " + func + "(" + Archiver.DATABASE_COLUMN.SPEED
+            + ") AS " + Archiver.DATABASE_COLUMN.SPEED
+            + " FROM " + Archiver.TABLE_NAME + " LIMIT 1";
 
         Cursor cursor;
         float speed = 0;
         try {
             cursor = database.rawQuery(sql, null);
             cursor.moveToFirst();
-            speed = cursor.getFloat(cursor.getColumnIndex(Archive.DATABASE_COLUMN.SPEED));
+            speed = cursor.getFloat(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.SPEED));
             cursor.close();
         } catch (Exception e) {
             Helper.Logger.e(e.getMessage());
@@ -263,7 +263,7 @@ public class ArchiveMeta {
     public boolean rebuild() {
         try {
             database.execSQL("DROP TABLE " + TABLE_NAME);
-            database.execSQL(Archive.ArchiveDatabaseHelper.SQL_CREATE_META_TABLE);
+            database.execSQL(Archiver.ArchiveDatabaseHelper.SQL_CREATE_META_TABLE);
 
             setRawDistance();
             setStartTime(new Date(archive.getFirstRecord().getTime()));

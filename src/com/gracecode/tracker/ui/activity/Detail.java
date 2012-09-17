@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.ui.activity.base.Activity;
 import com.gracecode.tracker.ui.activity.maps.BaiduMap;
 import com.gracecode.tracker.ui.fragment.ArchiveMetaFragment;
@@ -29,7 +29,7 @@ import java.util.Locale;
 public class Detail extends Activity implements View.OnTouchListener, View.OnClickListener {
     private String archiveFileName;
 
-    private Archive archive;
+    private Archiver archive;
     private ArchiveMeta archiveMeta;
 
     private ArchiveMetaFragment archiveMetaFragment;
@@ -49,7 +49,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         localActivityManager.dispatchCreate(savedInstanceState);
 
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        archive = new Archive(context, archiveFileName, Archive.MODE_READ_WRITE);
+        archive = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
         archiveMeta = archive.getMeta();
 
         mMapMask = findViewById(R.id.map_mask);

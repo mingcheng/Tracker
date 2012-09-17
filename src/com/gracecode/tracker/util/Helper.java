@@ -76,5 +76,9 @@ public class Helper {
         public static void e(String message) {
             Log.e(TAG, message);
         }
+
+        public static void w(String message) {
+            Log.w(TAG, message);
+        }
     }
 }

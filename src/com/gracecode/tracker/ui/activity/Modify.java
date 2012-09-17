@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.ui.activity.base.Activity;
 
 public class Modify extends Activity implements View.OnClickListener {
@@ -15,7 +15,7 @@ public class Modify extends Activity implements View.OnClickListener {
     private EditText mDescription;
 
     private String archiveFileName;
-    private Archive archive;
+    private Archiver archive;
     private ArchiveMeta archiveMeta;
 
     @Override
@@ -33,7 +33,7 @@ public class Modify extends Activity implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 
-        archive = new Archive(context, archiveFileName, Archive.MODE_READ_WRITE);
+        archive = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
         if (archive == null || !archive.exists()) {
             helper.showShortToast(getString(R.string.archive_not_exists));
             finish();

@@ -13,7 +13,7 @@ import com.gracecode.tracker.util.Helper;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Archive {
+public class Archiver {
     public static final int MODE_READ_ONLY = 0x001;
     public static final int MODE_READ_WRITE = 0x002;
     public static final String TABLE_NAME = "records";
@@ -85,18 +85,18 @@ public class Archive {
     protected Context context;
     protected int mode = MODE_READ_ONLY;
 
-    public Archive(Context context) {
+    public Archiver(Context context) {
         this.context = context;
         this.locations = new ArrayList<Location>();
     }
 
-    public Archive(Context context, String name) {
+    public Archiver(Context context, String name) {
         this.context = context;
         this.locations = new ArrayList<Location>();
         this.open(name, MODE_READ_ONLY);
     }
 
-    public Archive(Context context, String name, int mode) {
+    public Archiver(Context context, String name, int mode) {
         this.context = context;
         this.locations = new ArrayList<Location>();
         this.mode = mode;
@@ -154,7 +154,7 @@ public class Archive {
         return meta;
     }
 
-    synchronized public boolean add(Location point) {
+    public boolean add(Location point, long timeMillis) {
         ContentValues values = new ContentValues();
 
         values.put(DATABASE_COLUMN.LATITUDE, point.getLatitude());
@@ -163,7 +163,7 @@ public class Archive {
         values.put(DATABASE_COLUMN.BEARING, point.getBearing());
         values.put(DATABASE_COLUMN.ALTITUDE, point.getAltitude());
         values.put(DATABASE_COLUMN.ACCURACY, point.getAccuracy());
-        values.put(DATABASE_COLUMN.TIME, System.currentTimeMillis());
+        values.put(DATABASE_COLUMN.TIME, timeMillis);
 
         try {
             return database.insert(TABLE_NAME, null, values) > 0 ? true : false;
@@ -172,6 +172,10 @@ public class Archive {
         }
 
         return false;
+    }
+
+    public boolean add(Location point) {
+        return add(point, System.currentTimeMillis());
     }
 
     /**

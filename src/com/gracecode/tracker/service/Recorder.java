@@ -11,8 +11,8 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import com.gracecode.tracker.R;
-import com.gracecode.tracker.dao.Archive;
 import com.gracecode.tracker.dao.ArchiveMeta;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.ui.activity.Preference;
 import com.gracecode.tracker.util.Helper;
 import com.gracecode.tracker.util.Notifier;
@@ -38,15 +38,15 @@ interface Binder {
 
     public ArchiveMeta getMeta();
 
-    public Archive getArchive();
+    public Archiver getArchive();
 
     public Location getLastRecord();
 }
 
 public class Recorder extends Service {
-    protected Recorder.ServiceBinder serviceBinder;
+    protected static Recorder.ServiceBinder serviceBinder = null;
     private SharedPreferences sharedPreferences;
-    private Archive archive;
+    private Archiver archiver;
 
     private Listener listener;
     private StatusListener statusListener;
@@ -67,8 +67,8 @@ public class Recorder extends Service {
 
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            archive = new Archive(getApplicationContext());
-            listener = new Listener(archive);
+            archiver = new Archiver(getApplicationContext());
+            listener = new Listener(archiver);
             statusListener = new StatusListener();
         }
 
@@ -103,7 +103,7 @@ public class Recorder extends Service {
                 }
 
                 try {
-                    archive.open(archivName, Archive.MODE_READ_WRITE);
+                    archiver.open(archivName, Archiver.MODE_READ_WRITE);
 
                     // 设置开始时间，如果是恢复文件，则就不设置
                     if (!hasResumeName) {
@@ -149,6 +149,8 @@ public class Recorder extends Service {
                 timer = new Timer();
                 timer.schedule(notifierTask, 0, 5000);
                 status = ServiceBinder.STATUS_RECORDING;
+
+                // for umeng
                 MobclickAgent.onEventBegin(context, RECORDER_SERVER_ID);
             }
         }
@@ -160,6 +162,11 @@ public class Recorder extends Service {
         @Override
         public void stopRecord() {
             if (status == ServiceBinder.STATUS_RECORDING) {
+
+                // flush the listener cache
+                listener.flushCache();
+
+                // remove listener
                 locationManager.removeUpdates(listener);
                 locationManager.removeGpsStatusListener(statusListener);
 
@@ -177,7 +184,7 @@ public class Recorder extends Service {
                 }
 
                 // 清除操作
-                archive.close();
+                archiver.close();
                 notifier.cancel();
                 timer.cancel();
                 nameHelper.clearLastOpenedName();
@@ -194,17 +201,17 @@ public class Recorder extends Service {
 
         @Override
         public ArchiveMeta getMeta() {
-            return archive.getMeta();
+            return archiver.getMeta();
         }
 
         @Override
-        public Archive getArchive() {
-            return archive;
+        public Archiver getArchive() {
+            return archiver;
         }
 
         @Override
         public Location getLastRecord() {
-            return archive.getLastRecord();
+            return archiver.getLastRecord();
         }
     }
 
@@ -218,8 +225,8 @@ public class Recorder extends Service {
 
         this.nameHelper = new ArchiveNameHelper(context);
         this.helper = new Helper(context);
-        if (this.serviceBinder == null) {
-            this.serviceBinder = new ServiceBinder();
+        if (serviceBinder == null) {
+            serviceBinder = new ServiceBinder();
         }
 
         boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
@@ -237,6 +244,7 @@ public class Recorder extends Service {
     @Override
     public void onDestroy() {
         serviceBinder.stopRecord();
+        serviceBinder = null;
         super.onDestroy();
     }
 
