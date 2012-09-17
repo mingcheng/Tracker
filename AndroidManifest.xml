@@ -39,13 +39,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.maps.GoogleMap"
-                  android:theme="@style/Window"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity android:name=".ui.activity.Records"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
