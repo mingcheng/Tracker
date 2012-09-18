@@ -5,11 +5,12 @@
 使用 Android 设备的 GPS 记录轨迹并共享，根据大陆国情，使用百度地图、新浪微博组件
 。Tracker 是开放源代码项目，所有的代码可以从这里获得 https://github.com/feelinglucky/tracker
 
-## FAQ
 
-### 新浪微博分享功能是否记录用户名和密码？
+## 下载
 
-Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分享功能使用友盟组件，详情请参见： http://dev.umeng.com/doc/document_sh_android.html
+* Google Play Market: https://play.google.com/store/apps/details?id=com.gracecode.tracker
+* AppChina Market: http://www.appchina.com/soft_detail_325808_0_10.html
+
 
 
 ## 更新记录
@@ -38,8 +39,16 @@ Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分�
 
 * 初始化版本
 
+
+## FAQ
+
+### 新浪微博分享功能是否记录用户名和密码？
+
+Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分享功能使用友盟组件，详情请参见： http://dev.umeng.com/doc/document_sh_android.html
+
+
 ## 联系方式
 
 * Blog: http://www.gracecode.com/
-* 微博: @手气就是不错
 * Twitter: @feelinglucky
+* 新浪微博: @手气还不错
