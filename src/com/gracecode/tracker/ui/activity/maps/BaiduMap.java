@@ -1,6 +1,7 @@
 package com.gracecode.tracker.ui.activity.maps;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.*;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.Overlay;
 import com.baidu.mapapi.Projection;
 import com.gracecode.tracker.R;
+import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.dao.Archiver;
+import com.gracecode.tracker.ui.activity.Detail;
 import com.gracecode.tracker.ui.activity.Records;
 import com.gracecode.tracker.ui.activity.base.MapActivity;
 
@@ -19,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeListener {
-    private Archiver archive;
+    private Archiver archiver;
 
     private Context context;
 
@@ -28,22 +31,37 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
     private SimpleDateFormat dateFormat;
     private ToggleButton mSatellite;
     private View mapController;
+    private PathOverlay pathOverlay;
+    private PointMarkLayout currentMarkLayout;
 
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        // Helper.Logger.i("onProgressChanged");
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        // Helper.Logger.i("onStartTrackingTouch");
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         try {
             Location location = locations.get(seekBar.getProgress() - 1);
-            helper.showShortToast(dateFormat.format(location.getTime()));
+            String recordsFormatter = getString(R.string.records_formatter);
+
+            helper.showShortToast(
+                dateFormat.format(location.getTime()) + "\n" +
+                    String.format(recordsFormatter, location.getSpeed() * ArchiveMeta.KM_PER_HOUR_CNT) + "km/h"
+            );
+
+            if (currentMarkLayout != null) {
+                mapView.getOverlays().remove(currentMarkLayout);
+            }
+            currentMarkLayout = new PointMarkLayout(location, R.drawable.point);
+            mapView.getOverlays().add(currentMarkLayout);
+
             setCenterPoint(location, true);
         } catch (IndexOutOfBoundsException e) {
             return;
@@ -56,23 +74,18 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
         setContentView(R.layout.baidu_map);
 
         context = this;
-
         mapView = (MapView) findViewById(R.id.bmapsView);
         mapController = findViewById(R.id.map_controller);
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-
-//        archiveFileName = "/mnt/sdcard/tracker/201204/1335748781146.sqlite";
-
-//        mapView.setBuiltInZoomControls(true);
-//        mapView.setSatellite(false);
-
         mSeeker = (SeekBar) findViewById(R.id.seek);
-        mSatellite = (ToggleButton) findViewById(R.id.satellite);
 
-        dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
+        // Default date format.
+        dateFormat = new SimpleDateFormat(getString(R.string.time_format), Locale.getDefault());
 
-        archive = new Archiver(getApplicationContext(), archiveFileName);
-        locations = archive.fetchAll();
+        archiver = new Archiver(getApplicationContext(), archiveFileName);
+        locations = archiver.fetchAll();
+
+        pathOverlay = new PathOverlay();
 
         // 计算边界
         getBoundary();
@@ -89,15 +102,17 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
     public void onStart() {
         super.onStart();
 
-        if (actionBar != null) {
-            actionBar.setVisibility(View.GONE);
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra(Detail.INSIDE_TABHOST, false)) {
+            if (actionBar != null) {
+                actionBar.setVisibility(View.GONE);
+            }
+            mapController.setVisibility(View.GONE);
         }
-        mapController.setVisibility(View.GONE);
 
-//
-//        mSeeker.setMax(locations.size());
-//        mSeeker.setProgress(0);
-//        mSeeker.setOnSeekBarChangeListener(this);
+        mSeeker.setMax(locations.size());
+        mSeeker.setProgress(0);
+        mSeeker.setOnSeekBarChangeListener(this);
 
 //        mSatellite.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -114,9 +129,9 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 //            }
 //        });
 
-        mapView.getOverlays().add(new PathOverlay());
-        mapView.getOverlays().add(new PointMarkLayout(archive.getFirstRecord(), R.drawable.point_start));
-        mapView.getOverlays().add(new PointMarkLayout(archive.getLastRecord(), R.drawable.point_end));
+        mapView.getOverlays().add(pathOverlay);
+        mapView.getOverlays().add(new PointMarkLayout(archiver.getFirstRecord(), R.drawable.point_start));
+        mapView.getOverlays().add(new PointMarkLayout(archiver.getLastRecord(), R.drawable.point_end));
 
         // @todo 自动计算默认缩放的地图界面
         mapViewController.setCenter(mapCenterPoint);
@@ -137,7 +152,7 @@ public class BaiduMap extends MapActivity implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void onDestroy() {
-        archive.close();
+        archiver.close();
         super.onDestroy();
     }
 
