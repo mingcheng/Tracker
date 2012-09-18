@@ -31,15 +31,15 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Archiver archive = archives.get(i);
+        Archiver archiver = archives.get(i);
         Intent intent = new Intent(this, Detail.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archive.getName());
+        intent.putExtra(INTENT_ARCHIVE_FILE_NAME, archiver.getName());
         startActivity(intent);
     }
 
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.set(year, month, day);
 
         Date selectDate = new Date(selectedTime);
@@ -50,6 +50,9 @@ public class Records extends Activity implements AdapterView.OnItemClickListener
         }
     }
 
+    /**
+     * ListView Adapter
+     */
     public class ArchivesAdapter extends ArrayAdapter<Archiver> {
 
         public ArchivesAdapter(ArrayList<Archiver> archives) {

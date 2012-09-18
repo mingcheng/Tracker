@@ -2,8 +2,10 @@ package com.gracecode.tracker.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import com.gracecode.tracker.dao.Archiver;
 import com.gracecode.tracker.ui.activity.Preference;
 
 import java.io.File;
@@ -72,10 +74,24 @@ public class ArchiveNameHelper {
         });
 
         if (archiveFiles != null) {
-            // 根据最后修改时间排序
+            /**
+             * Sort by first record time.
+             */
             Arrays.sort(archiveFiles, new Comparator<File>() {
                 public int compare(File f1, File f2) {
-                    return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
+                    Archiver archiver1 = new Archiver(context, f1.getAbsolutePath(), Archiver.MODE_READ_ONLY);
+                    Archiver archiver2 = new Archiver(context, f2.getAbsolutePath(), Archiver.MODE_READ_ONLY);
+
+                    Location location1 = archiver1.getFirstRecord();
+                    Location location2 = archiver2.getFirstRecord();
+
+                    Long time1 = location1.getTime();
+                    Long time2 = location2.getTime();
+
+                    archiver1.close();
+                    archiver2.close();
+
+                    return Long.valueOf(time2).compareTo(time1);
                 }
             });
 
