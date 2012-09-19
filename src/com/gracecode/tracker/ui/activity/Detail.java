@@ -20,9 +20,7 @@ import com.gracecode.tracker.ui.activity.maps.BaiduMap;
 import com.gracecode.tracker.ui.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.ui.fragment.ArchiveMetaTimeFragment;
 import com.markupartist.android.widget.ActionBar;
-import com.umeng.api.sns.UMSnsService;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -111,8 +109,8 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     }
 
 
-    private void shareToSina() {
-        byte[] bitmap = convertBitmapToByteArray(getRouteBitmap());
+    public void shareToSina() {
+        byte[] bitmap = helper.convertBitmapToByteArray(getRouteBitmap());
         String recordsFormatter = getString(R.string.records_formatter);
         SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.getDefault());
 
@@ -126,8 +124,10 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             String.format(recordsFormatter, archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT),
             String.format(recordsFormatter, archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT)
         );
-        UMSnsService.shareToSina(context, bitmap, message, null);
+
+        helper.shareToSina(context, message, bitmap);
     }
+
 
     private void confirmDelete() {
         helper.showConfirmDialog(
@@ -187,11 +187,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         return Bitmap.createBitmap(view.getDrawingCache());
     }
 
-    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
 
     @Override
     public void onResume() {
