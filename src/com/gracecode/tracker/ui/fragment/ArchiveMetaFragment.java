@@ -1,7 +1,6 @@
 package com.gracecode.tracker.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.ArchiveMeta;
-import com.gracecode.tracker.ui.activity.Records;
-import com.gracecode.tracker.ui.activity.SpeedCharts;
 import com.gracecode.tracker.util.Helper;
 
-public class ArchiveMetaFragment extends Fragment implements View.OnClickListener {
+public class ArchiveMetaFragment extends Fragment {
     public ArchiveMeta meta;
     private Context context;
     private View layoutView;
@@ -37,9 +34,6 @@ public class ArchiveMetaFragment extends Fragment implements View.OnClickListene
         mAvgSpeed = (TextView) layoutView.findViewById(R.id.item_avg_speed);
         mMaxSpeed = (TextView) layoutView.findViewById(R.id.item_max_speed);
         mRecords = (TextView) layoutView.findViewById(R.id.item_records);
-
-        mAvgSpeed.setOnClickListener(this);
-        mMaxSpeed.setOnClickListener(this);
 
         return layoutView;
     }
@@ -64,17 +58,5 @@ public class ArchiveMetaFragment extends Fragment implements View.OnClickListene
     public void update(ArchiveMeta meta) {
         this.meta = meta;
         this.update(meta);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_avg_speed:
-            case R.id.item_max_speed:
-                Intent intent = new Intent(context, SpeedCharts.class);
-                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, meta.getName());
-                startActivity(intent);
-                break;
-        }
     }
 }

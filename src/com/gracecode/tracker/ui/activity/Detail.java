@@ -80,6 +80,23 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
+
+        // Speed charts
+        actionBar.addAction(new ActionBar.Action() {
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_menu_view;
+            }
+
+            @Override
+            public void performAction(View view) {
+                Intent intent = new Intent(context, SpeedCharts.class);
+                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
+                startActivity(intent);
+            }
+        });
+
+        // Share to Sina Weibo
         actionBar.addAction(new ActionBar.Action() {
             @Override
             public int getDrawable() {
