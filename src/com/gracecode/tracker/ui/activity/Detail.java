@@ -20,16 +20,14 @@ import com.gracecode.tracker.ui.activity.maps.BaiduMap;
 import com.gracecode.tracker.ui.fragment.ArchiveMetaFragment;
 import com.gracecode.tracker.ui.fragment.ArchiveMetaTimeFragment;
 import com.markupartist.android.widget.ActionBar;
-import com.umeng.api.sns.UMSnsService;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Detail extends Activity implements View.OnTouchListener, View.OnClickListener {
     private String archiveFileName;
 
-    private Archiver archive;
+    private Archiver archiver;
     private ArchiveMeta archiveMeta;
 
     private ArchiveMetaFragment archiveMetaFragment;
@@ -39,6 +37,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     private LocalActivityManager localActivityManager;
     private TabHost mTabHost;
     private View mMapMask;
+    public static final String INSIDE_TABHOST = "inside_tabhost";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,8 +48,8 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         localActivityManager.dispatchCreate(savedInstanceState);
 
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        archive = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
-        archiveMeta = archive.getMeta();
+        archiver = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
+        archiveMeta = archiver.getMeta();
 
         mMapMask = findViewById(R.id.map_mask);
         mDescription = (TextView) findViewById(R.id.item_description);
@@ -79,6 +78,23 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
+
+        // Speed charts
+        actionBar.addAction(new ActionBar.Action() {
+            @Override
+            public int getDrawable() {
+                return R.drawable.ic_menu_view;
+            }
+
+            @Override
+            public void performAction(View view) {
+                Intent intent = new Intent(context, SpeedCharts.class);
+                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveFileName);
+                startActivity(intent);
+            }
+        });
+
+        // Share to Sina Weibo
         actionBar.addAction(new ActionBar.Action() {
             @Override
             public int getDrawable() {
@@ -93,10 +109,10 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     }
 
 
-    private void shareToSina() {
-        byte[] bitmap = convertBitmapToByteArray(getRouteBitmap());
+    public void shareToSina() {
+        byte[] bitmap = helper.convertBitmapToByteArray(getRouteBitmap());
         String recordsFormatter = getString(R.string.records_formatter);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.getDefault());
 
         // Build string for share by microblog etc.
         String message = String.format(getString(R.string.share_report_formatter),
@@ -108,8 +124,10 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             String.format(recordsFormatter, archiveMeta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT),
             String.format(recordsFormatter, archiveMeta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT)
         );
-        UMSnsService.shareToSina(context, bitmap, message, null);
+
+        helper.shareToSina(context, message, bitmap);
     }
+
 
     private void confirmDelete() {
         helper.showConfirmDialog(
@@ -118,7 +136,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             new Runnable() {
                 @Override
                 public void run() {
-                    if (archive.delete()) {
+                    if (archiver.delete()) {
                         finish();
                     }
                 }
@@ -169,11 +187,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         return Bitmap.createBitmap(view.getDrawingCache());
     }
 
-    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
 
     @Override
     public void onResume() {
@@ -183,6 +196,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         Intent mapIntent = new Intent(this, BaiduMap.class);
         String name = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         mapIntent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, name);
+        mapIntent.putExtra(INSIDE_TABHOST, true);
 
         TabHost.TabSpec tabSpec =
             mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
@@ -190,7 +204,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mTabHost.addTab(tabSpec);
         mMapMask.setOnTouchListener(this);
 
-        if (!archive.exists()) {
+        if (!archiver.exists()) {
             finish();
         }
     }

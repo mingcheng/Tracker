@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120918"
-          android:versionName="1.5.3">
+          android:versionCode="20120919"
+          android:versionName="1.6.0">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -55,6 +55,13 @@
         </activity>
         <activity android:name=".ui.activity.Info"
                   android:screenOrientation="behind"
+                  android:theme="@style/Window">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.SpeedCharts"
+                  android:screenOrientation="landscape"
                   android:theme="@style/Window">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

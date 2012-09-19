@@ -79,19 +79,23 @@ public class ArchiveNameHelper {
              */
             Arrays.sort(archiveFiles, new Comparator<File>() {
                 public int compare(File f1, File f2) {
-                    Archiver archiver1 = new Archiver(context, f1.getAbsolutePath(), Archiver.MODE_READ_ONLY);
-                    Archiver archiver2 = new Archiver(context, f2.getAbsolutePath(), Archiver.MODE_READ_ONLY);
+                    try {
+                        Archiver archiver1 = new Archiver(context, f1.getAbsolutePath(), Archiver.MODE_READ_ONLY);
+                        Archiver archiver2 = new Archiver(context, f2.getAbsolutePath(), Archiver.MODE_READ_ONLY);
 
-                    Location location1 = archiver1.getFirstRecord();
-                    Location location2 = archiver2.getFirstRecord();
+                        Location location1 = archiver1.getFirstRecord();
+                        Location location2 = archiver2.getFirstRecord();
 
-                    Long time1 = location1.getTime();
-                    Long time2 = location2.getTime();
+                        Long time1 = location1.getTime();
+                        Long time2 = location2.getTime();
 
-                    archiver1.close();
-                    archiver2.close();
+                        archiver1.close();
+                        archiver2.close();
 
-                    return Long.valueOf(time2).compareTo(time1);
+                        return Long.valueOf(time2).compareTo(time1);
+                    } catch (NullPointerException e) {
+                        return 0;
+                    }
                 }
             });
 
