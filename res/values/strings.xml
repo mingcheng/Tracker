@@ -4,6 +4,7 @@
     <string name="service_name">Track Server</string>
     <string name="pls_wait">Loading, Please Wait</string>
     <string name="time_format">MM/dd HH:mm</string>
+    <string name="sort_time_format">HH:mm</string>
     <string name="time_month_format">yyyy/MM</string>
     <string name="month_format">%1$d / %2$d</string>
     <string name="no_description">Empty Description</string>

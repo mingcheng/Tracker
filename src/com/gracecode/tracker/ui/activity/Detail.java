@@ -29,7 +29,7 @@ import java.util.Locale;
 public class Detail extends Activity implements View.OnTouchListener, View.OnClickListener {
     private String archiveFileName;
 
-    private Archiver archive;
+    private Archiver archiver;
     private ArchiveMeta archiveMeta;
 
     private ArchiveMetaFragment archiveMetaFragment;
@@ -50,8 +50,8 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         localActivityManager.dispatchCreate(savedInstanceState);
 
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
-        archive = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
-        archiveMeta = archive.getMeta();
+        archiver = new Archiver(context, archiveFileName, Archiver.MODE_READ_WRITE);
+        archiveMeta = archiver.getMeta();
 
         mMapMask = findViewById(R.id.map_mask);
         mDescription = (TextView) findViewById(R.id.item_description);
@@ -97,7 +97,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     private void shareToSina() {
         byte[] bitmap = convertBitmapToByteArray(getRouteBitmap());
         String recordsFormatter = getString(R.string.records_formatter);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.CHINA);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.time_format), Locale.getDefault());
 
         // Build string for share by microblog etc.
         String message = String.format(getString(R.string.share_report_formatter),
@@ -119,7 +119,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             new Runnable() {
                 @Override
                 public void run() {
-                    if (archive.delete()) {
+                    if (archiver.delete()) {
                         finish();
                     }
                 }
@@ -192,7 +192,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mTabHost.addTab(tabSpec);
         mMapMask.setOnTouchListener(this);
 
-        if (!archive.exists()) {
+        if (!archiver.exists()) {
             finish();
         }
     }
