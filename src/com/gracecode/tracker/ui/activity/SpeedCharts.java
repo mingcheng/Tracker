@@ -40,7 +40,12 @@ public class SpeedCharts extends Activity {
         archiveFileName = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         archiver = new Archiver(context, archiveFileName, Archiver.MODE_READ_ONLY);
         archiveMeta = archiver.getMeta();
+
         description = archiver.getMeta().getDescription();
+        if (description.length() <= 0) {
+            description = getString(R.string.no_description);
+        }
+
         locations = archiver.fetchAll();
         speedSeries = new ArrayList<GraphView.GraphViewData>();
         dateFormatter = new SimpleDateFormat(getString(R.string.sort_time_format), Locale.getDefault());
