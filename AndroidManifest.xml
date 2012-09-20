@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gracecode.tracker"
-          android:versionCode="20120919"
+          android:versionCode="20120920"
           android:versionName="1.6.0">
     <uses-sdk android:targetSdkVersion="10" android:minSdkVersion="7"></uses-sdk>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -70,15 +70,9 @@
         <activity android:name=".ui.activity.Preference"
                   android:screenOrientation="behind"
                   android:theme="@style/Window">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name=".ui.activity.Detail"
                   android:theme="@style/Window">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name="com.umeng.api.activity.OauthActivity"
                   android:screenOrientation="unspecified"
@@ -101,7 +95,6 @@
         <activity android:name="com.umeng.fb.ui.FeedbackConversations" />
         <activity android:name="com.umeng.fb.ui.FeedbackConversation"
                   android:configChanges="keyboard" />
-
         <service
             android:name=".service.Recorder"
             android:label="@string/service_name"
@@ -113,7 +106,6 @@
             android:exported="true"
             android:process=":DownloadingService">
         </service>
-        <!--<uses-library android:name="com.google.android.maps" />-->
         <meta-data android:value="4ef2f8e452701501a400004b" android:name="UMENG_APPKEY"></meta-data>
     </application>
 </manifest>
