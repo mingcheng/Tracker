@@ -38,10 +38,7 @@ public class SpeedCharts extends Activity {
         }
 
         speedChartsFragment = new SpeedChartsFragment(context, archiver);
-
-/*
         chartsView = (LinearLayout) findViewById(R.id.charts);
-        chartsView.addView(graphView);*/
     }
 
 

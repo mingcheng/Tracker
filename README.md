@@ -3,13 +3,28 @@
 ![Tracker Screen Shot](http://files.gracecode.com/2012_07_16/1342425568.png)
 
 使用 Android 设备的 GPS 记录轨迹并共享，根据大陆国情，使用百度地图、新浪微博组件
-。Tracker 是开放源代码项目，所有的代码可以从这里获得 https://github.com/feelinglucky/tracker
+。Tracker 是开放源代码项目，所有的代码可以从[这里获得](https://github.com/feelinglucky/tracker)。
 
 
-## 下载
+## 下载包
 
-* Google Play Market: https://play.google.com/store/apps/details?id=com.gracecode.tracker
-* AppChina Market: http://www.appchina.com/soft_detail_325808_0_10.html
+* [GooglePlay Market](https://play.google.com/store/apps/details?id=com.gracecode.tracker)
+* [AppChina Market（应用汇）](http://www.appchina.com/soft_detail_325808_0_10.html)
+
+
+## 编译
+
+项目为标准的 Android 应用，所以您可以使用你喜欢的 IDE (在 Mac 下推荐使用
+[IntelliJ IDEA](http://www.jetbrains.com/idea/))打开它。
+
+同时，Tracker 基于以下项目库以及 jar 包，您需要引入
+
+* 友盟统计分析（lib 目录）
+* 百度地图 jar 包（lib 目录）
+* [Android ActionBar](https://github.com/johannilsson/android-actionbar)
+* [Andoird GraphView](https://github.com/jjoe64/GraphView)
+
+代码在 Android SDK 2.2(Level 10)下编译通过。
 
 
 ## 更新记录
@@ -65,6 +80,7 @@ Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分�
 
 ## 联系方式
 
-* Blog: http://www.gracecode.com/
+* Blog: [http://www.gracecode.com/](http://www.gracecode.com/)
 * Twitter: [@feelinglucky](https://twitter.com/feelinglucky)
 * 新浪微博: [@手气还不错](http://weibo.com/feelinglucky)
+
