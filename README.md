@@ -22,7 +22,7 @@
 
 ### 1.5.3
 
-* 节省电力，增加存储缓存功能
+* 节省电力，增加存储缓存功能（可能会造成数据总计不及时）
 * 调节列表页排序方式
 * 部分小细节更改和更新
 
@@ -53,13 +53,18 @@
 
 ## FAQ
 
+### 点击「开始」按钮以后，如何停止记录？
+
+长按红色的「停止」按钮即可
+
 ### 新浪微博分享功能是否记录用户名和密码？
 
-Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分享功能使用友盟组件，详情请参见： http://dev.umeng.com/doc/document_sh_android.html
+Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分享功能使用友盟组件，
+详情请参见： http://dev.umeng.com/doc/document_sh_android.html
 
 
 ## 联系方式
 
 * Blog: http://www.gracecode.com/
-* Twitter: @feelinglucky
-* 新浪微博: @手气还不错
+* Twitter: [@feelinglucky](https://twitter.com/feelinglucky)
+* 新浪微博: [@手气还不错](http://weibo.com/feelinglucky)
