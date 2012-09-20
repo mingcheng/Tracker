@@ -4,8 +4,6 @@ import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -216,12 +214,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mTabHost.clearAllTabs();
         localActivityManager.removeAllActivities();
         localActivityManager.dispatchPause(isFinishing());
-    }
-
-    private void addFragment(int layout, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(layout, fragment);
-        fragmentTransaction.commit();
     }
 
     private void addArchiveMetaTimeFragment() {
