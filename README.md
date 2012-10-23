@@ -63,8 +63,17 @@ Tracker 本身不会记录任何用户个人信息。Tracker 的新浪微博分�
 详情请参见： http://dev.umeng.com/doc/document_sh_android.html
 
 
+## TODO
+
+* 增加百度地图离线地图下载功能
+* 导出为 kml 文件
+* 小屏幕机型适配
+* 更多？您帮我想想？
+
+
 ## 联系方式
 
 * Blog: http://www.gracecode.com/
 * Twitter: [@feelinglucky](https://twitter.com/feelinglucky)
 * 新浪微博: [@手气还不错](http://weibo.com/feelinglucky)
+
