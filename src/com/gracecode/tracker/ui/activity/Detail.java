@@ -55,6 +55,9 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
         archiveMetaTimeFragment = new ArchiveMetaTimeFragment(context, archiveMeta);
+
+        addArchiveMetaTimeFragment();
+        addArchiveMetaFragment();
     }
 
     @Override
@@ -70,9 +73,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             mDescription.setText(getString(R.string.no_description));
         }
         mDescription.setOnClickListener(this);
-
-        addArchiveMetaTimeFragment();
-        addArchiveMetaFragment();
 
         actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
@@ -189,7 +189,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
     @Override
     public void onResume() {
         super.onResume();
-        localActivityManager.dispatchResume();
 
         Intent mapIntent = new Intent(this, BaiduMap.class);
         String name = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
@@ -202,6 +201,7 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mTabHost.addTab(tabSpec);
         mMapMask.setOnTouchListener(this);
 
+        localActivityManager.dispatchResume();
         if (!archiver.exists()) {
             finish();
         }
