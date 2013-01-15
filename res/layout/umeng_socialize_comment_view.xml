@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/umeng_socialize_comments_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/umeng_socialize_titile_bar" />
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <EditText
+            android:id="@+id/umeng_socialize_comment_write"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/umeng_socialize_input_bar"
+            android:paddingLeft="15dp"
+            android:hint="在这说点什么...."
+            android:editable="false"
+            android:focusable="false"
+         />
+
+        <com.umeng.socialize.view.wigets.PullToRefreshListView
+            android:id="@+id/umeng_socialize_comment_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/umeng_socialize_comment_write"
+            android:divider="#00000000"
+            android:dividerHeight="1.0dip"
+            android:fadingEdgeLength="0.0sp"
+            android:fastScrollEnabled="true"
+            android:visibility="gone"
+            android:scrollingCache="true" />
+        <RelativeLayout
+            android:id="@+id/umeng_socialize_comment_list_progress"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/umeng_socialize_comment_write" >
+            <ProgressBar
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_centerInParent="true"
+                android:layout_width="18dp"
+                android:layout_height="18dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

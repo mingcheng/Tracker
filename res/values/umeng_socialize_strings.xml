@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+
+    <string name="pull_to_refresh_pull_label" translatable="false">向下拉动可以刷新</string>
+    <string name="pull_to_refresh_release_label" translatable="false">松开可以刷新</string>
+    <string name="pull_to_refresh_refreshing_label" translatable="false">加载中.....</string>
+    <string name="pull_to_refresh_tap_label" translatable="false">点击刷新</string>
+    <string name="umeng_socialize_network_break_alert" translatable="false">请连接网络后再尝试！</string>
+    <string name="umeng_socialize_comment" translatable="false">评论</string>
+    <string name="umeng_socialize_back" translatable="false">返回</string>
+    <string name="umeng_socialize_near_At" translatable="false">最近\@的好友</string>
+    <string name="umeng_socialize_friends" translatable="false">关注的好友</string>
+    <string name="umeng_socialize_send" translatable="false">发布</string>
+    <string name="umeng_socialize_tip_blacklist" translatable="false">对不起，因为违反了用户协议您已被禁言.</string>
+    <string name="umeng_socialize_tip_loginfailed" translatable="false">登录失败..</string>
+    <string name="umeng_socialize_msg_sec" translatable="false">秒前</string>
+    <string name="umeng_socialize_msg_min" translatable="false">分钟前</string>
+    <string name="umeng_socialize_msg_hor" translatable="false">小时前</string>
+
+    <dimen name="alphabet_size">12dip</dimen>
+    
+    <dimen name="umeng_socialize_pad_window_height">350dip</dimen>
+    <dimen name="umeng_socialize_pad_window_width">580dip</dimen>
+
+</resources>

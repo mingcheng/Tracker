@@ -74,21 +74,30 @@
         <activity android:name=".ui.activity.Detail"
                   android:theme="@style/Window">
         </activity>
-        <activity android:name="com.umeng.api.activity.OauthActivity"
-                  android:screenOrientation="unspecified"
-                  android:windowSoftInputMode="adjustResize"
-                  android:configChanges="orientation|keyboardHidden">
+        <activity
+            android:name="com.umeng.socialize.view.CommentActivity"
+            android:configChanges="orientation|keyboard"
+            android:theme="@style/Theme.UMDefault" >
         </activity>
-        <activity android:name="com.umeng.api.activity.UpdateStatusActivity"
-                  android:windowSoftInputMode="stateVisible|adjustResize"
-                  android:screenOrientation="unspecified"
-                  android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="schema…" />
-            </intent-filter>
+        <activity
+            android:name="com.umeng.socialize.view.ShareActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDialog"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.umeng.socialize.view.CommentDetail"
+            android:configChanges="orientation|keyboard"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDefault" >
+        </activity>
+        <activity
+            android:name="com.umeng.socialize.view.CommentDetailNoMap"
+            android:configChanges="orientation|keyboard"
+            android:noHistory="true"
+            android:theme="@style/Theme.UMDefault" >
         </activity>
         <activity android:name="com.umeng.fb.ui.SendFeedback"
                   android:windowSoftInputMode="adjustResize" />

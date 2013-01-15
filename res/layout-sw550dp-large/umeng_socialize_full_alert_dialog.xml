@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/umeng_socialize_window_shadow_pad"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <include
+        android:id="@+id/umeng_socialize_title"
+        layout="@layout/umeng_socialize_titile_bar" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#393D46" >
+
+        <ScrollView
+            android:id="@+id/umeng_xp_ScrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:scrollbars="none" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp" >
+
+                <TextView
+                    android:id="@+id/umeng_socialize_first_area_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:paddingLeft="26dp"
+                    android:text="分享到"
+                    android:textColor="#84898f"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/umeng_socialize_first_area"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_socialize_first_area_title"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/umeng_socialize_shape_solid_grey"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/umeng_socialize_second_area_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_socialize_first_area"
+                    android:layout_marginTop="18dp"
+                    android:paddingLeft="26dp"
+                    android:text="分享到"
+                    android:textColor="#84898f"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/umeng_socialize_second_area"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_socialize_second_area_title"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/umeng_socialize_shape_solid_grey"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </FrameLayout>
+
+</LinearLayout>

@@ -24,7 +24,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- *
+ * @todo - need to fix recording flag errors
  */
 interface Binder {
     public static final int STATUS_RECORDING = 0x0000;
@@ -59,22 +59,21 @@ public class Recorder extends Service {
     private Notifier notifier;
 
     private static final String RECORDER_SERVER_ID = "Tracker Service";
+    private static final String PREF_STATUS_FLAG = "Tracker Service Status";
     private TimerTask notifierTask;
-    private Timer timer;
+    private Timer timer = null;
 
     public class ServiceBinder extends android.os.Binder implements Binder {
-        private int status = ServiceBinder.STATUS_STOPPED;
-
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             archiver = new Archiver(getApplicationContext());
-            listener = new Listener(archiver);
+            listener = new Listener(archiver, this);
             statusListener = new StatusListener();
         }
 
         @Override
         public void startRecord() {
-            if (status != ServiceBinder.STATUS_RECORDING) {
+            if (getStatus() != ServiceBinder.STATUS_RECORDING) {
                 // 设置启动时更新配置
                 notifier = new Notifier(context);
 
@@ -105,7 +104,7 @@ public class Recorder extends Service {
                 try {
                     archiver.open(archivName, Archiver.MODE_READ_WRITE);
 
-                    // 设置开始时间，如果是恢复文件，则就不设置
+                    // Set start time, if not resume from recovery
                     if (!hasResumeName) {
                         getMeta().setStartTime(new Date());
                     }
@@ -113,6 +112,7 @@ public class Recorder extends Service {
                     // 绑定 GPS 回调
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, listener);
+
                     locationManager.addGpsStatusListener(statusListener);
 
                     // 标记打开的文件，方便奔溃时恢复
@@ -127,15 +127,16 @@ public class Recorder extends Service {
                     public void run() {
                         switch (serviceBinder.getStatus()) {
                             case ServiceBinder.STATUS_RECORDING:
-                                float distance = getMeta().getDistance() / ArchiveMeta.TO_KILOMETRE;
-                                double avgSpeed = getMeta().getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
-                                double maxSpeed = getMeta().getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                                ArchiveMeta meta = getMeta();
+                                float distance = meta.getDistance() / ArchiveMeta.TO_KILOMETRE;
+                                double avgSpeed = meta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                                double maxSpeed = meta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
 
                                 notifier.setStatusString(
                                     String.format(getString(R.string.status_format),
                                         distance, avgSpeed, maxSpeed)
                                 );
-                                notifier.setCostTimeString(getMeta().getCostTimeStringByNow());
+                                notifier.setCostTimeString(meta.getCostTimeStringByNow());
                                 notifier.publish();
                                 break;
 
@@ -145,10 +146,13 @@ public class Recorder extends Service {
                         }
                     }
                 };
-
                 timer = new Timer();
                 timer.schedule(notifierTask, 0, 5000);
-                status = ServiceBinder.STATUS_RECORDING;
+
+                // Set status from shared preferences, default is stopped.
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(PREF_STATUS_FLAG, ServiceBinder.STATUS_RECORDING);
+                editor.commit();
 
                 // for umeng
                 MobclickAgent.onEventBegin(context, RECORDER_SERVER_ID);
@@ -159,25 +163,32 @@ public class Recorder extends Service {
             return locationManager.getGpsStatus(null);
         }
 
+        public void resetStatus() {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(PREF_STATUS_FLAG, ServiceBinder.STATUS_STOPPED);
+            editor.commit();
+        }
+
         @Override
         public void stopRecord() {
-            if (status == ServiceBinder.STATUS_RECORDING) {
+            if (getStatus() == ServiceBinder.STATUS_RECORDING) {
 
-                // flush the listener cache
+                // Flush listener cache
                 listener.flushCache();
 
-                // remove listener
+                // Remove listener
                 locationManager.removeUpdates(listener);
                 locationManager.removeGpsStatusListener(statusListener);
 
-                long totalCount = getMeta().getCount();
+                ArchiveMeta meta = getMeta();
+                long totalCount = meta.getCount();
                 if (totalCount <= 0) {
                     (new File(archivName)).delete();
                     helper.showLongToast(getString(R.string.not_record_anything));
                 } else {
-                    // 设置结束记录时间
-                    getMeta().setEndTime(new Date());
+                    meta.setEndTime(new Date());
 
+                    // Show record result by toast
                     helper.showLongToast(String.format(
                         getString(R.string.result_report), String.valueOf(totalCount)
                     ));
@@ -186,17 +197,24 @@ public class Recorder extends Service {
                 // 清除操作
                 archiver.close();
                 notifier.cancel();
-                timer.cancel();
+
+                if (timer != null) {
+                    timer.cancel();
+                    timer = null;
+                }
+
                 nameHelper.clearLastOpenedName();
 
-                status = ServiceBinder.STATUS_STOPPED;
+                // Set status from preference as stopped.
+                resetStatus();
+
                 MobclickAgent.onEventEnd(context, RECORDER_SERVER_ID);
             }
         }
 
         @Override
         public int getStatus() {
-            return status;
+            return sharedPreferences.getInt(PREF_STATUS_FLAG, ServiceBinder.STATUS_STOPPED);
         }
 
         @Override
@@ -230,7 +248,12 @@ public class Recorder extends Service {
         }
 
         boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
-        if (autoStart) {
+        boolean alreadyStarted = (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING);
+
+        if (autoStart || alreadyStarted) {
+            if (alreadyStarted) {
+                serviceBinder.resetStatus();
+            }
             serviceBinder.startRecord();
         }
     }
@@ -244,7 +267,6 @@ public class Recorder extends Service {
     @Override
     public void onDestroy() {
         serviceBinder.stopRecord();
-        serviceBinder = null;
         super.onDestroy();
     }
 

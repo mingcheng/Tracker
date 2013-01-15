@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.baidu.location.LocationClient;
 import com.gracecode.tracker.R;
 import com.gracecode.tracker.dao.ArchiveMeta;
 import com.gracecode.tracker.service.Recorder;
@@ -42,6 +43,7 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     private static final long TIMER_PERIOD = 1000;
     private TextView mCoseTime;
     private Button mDisabledButton;
+    private LocationClient mLocationClient;
 
 
     @Override
@@ -54,6 +56,11 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         mDisabledButton = (Button) findViewById(R.id.btn_disabled);
 
         mCoseTime = (TextView) findViewById(R.id.item_cost_time);
+
+        mStartButton.setOnClickListener(this);
+        mEndButton.setOnClickListener(this);
+        mDisabledButton.setOnClickListener(this);
+        mEndButton.setOnLongClickListener(this);
 
         UmengUpdateAgent.update(context);
         UMFeedbackService.enableNewReplyNotification(context, NotificationType.AlertDialog);
@@ -81,29 +88,8 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (updateViewTimer != null) {
-            updateViewTimer.cancel();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (isRecording) {
-            helper.showLongToast(getString(R.string.still_running));
-        }
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-        mStartButton.setOnClickListener(this);
-        mEndButton.setOnClickListener(this);
-        mDisabledButton.setOnClickListener(this);
-
-        mEndButton.setOnLongClickListener(this);
 
         if (!helper.isGPSProvided()) {
             mStartButton.setVisibility(View.GONE);
@@ -164,17 +150,20 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     @Override
     public boolean onLongClick(View view) {
         if (isRecording && serviceBinder != null) {
-            long count = archiveMeta.getCount();
 
             serviceBinder.stopRecord();
             notifyUpdateView();
 
-            if (count > MINI_RECORDS) {
-                Intent intent = new Intent(context, Detail.class);
-                intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveMeta.getName());
-                startActivity(intent);
+            if (archiveMeta != null) {
+                long count = archiveMeta.getCount();
+                if (count > MINI_RECORDS) {
+                    Intent intent = new Intent(context, Detail.class);
+                    intent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, archiveMeta.getName());
+                    startActivity(intent);
+                }
             }
         }
+
         setViewStatus(FLAG_ENDED);
         return true;
     }
@@ -263,5 +252,21 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
         }
 
         return true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (updateViewTimer != null) {
+            updateViewTimer.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (isRecording) {
+            helper.showLongToast(getString(R.string.still_running));
+        }
     }
 }

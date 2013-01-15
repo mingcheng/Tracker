@@ -58,6 +58,9 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         addArchiveMetaTimeFragment();
         addArchiveMetaFragment();
+
+        mDescription.setOnClickListener(this);
+        mMapMask.setOnTouchListener(this);
     }
 
     @Override
@@ -72,7 +75,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             mDescription.setTextColor(getResources().getColor(R.color.gray));
             mDescription.setText(getString(R.string.no_description));
         }
-        mDescription.setOnClickListener(this);
 
         actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
@@ -125,7 +127,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         helper.shareToSina(context, message, bitmap);
     }
-
 
     private void confirmDelete() {
         helper.showConfirmDialog(
@@ -182,9 +183,9 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         view.destroyDrawingCache();
+        view.setDrawingCacheQuality(100);
         return Bitmap.createBitmap(view.getDrawingCache());
     }
-
 
     @Override
     public void onResume() {
@@ -195,11 +196,12 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mapIntent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, name);
         mapIntent.putExtra(INSIDE_TABHOST, true);
 
+        mTabHost.setup(localActivityManager);
+        mTabHost.clearAllTabs();
+
         TabHost.TabSpec tabSpec =
             mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
-        mTabHost.setup(localActivityManager);
         mTabHost.addTab(tabSpec);
-        mMapMask.setOnTouchListener(this);
 
         localActivityManager.dispatchResume();
         if (!archiver.exists()) {

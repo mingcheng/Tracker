@@ -19,17 +19,24 @@ import java.util.Iterator;
  */
 public class Listener implements LocationListener {
     private final static int ACCURACY = 3;
-    private final static int CACHE_SIZE = 10;
+    private final static int CACHE_SIZE = 5;
 
     private Archiver archiver;
     private ArchiveMeta meta = null;
     private BigDecimal lastLatitude;
     private BigDecimal lastLongitude;
     private HashMap<Long, Location> locationCache;
+    private Recorder.ServiceBinder binder = null;
 
     public Listener(Archiver archiver) {
         this.archiver = archiver;
         this.locationCache = new HashMap<Long, Location>();
+    }
+
+    public Listener(Archiver archiver, Recorder.ServiceBinder binder) {
+        this.archiver = archiver;
+        this.locationCache = new HashMap<Long, Location>();
+        this.binder = binder;
     }
 
     private boolean filter(Location location) {
@@ -50,14 +57,14 @@ public class Listener implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        // Save flitted location to database
+        // Save fitted location into database
         if (filter(location)) {
-            // Some nice cache
             locationCache.put(System.currentTimeMillis(), location);
             if (locationCache.size() > CACHE_SIZE) {
                 flushCache();
             }
 
+            // 计算动态路径
             this.meta = archiver.getMeta();
             if (meta != null) {
                 meta.setRawDistance();
@@ -87,13 +94,16 @@ public class Listener implements LocationListener {
     public void onStatusChanged(String provider, int status, Bundle extras) {
         switch (status) {
             case LocationProvider.AVAILABLE:
+//                    binder.startRecord();
                 Helper.Logger.i("Location provider is available.");
                 break;
             case LocationProvider.OUT_OF_SERVICE:
                 Helper.Logger.w("Location provider is out of service.");
+                //binder.stopRecord();
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
                 Helper.Logger.w("Location provider is temporarily unavailable.");
+                //binder.stopRecord();
                 break;
         }
     }
