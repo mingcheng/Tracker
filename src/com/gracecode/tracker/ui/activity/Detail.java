@@ -4,8 +4,6 @@ import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -57,6 +55,12 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         archiveMetaFragment = new ArchiveMetaFragment(context, archiveMeta);
         archiveMetaTimeFragment = new ArchiveMetaTimeFragment(context, archiveMeta);
+
+        addArchiveMetaTimeFragment();
+        addArchiveMetaFragment();
+
+        mDescription.setOnClickListener(this);
+        mMapMask.setOnTouchListener(this);
     }
 
     @Override
@@ -71,10 +75,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
             mDescription.setTextColor(getResources().getColor(R.color.gray));
             mDescription.setText(getString(R.string.no_description));
         }
-        mDescription.setOnClickListener(this);
-
-        addArchiveMetaTimeFragment();
-        addArchiveMetaFragment();
 
         actionBar.setTitle(getString(R.string.title_detail));
         actionBar.removeAllActions();
@@ -127,7 +127,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
 
         helper.shareToSina(context, message, bitmap);
     }
-
 
     private void confirmDelete() {
         helper.showConfirmDialog(
@@ -184,26 +183,27 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         view.destroyDrawingCache();
+        view.setDrawingCacheQuality(100);
         return Bitmap.createBitmap(view.getDrawingCache());
     }
-
 
     @Override
     public void onResume() {
         super.onResume();
-        localActivityManager.dispatchResume();
 
         Intent mapIntent = new Intent(this, BaiduMap.class);
         String name = getIntent().getStringExtra(Records.INTENT_ARCHIVE_FILE_NAME);
         mapIntent.putExtra(Records.INTENT_ARCHIVE_FILE_NAME, name);
         mapIntent.putExtra(INSIDE_TABHOST, true);
 
+        mTabHost.setup(localActivityManager);
+        mTabHost.clearAllTabs();
+
         TabHost.TabSpec tabSpec =
             mTabHost.newTabSpec("").setIndicator("").setContent(mapIntent);
-        mTabHost.setup(localActivityManager);
         mTabHost.addTab(tabSpec);
-        mMapMask.setOnTouchListener(this);
 
+        localActivityManager.dispatchResume();
         if (!archiver.exists()) {
             finish();
         }
@@ -216,12 +216,6 @@ public class Detail extends Activity implements View.OnTouchListener, View.OnCli
         mTabHost.clearAllTabs();
         localActivityManager.removeAllActivities();
         localActivityManager.dispatchPause(isFinishing());
-    }
-
-    private void addFragment(int layout, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(layout, fragment);
-        fragmentTransaction.commit();
     }
 
     private void addArchiveMetaTimeFragment() {

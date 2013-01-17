@@ -9,7 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.gracecode.tracker.R;
-import com.umeng.api.sns.UMSnsService;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.ShareImage;
+import com.umeng.socialize.controller.RequestType;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
 
 import java.io.ByteArrayOutputStream;
 
@@ -26,12 +30,26 @@ public class Helper {
         return stream.toByteArray();
     }
 
+    /**
+     * Share to Sina Weibo by Umeng SDK
+     *
+     * @param context
+     * @param message
+     * @param bitmap
+     */
     public void shareToSina(Context context, String message, byte[] bitmap) {
-        UMSnsService.shareToSina(context, bitmap, message, null);
+        UMSocialService controller = UMServiceFactory.getUMSocialService("UMENG_SHARE", RequestType.SOCIAL);
+
+
+        controller.setShareContent(message);
+        if (bitmap != null) {
+            controller.setShareImage(new ShareImage(context, bitmap));
+        }
+        controller.directShare(context, SHARE_MEDIA.SINA, null);
     }
 
     public void shareToSina(Context context, String message) {
-        UMSnsService.shareToSina(context, message, null);
+        shareToSina(context, message, null);
     }
 
     public boolean isGPSProvided() {

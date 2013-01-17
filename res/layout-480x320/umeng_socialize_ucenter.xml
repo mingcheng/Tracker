@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#373B44" >
+
+    <include
+        android:id="@+id/umeng_socialize_title"
+        layout="@layout/umeng_socialize_titile_bar" />
+
+    <RelativeLayout
+        android:id="@+id/umeng_socialize_ucenter_info"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/umeng_socialize_title"
+        android:background="@drawable/umeng_socialize_ucenter_hbg"
+        android:padding="8dp" >
+
+        <ImageView
+            android:id="@+id/umeng_socialize_ic"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+           	android:layout_marginTop="25dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/umeng_socialize_default_avatar" />
+
+        <TextView
+            android:id="@+id/umeng_socialize_title_tv"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            	android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:text="登录账号"
+            android:textColor="#D2D5D7"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="85dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/umeng_socialize_ic" >
+
+            <TextView
+                android:id="@+id/umeng_socialize_loginNm"
+                android:layout_width="fill_parent"
+                android:layout_height="29.5dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:text="匿名用户"
+                android:textColor="#D2D5D7"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/umeng_socialize_loginAddr"
+                android:layout_width="200dp"
+                android:layout_height="29.5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="12dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lines="2"
+                android:paddingLeft="5dp"
+                android:text="http://www.umeng.com/"
+                android:textColor="#9f9f9f"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/umeng_socialize_share_area"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/umeng_socialize_ucenter_info"
+        android:layout_marginBottom="12dp"
+        android:padding="8dp" >
+
+        <TextView
+            android:id="@+id/umeng_socialize_share_tv"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:text="分享设置"
+            android:textColor="#7F8082"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/umeng_socialize_share_config_area"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/umeng_socialize_share_tv"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/umeng_socialize_shape_solid_grey"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" >
+        </LinearLayout>
+
+        <!--
+             <ListView
+            android:id="@+id/umeng_socialize_share_config_area"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/umeng_socialize_share_tv"
+            android:layout_toRightOf="@id/umeng_socialize_ic"
+            android:background="@drawable/umeng_socialize_shape_hollow_grey"
+            android:divider="#FFb8b7b7"
+            android:focusable="false"
+            android:clickable="false"
+            android:cacheColorHint="@null"
+            android:dividerHeight="1dp"
+            android:listSelector="@android:color/transparent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:scrollbars="none" >
+        </ListView>
+        -->
+    </RelativeLayout>
+
+</RelativeLayout>
