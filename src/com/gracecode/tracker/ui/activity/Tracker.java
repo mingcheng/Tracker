@@ -150,7 +150,6 @@ public class Tracker extends Activity implements View.OnClickListener, View.OnLo
     @Override
     public boolean onLongClick(View view) {
         if (isRecording && serviceBinder != null) {
-
             serviceBinder.stopRecord();
             notifyUpdateView();
 
