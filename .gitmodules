@@ -1,0 +1,6 @@
+[submodule "libraries/GraphView"]
+	path = libraries/GraphView
+	url = https://github.com/jjoe64/GraphView.git
+[submodule "libraries/android-actionbar"]
+	path = libraries/android-actionbar
+	url = https://github.com/dodocat/android-actionbar.git
