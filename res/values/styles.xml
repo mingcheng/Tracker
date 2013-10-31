@@ -153,7 +153,6 @@
     <style name="Detail.Description.Text">
         <item name="android:text">Hello, world!</item>
         <item name="android:singleLine">true</item>
-        <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/snowhite</item>
         <item name="android:textSize">18sp</item>
         <item name="android:layout_width">fill_parent</item>
