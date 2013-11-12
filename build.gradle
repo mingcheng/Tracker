@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "18.0.1"
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 18
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            res.srcDirs = ['res']
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:+'
+    compile ('org.apache.httpcomponents:httpmime:4.1.3')
+    compile fileTree(dir: 'libs', include: ['baidumapapi.jar',
+            'umeng_sdk.jar', 'locSDK_3.1.jar', 'umeng_social_sdk.jar'])
+    compile project(':libraries:GraphView')
+    compile project(':libraries:android-actionbar:actionbar')
+    compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
+}
+
+tasks.withType(Compile) {
+    options.encoding = "UTF-8"
+}
+
+task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {
+    destinationDir file("$buildDir/native-libs")
+    baseName 'native-libs'
+    extension 'jar'
+    from fileTree(dir: 'libs', include: '**/*.so')
+    into 'lib/'
+}
+
+tasks.withType(Compile) {
+    compileTask -> compileTask.dependsOn(nativeLibsToJar)
+}
+

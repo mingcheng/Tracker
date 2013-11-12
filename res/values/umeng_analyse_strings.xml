@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="UMBreak_Network">Please make sure you are connected to internet,
-        update failed
-    </string>
     <string name="UMUpdateTitle">New version found</string>
     <string name="UMNewVersion">Latest version:</string>
     <string name="UMGprsCondition">(Warning: Not WIFI Condition)</string>
@@ -10,7 +7,6 @@
     <string name="UMAppUpdate">App updating</string>
     <string name="UMUpdatingNow">Updating application...</string>
     <string name="UMNotNow">Not now</string>
-    <string name="UMToast_IsUpdating">Is updating...</string>
     <string name="UMDialog_InstallAPK">The lastest version has been downloaded, install
         now ?
     </string>
@@ -22,6 +18,7 @@
     <string name="UMFbList_ListItem_State_ReSend">Fail,Press to resend</string>
     <string name="UMFbList_ListItem_State_Sending">Sending...</string>
     <string name="UMFbList_ListItem_State_Fail">Fail</string>
+    <string name="UMFb_Atom_State_Fail">Fail</string>
     <string name="UMFb_Atom_State_Sending">Sending...</string>
     <string name="UMFb_Atom_State_Resend">Fail,press to resend</string>
     <string name="UMFbList_ListItem_State_Resending">Resending</string>
@@ -52,6 +49,7 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
     <string name="UMViewThread">View Thread</string>
     <string name="UMNewReplyAlertTitle">You\'ve got reply</string>
     <string name="UMDeleteThread">Delete Thread</string>
@@ -63,18 +61,8 @@
     <string name="UMNewReplyTitle">Got new reply</string>
     <string name="UMNewReplyHint">Click to view</string>
 
-    <string name="UMBreak_Network">Please make sure you are connected to internet,
-        update failed
-    </string>
-    <string name="UMUpdateTitle">New version found</string>
-    <string name="UMNewVersion">Latest version:</string>
-    <string name="UMGprsCondition">(Warning: Not WIFI Condition)</string>
-    <string name="UMUpdateNow">Update now</string>
-    <string name="UMAppUpdate">App updating</string>
-    <string name="UMUpdatingNow">Updating application...</string>
-    <string name="UMNotNow">Not now</string>
-    <string name="UMToast_IsUpdating">Is updating...</string>
-    <string name="UMDialog_InstallAPK">The lastest version has been downloaded, install
-        now ?
-    </string>
+    <string name="UMBreak_Network">Please make sure you are connected to internet,update failed</string>
+
+
+
 </resources>

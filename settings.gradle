@@ -1,0 +1,4 @@
+rootProject.name='Tracker'
+include 'libraries:android-actionbar:actionbar'
+include 'libraries:GraphView'
+
